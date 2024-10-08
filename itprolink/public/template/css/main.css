@@ -728,7 +728,11 @@ th {
   background-color: #fff;
   box-shadow: -21.213px 21.213px 30px 0px rgba(158, 158, 158, 0.3); }
 
-
+/* New */
+.dropdown-menu .dropdown-item:hover {
+    background-color: transparent !important; /* Force override if needed */
+}
+/* End of New */
 .navbar-light .navbar-toggler {
   color: #fff;
   border-color: #fff; }

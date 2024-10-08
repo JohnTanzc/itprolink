@@ -15,6 +15,7 @@
                      <li><a href="{{ route('index') }}">Home</a></li>
                      <li><a href="{{ route('about') }}">About</a></li>
                      <li><a href="{{ route('course') }}">Courses</a></li>
+                     <li><a href="{{ route('tutor.card') }}">Tutors</a></li>
                      <!-- Dropdown -->
                      {{-- <li class="dropdown">
                          <a class="dropdown-toggle" href="#" data-toggle="dropdown">
@@ -48,10 +49,12 @@
                          <li class="nav-item dropdown">
                              <a id="navbarDropdown" class="dropdown-toggle" href="#" role="button"
                                  data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                 {{ Auth::user()->name }}
+                                 {{ Auth::user()->fname }} {{ Auth::user()->lname }}
                              </a>
 
                              <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                {{-- <a class="dropdown-item" href="/User/Profile">View Profile</a> --}}
+                                <a class="dropdown-item" href="{{ route('user.profile') }}">View Profile</a>
                                  <a class="dropdown-item" href="{{ route('logout') }}"
                                      onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">

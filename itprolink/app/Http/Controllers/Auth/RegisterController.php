@@ -53,9 +53,13 @@ class RegisterController extends Controller
 
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
-            'name' => ['required', 'string', 'max:255'],
+            'fname' => ['required', 'string', 'max:255'],
+            'lname' => ['required', 'string', 'max:255'],
             'phone' => ['required', 'string', 'regex:/^(\+63|0)\d{2,3}(\s?\d{3,4}\s?\d{4})$/'],
             'gender' => ['required', 'string', 'max:255'],
+            'birthday' => ['required', 'string', 'max:255'],
+            'age' => ['required', 'string', 'max:255'],
+            'role' => ['required', 'in:tutor,tutee'], // Validate role input
         ]);
     }
 
@@ -67,12 +71,27 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        return User::create([
-            'name' => $data['name'],
+
+
+        // Create the user
+        $user = User::create([
             'phone' => $data['phone'],
             'gender' => $data['gender'],
+            'fname' => $data['fname'],
+            'lname' => $data['lname'],
+            'role' => $data['role'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
+            'age' => $data['age'], // Store age
+            'birthday' => $data['birthday'], // Store birthday
         ]);
+
+        // Assign the role to the user
+        // $user->assignRole($data['role']);
+
+        // Return the user
+        return $user;
+
     }
+
 }
