@@ -3,12 +3,14 @@
 @section('content')
     @include('pages.nav')
     @include('pages.banner')
-    @include('pages.teachers')
-    @include('pages.video')
-    {{-- @include('pages.feature') --}}
-    @include('pages.testimonial')
-    @include('pages.registration')
-    @include('pages.blog')
+    <div class="section-block"></div>
+    @include('pages.aboutus')
+    @include('pages.featuredcourse')
+    @include('pages.topics')
+    @include('pages.coursestart')
+    @include('pages.funfact')
+    @include('pages.userfeedback')
+    @include('pages.explore')
     @include('layouts.footer')
 
 @endsection

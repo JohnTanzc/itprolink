@@ -22,6 +22,7 @@ class User extends Authenticatable
         'fname',
         'lname',
         'phone',
+        'about_me',    // New About Me field
         'gender',
         'email',
         'role',

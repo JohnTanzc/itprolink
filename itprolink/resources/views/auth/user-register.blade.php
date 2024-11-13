@@ -1,169 +1,216 @@
 @extends('layouts.main')
-
 @section('content')
-    <link rel="stylesheet" href="{{ asset('css/reg.css') }}">
     @include('pages.nav')
 
-    <section class="home-banner-area">
+    <!-- Breadcrumb Section -->
+    <section class="breadcrumb-area section-padding img-bg-2">
+        <div class="overlay"></div>
         <div class="container">
-            <div class="row justify-content-center fullscreen align-items-center">
-                {{-- Login --}}
-                <div class="contain">
-                    <div class="title">Registration</div>
+            <div class="breadcrumb-content d-flex flex-wrap align-items-center justify-content-between">
+                <div class="section-heading">
+                    <h2 class="section__title text-white">Sign Up</h2>
+                </div>
+                <ul
+                    class="generic-list-item generic-list-item-white generic-list-item-arrow d-flex flex-wrap align-items-center">
+                    <li><a href="index.html">Home</a></li>
+                    <li>Pages</li>
+                    <li>Sign up</li>
+                </ul>
+            </div>
+        </div>
+    </section>
 
-                    <div class="content">
-                        <form method="POST" action="{{ route('register') }}" enctype="multipart/form-data">
-                            @csrf
+    <!-- Registration Form Section -->
+    <section class="contact-area section--padding position-relative">
+        <span class="ring-shape ring-shape-1"></span>
+        <span class="ring-shape ring-shape-2"></span>
+        <span class="ring-shape ring-shape-3"></span>
+        <span class="ring-shape ring-shape-4"></span>
+        <span class="ring-shape ring-shape-5"></span>
+        <span class="ring-shape ring-shape-6"></span>
+        <span class="ring-shape ring-shape-7"></span>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-7 mx-auto">
+                    <div class="card card-item">
+                        <div class="card-body">
+                            <h3 class="card-title text-center fs-25 lh-35 mt-1 pb-3">
+                                Create an Account and <br />
+                                Start Learning!
+                            </h3>
+                            <div class="section-block"></div>
 
-                            <div class="user-details">
+                            <form method="POST" action="{{ route('register') }}" enctype="multipart/form-data">
+                                @csrf
 
-                                <div class="input-box">
-                                    <span class="details">Email</span>
-                                    <input id="email" type="email"
-                                        class="form-control @error('email') is-invalid @enderror" name="email"
-                                        value="{{ old('email') }}" required autocomplete="email"
-                                        placeholder="Enter your email">
-
-                                    @error('email')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
-                                </div>
-
-                                <div class="input-box">
-                                    <span class="details">Password</span>
-                                    <input id="password" type="password"
-                                        class="form-control @error('password') is-invalid @enderror" name="password"
-                                        required autocomplete="new-password" placeholder="Enter your password">
-
-                                    @error('password')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
-                                </div>
-
-                                <div class="input-box">
-                                    <span class="details">Confirm Password</span>
-                                    <input id="password-confirm" type="password" class="form-control"
-                                        name="password_confirmation" required autocomplete="new-password"
-                                        placeholder="Confirm password">
-                                </div>
-
-                                <div class="input-box">
-                                    <span class="details">Phone Number</span>
-                                    <input id="phone" type="text"
-                                        class="form-control @error('phone') is-invalid @enderror" name="phone"
-                                        value="{{ old('phone') }}" required autocomplete="phone"
-                                        placeholder="Enter your number">
-
-                                    @error('phone')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
-                                </div>
-
-
-                                <div class="input-box">
-                                    <span class="details">First Name</span>
-                                    <input id="fname" type="text"
-                                        class="form-control @error('fname') is-invalid @enderror" name="fname"
+                                <div class="row mt-4">
+                                    <div class="col-md-6">
+                                        <div class="input-box">
+                                            <span class="label-text">First Name</span>
+                                            <div class="form-group">
+                                                <input id="fname" type="text"
+                                                    class="form-control form--control @error('fname') is-invalid @enderror" name="fname"
                                         value="{{ old('fname') }}" required autocomplete="fname"
                                         placeholder="Enter your firstname">
-
+                                            </div>
                                     @error('fname')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
                                         </span>
                                     @enderror
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="input-box">
+                                            <span class="label-text">Last Name</span>
+                                            <div class="form-group">
+                                                <input id="lname" type="text"
+                                                    class="form-control form--control @error('lname') is-invalid @enderror"
+                                                    name="lname" value="{{ old('lname') }}" required autocomplete="lname"
+                                                    placeholder="Enter your lastname">
+                                                <span class="la la-user input-icon"></span>
+                                            </div>
+                                            @error('lname')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <!-- end name fields row -->
+
+                                    <!-- end input-box -->
+                                    <div class="col-md-6">
+                                        <div class="input-box">
+                                            <span class="label-text">Email Address</span>
+                                            <div class="form-group">
+                                                <input id="email" type="email"
+                                                    class="form-control form--control @error('email') is-invalid @enderror"
+                                                    name="email" value="{{ old('email') }}" required autocomplete="email"
+                                                    placeholder="Enter your email">
+                                                <span class="la la-envelope input-icon"></span>
+                                            </div>
+                                            @error('email')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <!-- end input-box -->
+                                    <div class="col-md-6">
+                                        <div class="input-box">
+                                            <span class="label-text">Password</span>
+                                            <div class="input-group mb-3">
+                                                <span class="la la-lock input-icon z-index-6"></span>
+                                                <input id="password" type="password"
+                                                    class="form-control form--control top-bottom-left-radius-5 password-field @error('password') is-invalid @enderror"
+                                                    name="password" required autocomplete="new-password"
+                                                    placeholder="Enter your password">
+
+                                                @error('password')
+                                                    <span class="invalid-feedback" role="alert">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                @enderror
+                                                <button class="btn theme-btn theme-btn-transparent toggle-password"
+                                                    type="button">
+                                                    <svg class="eye-on" xmlns="http://www.w3.org/2000/svg" height="22px"
+                                                        viewBox="0 0 24 24" width="22px" fill="#7f8897">
+                                                        <path d="M0 0h24v24H0V0z" fill="none" />
+                                                        <path
+                                                            d="M12 6c3.79 0 7.17 2.13 8.82 5.5C19.17 14.87 15.79 17 12 17s-7.17-2.13-8.82-5.5C4.83 8.13 8.21 6 12 6m0-2C7 4 2.73 7.11 1 11.5 2.73 15.89 7 19 12 19s9.27-3.11 11-7.5C21.27 7.11 17 4 12 4zm0 5c1.38 0 2.5 1.12 2.5 2.5S13.38 14 12 14s-2.5-1.12-2.5-2.5S10.62 9 12 9m0-2c-2.48 0-4.5 2.02-4.5 4.5S9.52 16 12 16s4.5-2.02 4.5-4.5S14.48 7 12 7z" />
+                                                    </svg>
+                                                    <svg class="eye-off" xmlns="http://www.w3.org/2000/svg" height="22px"
+                                                        viewBox="0 0 24 24" width="22px" fill="#7f8897">
+                                                        <path
+                                                            d="M0 0h24v24H0V0zm0 0h24v24H0V0zm0 0h24v24H0V0zm0 0h24v24H0V0z"
+                                                            fill="none" />
+                                                        <path
+                                                            d="M12 6c3.79 0 7.17 2.13 8.82 5.5-.59 1.22-1.42 2.27-2.41 3.12l1.41 1.41c1.39-1.23 2.49-2.77 3.18-4.53C21.27 7.11 17 4 12 4c-1.27 0-2.49.2-3.64.57l1.65 1.65C10.66 6.09 11.32 6 12 6zm-1.07 1.14L13 9.21c.57.25 1.03.71 1.28 1.28l2.07 2.07c.08-.34.14-.7.14-1.07C16.5 9.01 14.48 7 12 7c-.37 0-.72.05-1.07.14zM2.01 3.87l2.68 2.68C3.06 7.83 1.77 9.53 1 11.5 2.73 15.89 7 19 12 19c1.52 0 2.98-.29 4.32-.82l3.42 3.42 1.41-1.41L3.42 2.45 2.01 3.87zm7.5 7.5l2.61 2.61c-.04.01-.08.02-.12.02-1.38 0-2.5-1.12-2.5-2.5 0-.05.01-.08.01-.13zm-3.4-3.4l1.75 1.75c-.23.55-.36 1.15-.36 1.78 0 2.48 2.02 4.5 4.5 4.5.63 0 1.23-.13 1.77-.36l.98.98c-.88.24-1.8.38-2.75.38-3.79 0-7.17-2.13-8.82-5.5.7-1.43 1.72-2.61 2.93-3.53z" />
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="col-md-6">
+                                        <div class="input-box">
+                                            <span class="label-text">Confirm Password</span>
+                                            <div class="input-group mb-3">
+                                                <span class="la la-lock input-icon z-index-6"></span>
+                                                <input id="password-confirm" type="password"
+                                                    class="form-control form--control top-bottom-left-radius-5 password-field"
+                                                    name="password_confirmation" required autocomplete="new-password"
+                                                    placeholder="Confirm password">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="input-box">
+                                            <span class="label-text">Select Role</span>
+                                            <select id="roleSelect"
+                                                class="form-control form--control form-select @error('role') is-invalid @enderror"
+                                                name="role" required>
+                                                <option value="" disabled selected>Select your role</option>
+                                                <option value="tutor">Tutor</option>
+                                                <option value="tutee">Tutee</option>
+                                            </select><br><br>
+                                            @error('role')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <!-- end custom-control -->
+                                    <div class="d-flex justify-content-center">
+                                        <div class="custom-control custom-checkbox mb-4 fs-10">
+                                            <input type="checkbox" class="custom-control-input" id="agreeCheckbox"
+                                                required />
+                                            <label class="custom-control-label custom--control-label"
+                                                for="agreeCheckbox">Agree to the
+                                                <a href="terms-and-conditions.html"
+                                                    class="text-color hover-underline">terms
+                                                    and
+                                                    conditions</a>
+                                                and
+                                                <a href="privacy-policy.html" class="text-color hover-underline">privacy
+                                                    policy</a>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <!-- end custom-control -->
+                                    <button class="btn theme-btn" type="submit">
+                                        Register Account
+                                        <i class="la la-arrow-right icon ms-1"></i>
+                                    </button>
+                                    <div class="text-center">
+                                        <p class="fs-14 pt-2">
+                                            Already have an account?
+                                            <a href="login.html" class="text-color hover-underline">Log in</a>
+                                        </p>
+                                    </div>
                                 </div>
-
-                                <div class="input-box">
-                                    <span class="details">Last Name</span>
-                                    <input id="lname" type="text"
-                                        class="form-control @error('lname') is-invalid @enderror" name="lname"
-                                        value="{{ old('lname') }}" required autocomplete="lname"
-                                        placeholder="Enter your lastname">
-
-                                    @error('lname')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
-                                </div>
-
-                                {{-- Birthday --}}
-                                <div class="input-box">
-                                    <span class="details">Birthday</span>
-                                    <input id="birthday" type="date"
-                                        class="form-control @error('birthday') is-invalid @enderror" name="birthday"
-                                        value="{{ old('birthday') }}" required autocomplete="birthday"
-                                        placeholder="Enter your birthdate" onchange="calculateAge()">
-
-                                    @error('birthday')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
-                                </div>
-
-                                {{-- Age (Read-only) --}}
-                                <div class="input-box">
-                                    <span class="details">Age</span>
-                                    <input id="age" type="number" class="form-control" name="age" readonly
-                                        placeholder="Age">
-                                    <input type="hidden" id="hidden-age" name="age" value="">
-                                </div>
-
-                                <div class="input-box">
-                                    <span class="details">Select Gender</span>
-                                    <select class="form-select" aria-label="Default select example" name="gender"
-                                        required>
-                                        <option value="" disabled selected>Select your role</option>
-                                        <option value="Male">Male</option>
-                                        <option value="Female">Female</option>
-                                        <option value="Others">Others</option>
-                                    </select>
-                                    @error('gender')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
-                                </div>
-
-                                {{-- Selection of Role --}}
-                                <div class="input-box">
-                                    <span class="details">Select Role</span>
-                                    <select id="roleSelect" class="form-select @error('role') is-invalid @enderror"
-                                        name="role" required>
-                                        <option value="" disabled selected>Select your role</option>
-                                        <option value="tutor">Tutor</option>
-                                        <option value="tutee">Tutee</option>
-                                    </select><br><br>
-                                    @error('role')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
-                                </div>
-                                {{-- EndSelect of Role --}}
-
-                            </div>
-
-                            <div class="button">
-                                <input type="submit" value="Register">
-                            </div>
-                        </form>
-
+                                <!-- end btn-box -->
+                            </form>
+                        </div>
+                        <!-- end card-body -->
                     </div>
+                    <!-- end card -->
                 </div>
-                {{-- End of Login --}}
+                <!-- end col-lg-7 -->
             </div>
+            <!-- end row -->
         </div>
-        @include('layouts.footer')
+        <!-- end container -->
     </section>
+
+
+    @include('layouts.footer')
     {{-- JavaScript for Age Calculation --}}
     <script>
         function calculateAge() {
@@ -182,3 +229,183 @@
         }
     </script>
 @endsection
+
+
+{{-- <form method="POST" action="{{ route('register') }}" enctype="multipart/form-data">
+        @csrf
+        <div class="row">
+            <div class="col-md-6">
+                <div class="input-box">
+                    <span class="label-text">First Name</span>
+                    <div class="form-group">
+                        <input id="fname" type="text"
+                            class="form-control form--control @error('fname') is-invalid @enderror"
+                            name="fname" value="{{ old('fname') }}" required autocomplete="fname"
+                            placeholder="Enter your firstname">
+                        <span class="la la-user input-icon"></span>
+                    </div>
+                    @error('email')
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                    @enderror
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="input-box">
+                    <span class="label-text">Last Name</span>
+                    <div class="form-group">
+                        <input id="lname" type="text"
+                            class="form-control form--control @error('lname') is-invalid @enderror"
+                            name="lname" value="{{ old('lname') }}" required autocomplete="lname"
+                            placeholder="Enter your lastname">
+                        <span class="la la-user input-icon"></span>
+                    </div>
+                    @error('email')
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                    @enderror
+                </div>
+            </div>
+            <!-- end name fields row -->
+
+            <!-- end input-box -->
+            <div class="col-md-6">
+                <div class="input-box">
+                    <span class="label-text">Email Address</span>
+                    <div class="form-group">
+                        <input id="email" type="email"
+                            class="form-control form--control @error('email') is-invalid @enderror"
+                            name="email" value="{{ old('email') }}" required autocomplete="email"
+                            placeholder="Enter your email">
+                        <span class="la la-envelope input-icon"></span>
+                    </div>
+                    @error('email')
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                    @enderror
+                </div>
+            </div>
+            <!-- end input-box -->
+            <div class="col-md-6">
+                <div class="input-box">
+                    <span class="label-text">Password</span>
+                    <div class="input-group mb-3">
+                        <span class="la la-lock input-icon z-index-6"></span>
+                        <input id="password" type="password"
+                            class="form-control form--control top-bottom-left-radius-5 password-field @error('password') is-invalid @enderror"
+                            name="password" required autocomplete="new-password"
+                            placeholder="Enter your password">
+
+                        @error('password')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
+                        <button class="btn theme-btn theme-btn-transparent toggle-password"
+                            type="button">
+                            <svg class="eye-on" xmlns="http://www.w3.org/2000/svg" height="22px"
+                                viewBox="0 0 24 24" width="22px" fill="#7f8897">
+                                <path d="M0 0h24v24H0V0z" fill="none" />
+                                <path
+                                    d="M12 6c3.79 0 7.17 2.13 8.82 5.5C19.17 14.87 15.79 17 12 17s-7.17-2.13-8.82-5.5C4.83 8.13 8.21 6 12 6m0-2C7 4 2.73 7.11 1 11.5 2.73 15.89 7 19 12 19s9.27-3.11 11-7.5C21.27 7.11 17 4 12 4zm0 5c1.38 0 2.5 1.12 2.5 2.5S13.38 14 12 14s-2.5-1.12-2.5-2.5S10.62 9 12 9m0-2c-2.48 0-4.5 2.02-4.5 4.5S9.52 16 12 16s4.5-2.02 4.5-4.5S14.48 7 12 7z" />
+                            </svg>
+                            <svg class="eye-off" xmlns="http://www.w3.org/2000/svg" height="22px"
+                                viewBox="0 0 24 24" width="22px" fill="#7f8897">
+                                <path
+                                    d="M0 0h24v24H0V0zm0 0h24v24H0V0zm0 0h24v24H0V0zm0 0h24v24H0V0z"
+                                    fill="none" />
+                                <path
+                                    d="M12 6c3.79 0 7.17 2.13 8.82 5.5-.59 1.22-1.42 2.27-2.41 3.12l1.41 1.41c1.39-1.23 2.49-2.77 3.18-4.53C21.27 7.11 17 4 12 4c-1.27 0-2.49.2-3.64.57l1.65 1.65C10.66 6.09 11.32 6 12 6zm-1.07 1.14L13 9.21c.57.25 1.03.71 1.28 1.28l2.07 2.07c.08-.34.14-.7.14-1.07C16.5 9.01 14.48 7 12 7c-.37 0-.72.05-1.07.14zM2.01 3.87l2.68 2.68C3.06 7.83 1.77 9.53 1 11.5 2.73 15.89 7 19 12 19c1.52 0 2.98-.29 4.32-.82l3.42 3.42 1.41-1.41L3.42 2.45 2.01 3.87zm7.5 7.5l2.61 2.61c-.04.01-.08.02-.12.02-1.38 0-2.5-1.12-2.5-2.5 0-.05.01-.08.01-.13zm-3.4-3.4l1.75 1.75c-.23.55-.36 1.15-.36 1.78 0 2.48 2.02 4.5 4.5 4.5.63 0 1.23-.13 1.77-.36l.98.98c-.88.24-1.8.38-2.75.38-3.79 0-7.17-2.13-8.82-5.5.7-1.43 1.72-2.61 2.93-3.53z" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="col-md-6">
+                <div class="input-box">
+                    <span class="label-text">Confirm Password</span>
+                    <div class="input-group mb-3">
+                        <span class="la la-lock input-icon z-index-6"></span>
+                        <input id="password-confirm" type="password"
+                            class="form-control form--control top-bottom-left-radius-5 password-field"
+                            name="password_confirmation" required autocomplete="new-password"
+                            placeholder="Confirm password">
+                    </div>
+                </div>
+            </div>
+
+                <div class="col-md-6">
+                    <div class="input-box">
+                        <span class="label-text">Select Role</span>
+                        <select id="roleSelect"
+                            class="form-control form--control form-select @error('role') is-invalid @enderror"
+                            name="role" required>
+                            <option value="" disabled selected>Select your role</option>
+                            <option value="tutor">Tutor</option>
+                            <option value="tutee">Tutee</option>
+                        </select><br><br>
+                        @error('role')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
+                    </div>
+                </div>
+                <!-- end custom-control -->
+                <div class="d-flex justify-content-center">
+                    <div class="custom-control custom-checkbox mb-4 fs-10">
+                        <input type="checkbox" class="custom-control-input" id="agreeCheckbox"
+                            required />
+                        <label class="custom-control-label custom--control-label"
+                            for="agreeCheckbox">Agree to the
+                            <a href="terms-and-conditions.html"
+                                class="text-color hover-underline">terms
+                                and
+                                conditions</a>
+                            and
+                            <a href="privacy-policy.html"
+                                class="text-color hover-underline">privacy
+                                policy</a>
+                        </label>
+                    </div>
+                </div>
+                <!-- end custom-control -->
+                <button class="btn theme-btn" type="submit">
+                    Register Account
+                    <i class="la la-arrow-right icon ms-1"></i>
+                </button>
+                <div class="text-center">
+                    <p class="fs-14 pt-2">
+                        Already have an account?
+                        <a href="login.html" class="text-color hover-underline">Log in</a>
+                    </p>
+                </div>
+            </div>
+            <!-- end btn-box -->
+    </form>
+{{-- <script>
+ document.addEventListener("DOMContentLoaded", function() {
+    const togglePassword = document.querySelector('.toggle-password');
+    const passwordField = document.getElementById('password');
+    const eyeOn = document.querySelector('.eye-on');
+    const eyeOff = document.querySelector('.eye-off');
+    const eyeOffWithLine = document.querySelector('.eye-off-with-line');
+
+    togglePassword.addEventListener('click', function() {
+        // Toggle the type of the password field
+        const type = passwordField.type === 'password' ? 'text' : 'password';
+        passwordField.type = type;
+
+        // Toggle visibility of icons
+        eyeOn.classList.toggle('d-none');
+        eyeOff.classList.toggle('d-none');
+        eyeOffWithLine.classList.toggle('d-none');
+    });
+});
+
+</script> --}}

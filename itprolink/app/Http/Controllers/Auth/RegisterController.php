@@ -8,34 +8,14 @@ use App\Models\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Http\Request;
 
 class RegisterController extends Controller
 {
-    /*
-    |--------------------------------------------------------------------------
-    | Register Controller
-    |--------------------------------------------------------------------------
-    |
-    | This controller handles the registration of new users as well as their
-    | validation and creation. By default this controller uses a trait to
-    | provide this functionality without requiring any additional code.
-    |
-    */
-
     use RegistersUsers;
 
-    /**
-     * Where to redirect users after registration.
-     *
-     * @var string
-     */
-    // protected $redirectTo = RouteServiceProvider::HOME;
     protected $redirectTo = '/';
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
+
     public function __construct()
     {
         $this->middleware('guest');
@@ -50,16 +30,11 @@ class RegisterController extends Controller
     protected function validator(array $data)
     {
         return Validator::make($data, [
-
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
             'fname' => ['required', 'string', 'max:255'],
             'lname' => ['required', 'string', 'max:255'],
-            'phone' => ['required', 'string', 'regex:/^(\+63|0)\d{2,3}(\s?\d{3,4}\s?\d{4})$/'],
-            'gender' => ['required', 'string', 'max:255'],
-            'birthday' => ['required', 'string', 'max:255'],
-            'age' => ['required', 'string', 'max:255'],
-            'role' => ['required', 'in:tutor,tutee'], // Validate role input
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'role' => ['required', 'in:tutor,tutee'],
         ]);
     }
 
@@ -71,27 +46,12 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-
-
-        // Create the user
-        $user = User::create([
-            'phone' => $data['phone'],
-            'gender' => $data['gender'],
+        return User::create([
             'fname' => $data['fname'],
             'lname' => $data['lname'],
-            'role' => $data['role'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
-            'age' => $data['age'], // Store age
-            'birthday' => $data['birthday'], // Store birthday
+            'role' => $data['role'],
         ]);
-
-        // Assign the role to the user
-        // $user->assignRole($data['role']);
-
-        // Return the user
-        return $user;
-
     }
-
 }
