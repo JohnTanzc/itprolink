@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Rating;
 
 
 class Course extends Model
@@ -50,6 +51,11 @@ class Course extends Model
     public function enrollments()
     {
         return $this->hasMany(Enrollment::class, 'course_id');
+    }
+
+    public function ratings()
+    {
+        return $this->hasMany(Rating::class, 'rateable_id')->where('rateable_type', Course::class);
     }
 
 

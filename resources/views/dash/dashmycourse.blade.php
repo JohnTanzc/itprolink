@@ -186,16 +186,12 @@
                                                     <div
                                                         class="rating-wrap d-flex align-items-center justify-content-between pt-3">
                                                         <div class="review-stars">
-                                                            <span class="la la-star"></span>
-                                                            <span class="la la-star"></span>
-                                                            <span class="la la-star"></span>
-                                                            <span class="la la-star"></span>
-                                                            <span class="la la-star-o"></span>
+
                                                         </div>
-                                                        <a href="#"
-                                                            class="btn theme-btn theme-btn-sm theme-btn-transparent"
-                                                            data-bs-toggle="modal" data-bs-target="#ratingModal">Leave a
-                                                            rating</a>
+                                                        <button type="button" class="btn theme-btn"
+                                                            data-bs-toggle="modal" data-bs-target="#reviewModal">
+                                                            Add a Review
+                                                        </button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -235,42 +231,107 @@
         <!-- end container -->
     </section>
 
-    <div class="modal fade modal-container" id="ratingModal" tabindex="-1" role="dialog"
-        aria-labelledby="ratingModalTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header border-bottom-gray">
-                    <div class="pe-2">
-                        <h5 class="modal-title fs-19 font-weight-semi-bold lh-24" id="ratingModalLongTitle">
-                            How would you rate this course?
-                        </h5>
-                    </div>
-                    <button type="button" class="btn-close close" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true" class="la la-times"></span>
-                    </button>
-                </div>
-                <!-- end modal-header -->
-                <div class="modal-body text-center py-5">
-                    <div class="leave-rating mt-5">
-                        <input type="radio" name="rate" id="star5" />
-                        <label for="star5" class="fs-45"></label>
-                        <input type="radio" name="rate" id="star4" />
-                        <label for="star4" class="fs-45"></label>
-                        <input type="radio" name="rate" id="star3" />
-                        <label for="star3" class="fs-45"></label>
-                        <input type="radio" name="rate" id="star2" />
-                        <label for="star2" class="fs-45"></label>
-                        <input type="radio" name="rate" id="star1" />
-                        <label for="star1" class="fs-45"></label>
-                        <div class="rating-result-text fs-20 pb-4"></div>
-                    </div>
-                    <!-- end leave-rating -->
-                </div>
-                <!-- end modal-body -->
+
+    <!-- Modal structure -->
+    <!-- Modal HTML -->
+<div class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="reviewModalLabel">Add a Review</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <!-- end modal-content -->
+            <div class="modal-body">
+                <div class="course-overview-card pt-4">
+                    <h3 class="fs-24 font-weight-semi-bold pb-4">Add a Review</h3>
+                    <div class="leave-rating-wrap pb-4">
+                        <div class="leave-rating leave--rating">
+                            <input type="radio" name="rate" id="star5" value="5" />
+                            <label for="star5"></label>
+                            <input type="radio" name="rate" id="star4" value="4" />
+                            <label for="star4"></label>
+                            <input type="radio" name="rate" id="star3" value="3" />
+                            <label for="star3"></label>
+                            <input type="radio" name="rate" id="star2" value="2" />
+                            <label for="star2"></label>
+                            <input type="radio" name="rate" id="star1" value="1" />
+                            <label for="star1"></label>
+                        </div>
+                        <!-- end leave-rating -->
+                    </div>
+                    <form method="POST" action="{{route('review.submit')}}" class="row" id="reviewForm">
+                        @csrf
+                        <div class="input-box col-lg-6">
+                            <label class="label-text">Name</label>
+                            <div class="form-group">
+                                <input class="form-control form--control" type="text" name="name"
+                                    placeholder="Your Name" required />
+                                <span class="la la-user input-icon"></span>
+                            </div>
+                        </div>
+                        <!-- end input-box -->
+                        <div class="input-box col-lg-6">
+                            <label class="label-text">Email</label>
+                            <div class="form-group">
+                                <input class="form-control form--control" type="email" name="email"
+                                    placeholder="Email Address" required />
+                                <span class="la la-envelope input-icon"></span>
+                            </div>
+                        </div>
+                        <!-- end input-box -->
+                        <div class="input-box col-lg-12">
+                            <label class="label-text">Message</label>
+                            <div class="form-group">
+                                <textarea class="form-control form--control ps-3" name="message" placeholder="Write Message" rows="5" required></textarea>
+                            </div>
+                        </div>
+                        <!-- end input-box -->
+                        <div class="btn-box col-lg-12">
+                            <button class="btn theme-btn" type="submit">
+                                Submit Review
+                            </button>
+                        </div>
+                        <!-- end btn-box -->
+                    </form>
+                </div>
+            </div>
         </div>
-        <!-- end modal-dialog -->
+    </div>
+</div>
+
+<!-- Include Bootstrap JS and jQuery -->
+
+<script>
+    // Handle form submission
+    $('#reviewForm').submit(function(event) {
+        event.preventDefault();
+
+        var formData = $(this).serialize();
+
+        $.ajax({
+            type: 'POST',
+            url: '/submit-review',  // Your route for review submission
+            data: formData,
+            success: function(response) {
+                alert('Review submitted successfully!');
+                $('#reviewModal').modal('hide'); // Hide the modal after submission
+            },
+            error: function(response) {
+                alert('There was an error submitting your review.');
+            }
+        });
+    });
+</script>
+
+
+    {{-- Modal --}}
+    <!-- end leave-rating -->
+    </div>
+    <!-- end modal-body -->
+    </div>
+    <!-- end modal-content -->
+    </div>
+    <!-- end modal-dialog -->
     </div>
     <!-- end modal -->
     @include('layouts.footer')

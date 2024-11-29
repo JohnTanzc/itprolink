@@ -40,15 +40,13 @@
                                 The leading global marketplace for learning and instruction
                             </h2>
                             <p class="section__desc">
-                                Nemo enim ipsam,voluptatem quia voluptas sit aspernatur aut
-                                odit aut fugit, sed quia,consequuntur magni dolores eos qui
-                                ratione voluptatem sequi nesciunt. Neque porro quisquam est,
-                                qui dolorem ipsum quia dolor sit amet, adipisci velit, sed
-                                quia non numquam eius modi tempora
+                                Your global hub for personalized IT learning. Experience flexible education, connect with
+                                expert tutors, and earn globally recognized certificates to advance your career in
+                                technology.
                             </p>
                         </div>
                         <!-- end section-heading -->
-                        <ul class="generic-list-item pt-3">
+                        {{-- <ul class="generic-list-item pt-3">
                             <li>
                                 <i class="la la-check-circle me-2 text-success"></i>Online
                                 Courses with full discount systems.
@@ -61,7 +59,7 @@
                                 <i class="la la-check-circle me-2 text-success"></i>An online
                                 leadership development program at ITProLink.
                             </li>
-                        </ul>
+                        </ul> --}}
                     </div>
                     <!-- end about-content -->
                 </div>
@@ -167,10 +165,10 @@
                 <!-- end col-lg-4 -->
             </div>
             <!-- end row -->
-            <p class="text-center">
+            {{-- <p class="text-center">
                 Want to join with us? See our<a href="careers.html" class="text-color hover-underline">
                     open positions</a>
-            </p>
+            </p> --}}
         </div>
         <!-- end container -->
     </section>
@@ -352,11 +350,8 @@
                         <div class="section-heading">
                             <h2 class="section__title pb-3 lh-50">A great place to grow</h2>
                             <p class="section__desc pb-3">
-                                Nemo enim ipsam,voluptatem quia voluptas sit aspernatur aut
-                                odit aut fugit, sed quia,consequuntur magni dolores eos qui
-                                ratione voluptatem sequi nesciunt. Neque porro quisquam est,
-                                qui dolorem ipsum quia dolor sit amet, adipisci velit, sed
-                                quia non numquam eius modi tempora
+                                Join IT ProLink and expand your skills in a supportive, innovative environment.
+                                Collaborate with experts, grow your network, and achieve your career goals in IT.
                             </p>
                             <p class="section__desc">
                                 Neque porro quisquam est, qui dolorem ipsum quia dolor sit
@@ -374,7 +369,8 @@
                 <!-- end col-lg-6 -->
                 <div class="col-lg-6">
                     <div class="generic-img-box generic-img-box-layout-3">
-                        <img src="{{ asset('template/images/img-loading.png') }}" data-src="{{ asset('template/images/img13.jpg') }}" alt="About image"
+                        <img src="{{ asset('template/images/img-loading.png') }}"
+                            data-src="{{ asset('template/images/img13.jpg') }}" alt="About image"
                             class="img__item lazy img__item-1" />
                     </div>
                 </div>
@@ -433,7 +429,7 @@
                 <!-- end col-lg-9 -->
                 <div class="col-lg-3">
                     <div class="cta-btn-box text-end">
-                        <a href="become-a-teacher.html" class="btn theme-btn">Tech on ITProLink <i
+                <a href="{{route('user.register')}}" class="btn theme-btn">Tech on ITProLink <i
                                 class="la la-arrow-right icon ms-1"></i></a>
                     </div>
                 </div>

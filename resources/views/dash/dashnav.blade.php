@@ -158,14 +158,14 @@
                                                                         class="badge bg-info text-white ms-2 p-1">9+</span>
                                                                 </a>
                                                             </li>
-                                                            <li>
+                                                            {{-- <li>
                                                                 <a href="dashboard-message.html">
                                                                     <i class="la la-envelope me-1"></i>
                                                                     Messages
                                                                     <span
                                                                         class="badge bg-info text-white ms-2 p-1">12+</span>
                                                                 </a>
-                                                            </li>
+                                                            </li> --}}
                                                             <li>
                                                                 @if (Auth::user()->role === 'tutor')
                                                                     <a
@@ -231,8 +231,8 @@
         <!-- end off-canvas-menu-close -->
         <h4 class="off-canvas-menu-heading pt-90px"></h4>
         <ul class="generic-list-item off-canvas-menu-list pt-1 pb-2 border-bottom border-bottom-gray">
-            <li><a href="dashboard.html">Notifications</a></li>
-            <li><a href="dashboard-message.html">Messages</a></li>
+            {{-- <li><a href="dashboard.html">Notifications</a></li>
+            <li><a href="dashboard-message.html">Messages</a></li> --}}
             <li><a
                     href=@if (Auth::user()->role == 'admin') {{ route('admin.setting', ['id' => Auth::user()->id]) }}
             @elseif(Auth::user()->role == 'tutor')
@@ -492,7 +492,7 @@
                 </a>
             </li>
         @endif
-        <li class="{{ request()->is('dashboard-message') ? 'page-active' : '' }}">
+        {{-- <li class="{{ request()->is('dashboard-message') ? 'page-active' : '' }}">
             <a href="{{ url('dashboard-message') }}">
                 <svg class="me-2" xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 0 24 24"
                     width="18px">
@@ -502,8 +502,8 @@
                 </svg>
                 Messages <span class="badge text-bg-info p-1 ms-2">2</span>
             </a>
-        </li>
-        <li class="{{ request()->is('dashboard-reviews') ? 'page-active' : '' }}">
+        </li> --}}
+        {{-- <li class="{{ request()->is('dashboard-reviews') ? 'page-active' : '' }}">
             <a href="{{ url('dashboard-reviews') }}">
                 <svg class="me-2" xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 0 24 24"
                     width="18px">
@@ -513,7 +513,7 @@
                 </svg>
                 Feedbacks
             </a>
-        </li>
+        </li> --}}
         @auth
             @if (Auth::user()->role === 'admin')
                 <li class="{{ request()->is('dashboard-earnings') ? 'page-active' : '' }}">

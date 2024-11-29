@@ -18,5 +18,11 @@ class Enrollment extends Model
         return $this->belongsTo(Course::class, 'course_id');
     }
 
+    public function ratings()
+    {
+        return $this->morphMany(Rating::class, 'rateable');
+    }
+
+
 
 }

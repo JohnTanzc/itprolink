@@ -8,7 +8,7 @@ use App\Http\Controllers\CredentialController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\RecoverController;
-use App\Http\Controllers\TestController;
+use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\NotificationController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
@@ -62,6 +62,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/notifications/mark-all-read', [DashboardController::class, 'markAllAsRead'])->name('notifications.markAllRead');
     Route::get('/notifications/{userId}', [NotificationController::class, 'checkNotifications']);
     Route::post('/notifications/delete-all', [NotificationController::class, 'deleteAll'])->name('notifications.deleteAll');
+    Route::get('/tutee/mycourses', [ReviewController::class, 'myCourses'])->name('tutee.mycourses');
+    Route::post('/submit-review', [ReviewController::class, 'submitReview'])->name('review.submit');
+
+
 
 });
 

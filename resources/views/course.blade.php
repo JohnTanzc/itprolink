@@ -1,7 +1,7 @@
 @extends('layouts.main')
 
 @section('content')
-
+@include('pages.nav')
     {{-- Header Start --}}
     <section class="breadcrumb-area section-padding img-bg-2">
         <div class="overlay"></div>

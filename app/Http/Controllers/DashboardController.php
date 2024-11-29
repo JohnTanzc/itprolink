@@ -14,40 +14,52 @@ class DashboardController extends Controller
      * Show the dashboard based on user role.
      */
 
-    public function dashboard()
-    {
-        $user = Auth::user();
-        $role = $user->role;
+     public function dashboard()
+     {
+         $user = Auth::user();
+         $role = $user->role;
 
-        // Fetch counts for active users
-        $activeTutees = User::where('role', 'tutee')->where('active', 1)->count();
-        $activeTutors = User::where('role', 'tutor')->where('active', 1)->count();
+         // Fetch counts for active users
+         $activeTutees = User::where('role', 'tutee')->where('active', 1)->count();
+         $activeTutors = User::where('role', 'tutor')->where('active', 1)->count();
 
-        $totalTutors = User::where('role', 'tutor')->count();
-        $totalTutees = User::where('role', 'tutee')->count();
+         $totalTutors = User::where('role', 'tutor')->count();
+         $totalTutees = User::where('role', 'tutee')->count();
 
-        // Fetch the course count for the authenticated user
-        $courseCount = $user->courses()->count(); // Assuming the relationship 'courses' is defined in User model
+         // Fetch the course count for the authenticated user
+         $courseCount = $user->courses()->count(); // Assuming the relationship 'courses' is defined in User model
 
-        // Fetch the total number of courses uploaded by all tutors (only for admin)
-        $totalCourses = ($role === 'admin') ? Course::count() : null;
+         // Fetch the count of completed courses for the authenticated user
+         $completedCourseCount = $user->enrollments()->where('status', 'completed')->count(); // Assuming 'status' column exists in the Enrollment model
 
-        // Fetch notifications for the user (including rejection notifications)
-        $notifications = $user->notifications;
+         // Fetch the count of uploaded courses for the authenticated tutor
+         $uploadedCourseCount = ($role === 'tutor') ? Course::where('user_id', $user->id)->count() : null;
 
-        // Return the view with all data
-        return view('dash.dashboard', compact(
-            'user',
-            'role',
-            'activeTutees',
-            'activeTutors',
-            'courseCount',
-            'totalTutees',
-            'totalTutors',
-            'totalCourses',
-            'notifications'
-        ));
-    }
+         // Fetch the count of enrolled courses for the authenticated tutee
+         $enrolledCourseCount = ($role === 'tutee') ? $user->enrollments()->count() : 0; // Default to 0 if no enrollments
+
+         // Fetch the total number of courses uploaded by all tutors (only for admin)
+         $totalCourses = ($role === 'admin') ? Course::count() : null;
+
+         // Fetch notifications for the user (including rejection notifications)
+         $notifications = $user->notifications;
+
+         // Return the view with all data
+         return view('dash.dashboard', compact(
+             'user',
+             'role',
+             'activeTutees',
+             'activeTutors',
+             'courseCount',
+             'completedCourseCount',
+             'uploadedCourseCount',
+             'enrolledCourseCount', // Pass enrolled course count to the view
+             'totalTutees',
+             'totalTutors',
+             'totalCourses',
+             'notifications'
+         ));
+     }
 
 
 
@@ -56,16 +68,28 @@ class DashboardController extends Controller
         // Retrieve the authenticated user
         $user = auth()->user();
 
-        // Retrieve the enrolled courses where the status is 'approved'
+        // Retrieve the enrolled courses where the status is 'approved' and eager load the 'course' relationship
         $enrolledCourses = $user->enrollments()->where('status', 'approved')->with('course')->get();
 
-        // Optionally, you can also get courses that are directly related to the user if needed
-        // For example, if the user has a 'courses' relationship defined:
+        // Get courses directly related to the user, if the user is a tutor
         $courses = $user->courses;
 
-        // Pass the approved enrolled courses to the view
-        return view('dash.dashmycourse', compact('courses', 'enrolledCourses'));
+        // Retrieve the tutor data (if you want to display tutor info, assuming 'tutor' relationship is defined)
+        $tutor = $user->tutor; // Assuming user has a 'tutor' relationship
+
+        // Check if courses or tutor is null and set appropriate error message
+        if ($enrolledCourses->isEmpty() && $courses->isEmpty() && !$tutor) {
+            session()->flash('error', 'No courses or tutor data available.');
+        }
+
+        // Return the view with necessary data for both courses and enrolled courses
+        return view('dash.dashmycourse', compact('courses', 'enrolledCourses', 'tutor'));
     }
+
+
+
+
+
 
     // Profile View
     public function dashprofile()

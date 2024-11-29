@@ -378,7 +378,7 @@
                             </div>
                             <div class="ps-4">
                                 <p class="card-text fs-18">Completed Courses</p>
-                                <h5 class="card-title pt-2 fs-26">6</h5>
+                                <h5 class="card-title pt-2 fs-26">{{ $completedCourseCount }}</h5>
                             </div>
                         </div>
                         <!-- end card-body -->
@@ -436,7 +436,7 @@
                             </div>
                             <div class="ps-4">
                                 <p class="card-text fs-18">Course Enrolled</p>
-                                <h5 class="card-title pt-2 fs-26">6</h5>
+                                <h5 class="card-title pt-2 fs-26">{{ $courseCount }}</h5>
                             </div>
                         </div>
                         <!-- end card-body -->
@@ -470,7 +470,7 @@
                             </div>
                             <div class="ps-4">
                                 <p class="card-text fs-18">Uploaded Courses</p>
-                                <h5 class="card-title pt-2 fs-26">11</h5>
+                                <h5 class="card-title pt-2 fs-26">{{ $uploadedCourseCount }}</h5>
                             </div>
                         </div>
                         <!-- end card-body -->
@@ -504,7 +504,7 @@
                             </div>
                             <div class="ps-4">
                                 <p class="card-text fs-18">Enrollees Courses</p>
-                                <h5 class="card-title pt-2 fs-26">11</h5>
+                                <h5 class="card-title pt-2 fs-26">{{ $enrolledCourseCount }}</h5>
                             </div>
                         </div>
                         <!-- end card-body -->
@@ -513,7 +513,7 @@
                 </div>
             @endif
             {{-- Total Earnings --}}
-            @if (Auth::user()->role === 'tutor')
+            {{-- @if (Auth::user()->role === 'tutor')
                 <div class="col-lg-4 responsive-column-half">
                     <div class="card card-item dashboard-info-card">
                         <div class="card-body d-flex align-items-center">
@@ -539,7 +539,7 @@
                     </div>
                     <!-- end card -->
                 </div>
-            @endif
+            @endif --}}
             {{-- Notification --}}
 
             <!-- Toggle Button with Dropdown Menu -->

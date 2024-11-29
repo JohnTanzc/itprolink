@@ -17,22 +17,22 @@ class CreateCoursesTable extends Migration
         $table->id();
         $table->foreignId('user_id')->constrained()->onDelete('cascade');
         $table->foreignId('instructor_id')->nullable()->constrained('users')->onDelete('set null'); // Adjust for instructor
-        $table->string('title');
+        $table->text('title');
         $table->string('image')->nullable();
         $table->string('image_path')->nullable();
-        $table->string('description')->nullable();
+        $table->text('description')->nullable();
         $table->decimal('rating', 2, 1)->nullable()->default(0);
         $table->integer('reviews_count')->default(0);
         $table->string('level')->nullable();
         $table->timestamps();
-        $table->string('section');
+        $table->text('section');
         $table->boolean('active')->default(1); // Adds the 'active' column with a default value of 1
         $table->string('instructor_name');
         $table->string('courselanguage')->nullable();
         $table->string('requirement')->nullable();
         $table->integer('class');
         $table->integer('course_time');
-        $table->string('category');
+        $table->text('category');
         $table->timestamp('uploaded_date')->nullable();
     });
 }
