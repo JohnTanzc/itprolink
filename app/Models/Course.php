@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Rating;
+use App\Models\Tutor;
 
 
 class Course extends Model
@@ -53,10 +53,9 @@ class Course extends Model
         return $this->hasMany(Enrollment::class, 'course_id');
     }
 
-    public function ratings()
-    {
-        return $this->hasMany(Rating::class, 'rateable_id')->where('rateable_type', Course::class);
-    }
-
+    public function tutor()
+{
+    return $this->belongsTo(User::class, 'user_id'); // assuming 'user_id' is the foreign key
+}
 
 }

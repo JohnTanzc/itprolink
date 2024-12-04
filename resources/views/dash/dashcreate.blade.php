@@ -32,7 +32,8 @@
                         <select name="status" class="form-control form-select" onchange="this.form.submit()">
                             <option value="">Filter by Status</option>
                             <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>Active</option>
-                            <option value="inactive" {{ request('status') == 'inactive' ? 'selected' : '' }}>Inactive</option>
+                            <option value="inactive" {{ request('status') == 'inactive' ? 'selected' : '' }}>Inactive
+                            </option>
                         </select>
                     </div>
                 </form>
@@ -48,6 +49,7 @@
                         <th>#</th>
                         <th>Name</th>
                         <th>Email</th>
+                        <th>Mobile Number</th>
                         <th>
                             <a
                                 href="{{ route('admin.dashcreate', [
@@ -85,15 +87,34 @@
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $user->fname }} {{ $user->lname }}</td>
                             <td>{{ $user->email }}</td>
+                            <td>{{ $user->phone }}</td>
                             <td>{{ ucwords($user->role) }}</td>
-                            <td>{{ $user->active == 1 ? 'Active' : 'Inactive' }}</td>
                             <td>
-                                <a href="" class="btn btn-warning btn-sm">Edit</a>
-                                <form action="" method="POST" style="display:inline-block;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                                </form>
+                                @if ($user->active == 1)
+                                    <span class="text-success">
+                                    <i class="la la-check-circle" style= "text-shadow: 1px 1px 2px rgba(25, 183, 23, 0.807);"></i> Active
+                                    </span>
+                                @else
+                                    <span class="text-danger">
+                                        <i class="la la-ban"></i> Blocked
+                                    </span>
+                                @endif
+                            </td>
+                            <td>
+                                <div class="action-dots">
+                                    <button class="btn" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="la la-ellipsis-v" aria-hidden="true" style="font-size: 30px; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);"></i>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end" style="">
+                                        <li><a class="dropdown-item" href="https://techive.danabangan.online/profile/12"><i
+                                                    class="la la-eye" aria-hidden="true" style="font-size: 20px; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);"></i> View</a></li>
+                                        <li><a class="dropdown-item"
+                                                href="https://techive.danabangan.online/admin/users/12"><i
+                                                    class="la la-edit" aria-hidden="true" style="font-size: 20px; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);"></i> Edit</a></li>
+                                        <li><a class="dropdown-item" href="javascript:void(0);" onclick="deleteUser(12)"><i
+                                                    class="la la-trash" aria-hidden="true" style="font-size: 20px; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);"></i> Delete</a></li>
+                                    </ul>
+                                </div>
                             </td>
                         </tr>
                     @endforeach
@@ -105,7 +126,6 @@
                 {{ $users->appends(request()->query())->links() }}
             </div>
         </div>
+        @include('dash.dashfooter')
     </div>
-
-    @include('dash.dashfooter')
 @endsection

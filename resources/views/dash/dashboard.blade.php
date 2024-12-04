@@ -504,7 +504,7 @@
                             </div>
                             <div class="ps-4">
                                 <p class="card-text fs-18">Enrollees Courses</p>
-                                <h5 class="card-title pt-2 fs-26">{{ $enrolledCourseCount }}</h5>
+                                <h5 class="card-title pt-2 fs-26"> {{ $enrolledCourseCount }}</h5>
                             </div>
                         </div>
                         <!-- end card-body -->

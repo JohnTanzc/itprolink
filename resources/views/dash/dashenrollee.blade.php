@@ -22,112 +22,139 @@
             @endif
         </div>
 
-        <div class="card mx-3">
-            <div class="card-body">
-                <!-- Table with hoverable rows -->
-                <table class="table table-hover align-middle">
-                    <thead class="table-light">
+
+
+        <!-- Table with hoverable rows -->
+        <table class="table table-bordered align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th scope="col" style="width: 5%;">#</th>
+                    <th scope="col" style="width: 5%;">Course Name</th>
+                    <th scope="col" style="width: 5%;">Enrollee Name</th>
+                    <th scope="col" style="width: 5%;">Status</th>
+                    <th scope="col" style="width: 5%;">Payment Status</th>
+                    <th scope="col" style="width: 5%;">Enrolled</th>
+                    <th scope="col" style="width: 5%;">Created</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($users as $user)
+                    @foreach ($user->enrollments as $enrollment)
                         <tr>
-                            <th scope="col" style="width: 5%;">#</th>
-                            <th scope="col" style="width: 5%;">Course Name</th>
-                            <th scope="col" style="width: 5%;">Enrollee Name</th>
-                            <th scope="col" style="width: 5%;">Status</th>
-                            <th scope="col" style="width: 5%;">Enrolled</th>
-                            <th scope="col" style="width: 5%;">Created</th>
+                            <td>{{ $enrollment->id }}</td>
+                            <!-- Combined iteration if you need both user and enrollment count -->
+                            <td>{{ $enrollment->course->title }}</td>
+                            <td>{{ $enrollment->user->fname }} {{ $enrollment->user->lname }}</td>
+                            <td>
+                                <form action="{{ route('enrollment.updateStatus', $enrollment->id) }}" method="POST">
+                                    @csrf
+                                    @method('PUT')
+                                    <select name="status" class="form-select form-select-sm" onchange="this.form.submit()">
+                                        <option value="pending" {{ $enrollment->status === 'pending' ? 'selected' : '' }}>
+                                            Pending
+                                        </option>
+                                        <option value="in_progress"
+                                            {{ $enrollment->status === 'in_progress' ? 'selected' : '' }}>In
+                                            Progress</option>
+                                        <option value="approved" {{ $enrollment->status === 'approved' ? 'selected' : '' }}>
+                                            Approved
+                                        </option>
+                                        <option value="rejected" {{ $enrollment->status === 'rejected' ? 'selected' : '' }}>
+                                            Rejected
+                                        </option>
+                                    </select>
+                                </form>
+                            </td>
+                            <td>
+                                @if ($enrollment->isPaid == 0)
+                                    <span class="badge bg-warning">Pending</span>
+                                @elseif ($enrollment->isPaid == 1)
+                                    <span class="badge bg-success">Paid</span>
+                                @elseif ($enrollment->isPaid == 2)
+                                    <span class="badge bg-danger">Reject</span>
+                                @else
+                                    <span class="text-muted">Unknown</span>
+                                @endif
+                            </td>
+                            <td>{{ $enrollment->created_at->diffForHumans() }}</td>
+                            <td>{{ $enrollment->created_at->format('M j, Y') }}</td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($users as $user)
-                            @foreach ($user->enrollments as $enrollment)
-                                <tr>
-                                    <td>{{ $enrollment->id }}</td>
-                                    <!-- Combined iteration if you need both user and enrollment count -->
-                                    <td>{{ $enrollment->course->title }}</td>
-                                    <td>{{ $enrollment->user->fname }} {{ $enrollment->user->lname }}</td>
-                                    <td>
-                                        <form action="{{ route('enrollment.updateStatus', $enrollment->id) }}"
-                                            method="POST">
-                                            @csrf
-                                            @method('PUT')
-                                            <select name="status" class="form-select form-select-sm" onchange="this.form.submit()">
-                                                <option value="pending"
-                                                    {{ $enrollment->status === 'pending' ? 'selected' : '' }}>Pending
-                                                </option>
-                                                <option value="in_progress"
-                                                    {{ $enrollment->status === 'in_progress' ? 'selected' : '' }}>In
-                                                    Progress</option>
-                                                <option value="approved"
-                                                    {{ $enrollment->status === 'approved' ? 'selected' : '' }}>Approved
-                                                </option>
-                                                <option value="rejected"
-                                                    {{ $enrollment->status === 'rejected' ? 'selected' : '' }}>Rejected
-                                                </option>
-                                            </select>
-                                        </form>
-                                    </td>
-                                    <td>{{ $enrollment->created_at->diffForHumans() }}</td>
-                                    <td>{{ $enrollment->created_at->format('M j, Y') }}</td>
-                                </tr>
-                            @endforeach
-                        @endforeach
+                    @endforeach
+                @endforeach
 
 
-                    </tbody>
-                </table>
-                <!-- End Table with hoverable rows -->
+            </tbody>
+        </table>
+        <!-- End Table with hoverable rows -->
 
-            </div>
+    </div>
+    </div>
+    <div>
+        <div class="d-flex justify-content-center mt-3">
+            {{ $users->links() }} <!-- Pagination links -->
         </div>
-        <div>
-            <div class="d-flex justify-content-center mt-3">
-                {{ $users->links() }} <!-- Pagination links -->
-            </div>
-            <style>
-                .pagination {
-                    display: flex;
-                    justify-content: center;
-                }
+        <style>
+            .pagination {
+                display: flex;
+                justify-content: center;
+            }
 
-                .pagination a, .pagination span {
-                    color: #EF6767; /* Set text color */
-                    background-color: transparent; /* Ensure no background color for normal links */
-                    border-color: #EF6767; /* Set border color to match text color */
-                }
+            .pagination a,
+            .pagination span {
+                color: #EF6767;
+                /* Set text color */
+                background-color: transparent;
+                /* Ensure no background color for normal links */
+                border-color: #EF6767;
+                /* Set border color to match text color */
+            }
 
-                .pagination a:hover {
-                    color: #C85A5A; /* Change color on hover */
-                    background-color: #F2D1D1; /* Light background on hover */
-                    border-color: #EF6767; /* Border color on hover */
-                }
+            .pagination a:hover {
+                color: #C85A5A;
+                /* Change color on hover */
+                background-color: #F2D1D1;
+                /* Light background on hover */
+                border-color: #EF6767;
+                /* Border color on hover */
+            }
 
-                .pagination .active {
-                    background-color: #EF6767; /* Set active page background color */
-                    color: white; /* Active page text color */
-                    border-color: #EF6767; /* Set border color for active page */
-                }
+            .pagination .active {
+                background-color: #EF6767;
+                /* Set active page background color */
+                color: white;
+                /* Active page text color */
+                border-color: #EF6767;
+                /* Set border color for active page */
+            }
 
-                .pagination .disabled {
-                    color: #d6d6d6; /* Set color for disabled pages */
-                    background-color: transparent; /* Ensure no background color for disabled links */
-                    border-color: #d6d6d6; /* Set border color for disabled pages */
-                }
+            .pagination .disabled {
+                color: #d6d6d6;
+                /* Set color for disabled pages */
+                background-color: transparent;
+                /* Ensure no background color for disabled links */
+                border-color: #d6d6d6;
+                /* Set border color for disabled pages */
+            }
 
-                /* Override Bootstrap active state (to prevent the default blue background) */
-                .pagination .page-item.active .page-link {
-                    background-color: #EF6767 !important; /* Force active background color */
-                    border-color: #EF6767 !important; /* Force active border color */
-                    color: white !important; /* Ensure active page text color is white */
-                }
-            </style>
-            <!-- End of Card -->
-            {{-- <div class="d-flex justify-content-center mt-3">
+            /* Override Bootstrap active state (to prevent the default blue background) */
+            .pagination .page-item.active .page-link {
+                background-color: #EF6767 !important;
+                /* Force active background color */
+                border-color: #EF6767 !important;
+                /* Force active border color */
+                color: white !important;
+                /* Ensure active page text color is white */
+            }
+        </style>
+        <!-- End of Card -->
+        {{-- <div class="d-flex justify-content-center mt-3">
                 {{ $users->links() }} <!-- Pagination links -->
             </div> --}}
-            @include('dash.dashfooter')
-        </div>
-        <!-- End Dashboard Content -->
+        @include('dash.dashfooter')
+    </div>
+    <!-- End Dashboard Content -->
 
-        {{-- <script>
+    {{-- <script>
             document.addEventListener('DOMContentLoaded', function() {
                 const viewVerificationModal = document.getElementById('viewVerificationModal');
 
@@ -189,7 +216,7 @@
         </script> --}}
 
 
-        {{-- @push('scripts')
+    {{-- @push('scripts')
             <script>
                 document.querySelectorAll('.verification-status').forEach(select => {
                     select.addEventListener('change', function() {
@@ -253,4 +280,4 @@
                 });
             </script>
         @endpush --}}
-    @endsection
+@endsection

@@ -110,7 +110,7 @@
                             </div>
                             <h4 class="counter__title counter text-color-2 fs-35">
 
-                                {{ $user->enrolledCount }}
+                                {{ $courses[0]->enrolledCount }}
 
                             </h4>
                             <p class="counter__meta">Total Students</p>
@@ -269,40 +269,27 @@
                     <div class="tab-pane fade show active" id="about-me" role="tabpanel" aria-labelledby="about-me-tab">
                         <div class="card card-item">
                             <div class="card-body">
+                                <!-- Truncated content -->
                                 <p class="card-text pb-3">
-                                    There are many variations of passages of Lorem Ipsum
-                                    available, but the majority have suffered alteration in some
-                                    form, by injected humour, or randomised words which don't
-                                    look even slightly believable. Lorem ipsum dolor sit amet,
-                                    consectetur adipisicing elit. Ab corporis est fugiat ipsa
-                                    laboriosam laudantium possimus quo? Aperiam architecto
-                                    laborum provident rerum, totam ullam! Accusantium eius eum
-                                    perferendis quasi, repellendus suscipit voluptate
-                                    voluptatem! Delectus dolorem maxime nulla numquam quasi
-                                    quod.
+                                    {{ $aboutMe }} <!-- Full content -->
                                 </p>
-                                <p class="card-text pb-3">
-                                    Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                                    Alias atque ipsa magnam, magni nobis quam ratione reiciendis
-                                    totam? Accusantium aliquam aspernatur, assumenda cupiditate
-                                    deleniti eius, ex fuga iusto minus, nihil perspiciatis porro
-                                    provident quasi soluta ut! Consequuntur earum eos magnam?
-                                </p>
+
+                                <!-- Collapsible full content -->
                                 <div class="collapse" id="collapseReadMore">
                                     <p class="card-text pb-3">
-                                        Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                                        Alias consequatur consequuntur dolorem enim error est fuga
-                                        iure magnam voluptas, voluptates.
+                                        {{ $aboutMe }} <!-- Full content -->
                                     </p>
                                 </div>
-                                <a class="collapse-btn collapse--btn fs-15" data-bs-toggle="collapse"
-                                    href="#collapseReadMore" role="button" aria-expanded="false"
-                                    aria-controls="collapseReadMore">
-                                    <span class="collapse-btn-hide">Read more<i
-                                            class="la la-angle-down ms-1 fs-14"></i></span>
-                                    <span class="collapse-btn-show">Read less<i
-                                            class="la la-angle-up ms-1 fs-14"></i></span>
-                                </a>
+
+                                <!-- Toggle button -->
+                                @if(strlen($aboutMe) > 150)
+                                    <a class="collapse-btn collapse--btn fs-15" data-bs-toggle="collapse"
+                                        href="#collapseReadMore" role="button" aria-expanded="false"
+                                        aria-controls="collapseReadMore">
+                                        <span class="collapse-btn-hide">Read more<i class="la la-angle-down ms-1 fs-14"></i></span>
+                                        <span class="collapse-btn-show d-none">Read less<i class="la la-angle-up ms-1 fs-14"></i></span>
+                                    </a>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -423,5 +410,26 @@
                 {{ $courses->links() }}
             </div>
     </section>
+
+    {{-- About Me Script --}}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const collapseBtn = document.querySelector('.collapse-btn');
+            const collapseHide = collapseBtn.querySelector('.collapse-btn-hide');
+            const collapseShow = collapseBtn.querySelector('.collapse-btn-show');
+
+            collapseBtn.addEventListener('click', function () {
+                setTimeout(() => {
+                    if (collapseBtn.getAttribute('aria-expanded') === 'true') {
+                        collapseHide.classList.add('d-none');
+                        collapseShow.classList.remove('d-none');
+                    } else {
+                        collapseHide.classList.remove('d-none');
+                        collapseShow.classList.add('d-none');
+                    }
+                }, 300); // Delay to sync with Bootstrap's collapse animation
+            });
+        });
+    </script>
     @include('layouts.footer')
 @endsection

@@ -20,7 +20,7 @@ class CourseController extends Controller
 
         // Fetch courses based on user role or show all courses for guests
         $courses = $user && $user->role === 'tutor'
-            ? Course::where('user_id', $user->id)->paginate(6) // Tutors see their own courses
+            ? Course::paginate(6) // Tutors see all courses, including their own
             : Course::paginate(6); // Everyone else sees all courses
 
         return view('course', compact('courses'));
@@ -193,38 +193,26 @@ class CourseController extends Controller
         $isVerified = false;
         $isInProgress = false;
 
-        // Check if the user is authenticated and their verification status
         if (Auth::check()) {
             $user = Auth::user();
 
-            // Check if the user is verified (only for tutees)
+            // Check verification status
             if ($user->role === 'tutee') {
                 $isVerified = $user->is_verified; // Assuming 'is_verified' is the verification status column
             } elseif ($user->role === 'tutor') {
-                // If the tutor doesn't need verification, set to true
-                $isVerified = true;
+                $isVerified = true; // Tutors don't require verification
             }
 
-            // Check if the user has an ongoing enrollment process
-            $isInProgress = $user->enrollment_in_progress ?? false; // Update based on your actual logic
-        }
-        // Retrieve all courses
-        $courses = Course::all();
-
-        // Calculate enrolled count for each course
-        foreach ($courses as $course) {
-            // Count the number of approved enrollments for each course
-            $course->enrolledCount = Enrollment::where('course_id', $course->id)
-                ->where('status', 'approved') // Filter by approved status
-                ->count();
+            // Check for ongoing enrollment process
+            $isInProgress = $user->enrollment_in_progress ?? false;
         }
 
-        // Count enrolled students with an 'approved' status, excluding those in progress
+        // Calculate enrolled count for the specific course
         $enrolledCount = Enrollment::where('course_id', $course->id)
             ->where('status', 'approved') // Filter by approved status
             ->count();
 
-        // Pass variables to the view
+        // Pass the specific course and related variables to the view
         return view('dash.dashcourse', compact('course', 'isVerified', 'isInProgress', 'enrolledCount'));
     }
 
@@ -301,4 +289,5 @@ class CourseController extends Controller
     {
         return $this->hasMany(Enrollment::class, 'course_id');
     }
+
 }

@@ -18,6 +18,7 @@ class CreateEnrollmentsTable extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('course_id')->constrained()->onDelete('cascade');
             $table->enum('status', ['pending', 'approved', 'rejected', 'in_progress'])->default('pending');
+            $table->integer('isPaid')->default(0);
             $table->timestamps();
         });
     }

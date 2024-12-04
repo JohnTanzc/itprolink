@@ -7,22 +7,25 @@ use Illuminate\Database\Eloquent\Model;
 
 class Enrollment extends Model
 {
-    protected $fillable = ['user_id', 'course_id', 'status'];
+    protected $fillable = ['user_id', 'course_id', 'status', 'isPaid'];
 
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id');
     }
     public function course()
     {
         return $this->belongsTo(Course::class, 'course_id');
     }
 
-    public function ratings()
+    public function enrollment()
     {
-        return $this->morphMany(Rating::class, 'rateable');
+        return $this->belongsTo(Enrollment::class);
     }
 
-
+    public function payment()
+    {
+        return $this->hasMany(Payment::class);
+    }
 
 }

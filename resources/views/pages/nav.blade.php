@@ -28,6 +28,7 @@
                                             <li class="{{ request()->routeIs('tutor.dashboard') ? 'page-active' : '' }}">
                                                 <a href="{{ route('tutor.dashboard') }}">Dashboard</a>
                                             </li>
+                                            <li><a href="{{ route('course') }}">Courses</a></li>
                                             <li class="mega-menu-has"></li>
                                         @elseif (Auth::user()->role === 'admin')
                                             <!-- Admin-specific navigation -->
@@ -271,41 +272,37 @@
         </div>
         <ul class="generic-list-item off-canvas-menu-list pt-90px">
             @auth
-                @if (Auth::user()->role === 'Tutor')
+                @if (Auth::user()->role === 'admin')
                     <li class="{{ request()->routeIs('index') ? 'page-active' : '' }}">
                         <a href="{{ route('index') }}">Home</a>
                     </li>
-                    <li><a href="{{ route('tutor.dashboard') }}">Dashboard</a></li>
-                    @auth
-                        <li class="nav-item dropdown">
-                            <a id="navbarDropdown" class="dropdown-toggle" href="#" role="button"
-                                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                {{ Auth::user()->fname }} {{ Auth::user()->lname }}
-                            </a>
+                    <li><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
+                    <li><a class="dropdown-item py-1" href="{{ route('logout') }}"
+                        onclick="event.preventDefault();
+                                    document.getElementById('logout-form').submit();">
+                        {{ __('Logout') }}
+                    </a>
 
-                            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                <!-- Conditional View Profile link -->
-                                @if (Auth::user()->role === 'Tutor')
-                                    <a class="dropdown-item" href="{{ route('t.profile') }}">View Profile</a>
-                                @else
-                                    <a class="dropdown-item" href="{{ route('t.profile') }}">View Profie</a>
-                                @endif
-
-                                <a class="dropdown-item" href="{{ route('logout') }}"
-                                    onclick="event.preventDefault();
-                                                document.getElementById('logout-form').submit();">
-                                    {{ __('Logout') }}
-                                </a>
-
-                                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                                    @csrf
-                                </form>
-                            </div>
-                        </li>
-                    @endauth
-                @else
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                        @csrf
+                    </form>
+                </li>
+                @elseif(Auth::user()->role === 'tutor')
                     <li><a href="{{ route('index') }}">Home</a></li>
-                    <li><a href="#">Dashboard</a></li>
+                    <li><a href="{{route('tutor.dashboard')}}">Dashboard</a></li>
+                    <li><a class="dropdown-item py-1" href="{{ route('logout') }}"
+                            onclick="event.preventDefault();
+                                        document.getElementById('logout-form').submit();">
+                            {{ __('Logout') }}
+                        </a>
+
+                        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                            @csrf
+                        </form>
+                    </li>
+                    @elseif(Auth::user()->role === 'tutee')
+                    <li><a href="{{ route('index') }}">Home</a></li>
+                    <li><a href="{{route('tutee.dashboard')}}">Dashboard</a></li>
                     <li><a class="dropdown-item py-1" href="{{ route('logout') }}"
                             onclick="event.preventDefault();
                                         document.getElementById('logout-form').submit();">

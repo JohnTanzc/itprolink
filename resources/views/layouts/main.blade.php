@@ -98,7 +98,7 @@
                             <li>{{ $course->level }}</li>
                         </ul>
                         <p class="card-text pt-1 fs-14 lh-22 py-3">
-                            {{ $course->description }}
+                            {{ \Illuminate\Support\Str::limit($course->description, 100, '...') }}
                         </p>
                         <ol class="generic-list-item fs-14 py-3">
                             {!! $course->requirement !!}

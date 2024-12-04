@@ -8,7 +8,7 @@ use App\Http\Controllers\CredentialController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\RecoverController;
-use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\NotificationController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
@@ -56,14 +56,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->middleware('role:admin,tutor,tutee'); // Allows access to specific roles
     Route::post('/enroll', [EnrollmentController::class, 'store'])->name('enroll.store');
     Route::put('/enrollment/{id}/update-status', [EnrollmentController::class, 'updateStatus'])->name('enrollment.updateStatus');
+    Route::put('/enrollment/{id}/update-payment-status', [EnrollmentController::class, 'updatePaymentStatus'])->name('enrollment.updatePaymentStatus');
     Route::get('/courses/{courseId}/enrolled-students', [EnrollmentController::class, 'getEnrolledStudentsCount'])
         ->name('courses.enrolledStudents');
     // In web.php
     Route::post('/notifications/mark-all-read', [DashboardController::class, 'markAllAsRead'])->name('notifications.markAllRead');
     Route::get('/notifications/{userId}', [NotificationController::class, 'checkNotifications']);
     Route::post('/notifications/delete-all', [NotificationController::class, 'deleteAll'])->name('notifications.deleteAll');
-    Route::get('/tutee/mycourses', [ReviewController::class, 'myCourses'])->name('tutee.mycourses');
-    Route::post('/submit-review', [ReviewController::class, 'submitReview'])->name('review.submit');
+
 
 
 
@@ -89,6 +89,10 @@ Route::middleware(['auth', 'checkuserrole:admin', 'verified'])->group(function (
     Route::post('/api/verification-status/{user}', [VerificationController::class, 'updateVerificationStatus']);
     Route::delete('/notifications/{id}', [NotificationController::class, 'destroy']);
     Route::get('/admin/dashcreate', [AdminController::class, 'dashCreate'])->name('admin.dashcreate');
+    Route::get('/course/detail/{course}', [CourseController::class, 'show'])->name('course.detail');
+    Route::get('/payments', [EnrollmentController::class, 'payments'])->name('payment.view');
+    Route::get('/payment-details/{enrollment_id}', [PaymentController::class, 'getPaymentDetails']);
+
 });
 
 
@@ -104,10 +108,13 @@ Route::middleware(['auth', 'checkuserrole:tutor', 'verified'])->group(function (
     Route::get('/submit-course', [DashboardController::class, 'submitCourse'])->name('submit.course');
     Route::get('/profile/detail/{id}', [DashboardController::class, 'pubprofile'])->name('pub.profile');
     Route::post('/submit-course', [CourseController::class, 'store'])->name('courses.store');  // POST route for course submission
-    Route::get('/tutor/course/detail', [DashboardController::class, 'coursedetail'])->name('tutors.coursedetail');
+    // Route::get('/tutor/course/detail/{id}', [DashboardController::class, 'coursedetail'])->name('tutors.coursedetail');
     Route::post('/tutor/upload-verification', [VerificationController::class, 'uploadVerification'])->name('tutor.uploadverification');
     Route::post('/tutor/verification/submit', [VerificationController::class, 'submit'])->name('verification.submit');
     Route::get('/tutor/enrollees', [EnrollmentController::class, 'showEnrollee'])->middleware('auth')->name('tutor.enrollee');
+    Route::get('/tutor/mycourses', [DashboardController::class, 'tutcourse'])->name('tut.course');
+    Route::delete('/course/{id}/delete', [DashboardController::class, 'destroy'])->name('course.delete');
+
 });
 
 // Tutee-specific routes
@@ -118,8 +125,8 @@ Route::middleware(['auth', 'checkuserrole:tutee', 'verified'])->group(function (
     Route::put('/tutee/setting/{id}', [DashboardController::class, 'editprofile'])->name('tutee.update');
     Route::put('/tutee/password/update/{id}', [DashboardController::class, 'updatePassword'])->name('tutee.password.update');
     Route::put('/tutee/email/update/{id}', [DashboardController::class, 'updateEmail'])->name('tutee.email.update');
-    Route::get('/tutee/course/detail', [DashboardController::class, 'coursedetail'])->name('tutee.coursedetail');
-    Route::get('/course/detail/{course}', [CourseController::class, 'show'])->name('course.detail');
+    Route::get('/tutee/course/detail/{id}', [DashboardController::class, 'coursedetail'])->name('tutee.coursedetail');
+    // Route::get('/tutee/course/detail/{id}', [CourseController::class, 'show'])->name('course.detail');
     Route::get('/verification', [VerificationController::class, 'showUploadForm'])->name('verification.upload')
         ->middleware('auth'); // Ensure only authenticated users can access
     Route::post('/tutee/upload-verification', [VerificationController::class, 'uploadVerification'])->name('tutee.uploadverification');
@@ -148,6 +155,7 @@ Route::middleware('auth')->group(function () {
 
     // Route to handle the update submission
     Route::put('/User/Profile/Update/{id}', [UpdateController::class, 'update'])->name('user.update');
+    Route::get('/course/detail/{course}', [CourseController::class, 'show'])->name('course.detail');
 });
 
 // Guest-only routes

@@ -32,7 +32,13 @@
                                 @endfor
                             </div>
                             <span class="rating-total ps-1">(20,230 ratings)</span>
-                            <span class="student-total ps-2">540,815 students</span>
+                            <span class="student-total ps-2">{{ $enrolledCount }}
+                                @if ($enrolledCount === 1)
+                                    Student
+                                @else
+                                    Students
+                                @endif
+                            </span>
                         </div>
                     </div>
                     <!-- end d-flex -->
@@ -49,7 +55,11 @@
                                     d="M23 12l-2.44-2.78.34-3.68-3.61-.82-1.89-3.18L12 3 8.6 1.54 6.71 4.72l-3.61.81.34 3.68L1 12l2.44 2.78-.34 3.69 3.61.82 1.89 3.18L12 21l3.4 1.46 1.89-3.18 3.61-.82-.34-3.68L23 12zm-10 5h-2v-2h2v2zm0-4h-2V7h2v6z">
                                 </path>
                             </svg>
-                            {{ $course->created_at->format('F j, Y') }}
+                            @if ($course->created_at != $course->updated_at)
+                                Last updated {{ $course->updated_at->format('j M, Y') }}
+                            @else
+                                Created on {{ $course->created_at->format('j M, Y') }}
+                            @endif
                         </p>
                         <p class="pe-3 d-flex align-items-center">
                             <svg class="svg-icon-color-gray me-1" width="16px" viewBox="0 0 24 24">
@@ -294,38 +304,6 @@
                                             src="{{ asset('template/images/img-loading.png') }}"
                                             data-src="{{ $course->image ? asset('storage/' . $course->image) : asset('storage/' . $this->getDefaultImage($course->category)) }}"
                                             alt="Course image" />
-                                        {{-- <div class="preview-course-video-content">
-                                            <div class="overlay"></div>
-                                            <div class="play-button">
-                                                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
-                                                    viewBox="-307.4 338.8 91.8 91.8"
-                                                    style="
-                                                             enable-background: new -307.4 338.8 91.8 91.8;
-                                                            "
-                                                    xml:space="preserve">
-                                                    <style type="text/css">
-                                                        .st0 {
-                                                            fill: #ffffff;
-                                                            border-radius: 100px;
-                                                        }
-
-                                                        .st1 {
-                                                            fill: #000000;
-                                                        }
-                                                    </style>
-                                                    <g>
-                                                        <circle class="st0" cx="-261.5" cy="384.7" r="45.9">
-                                                        </circle>
-                                                        <path class="st1"
-                                                            d="M-272.9,363.2l35.8,20.7c0.7,0.4,0.7,1.3,0,1.7l-35.8,20.7c-0.7,0.4-1.5-0.1-1.5-0.9V364C-274.4,363.3-273.5,362.8-272.9,363.2z">
-                                                        </path>
-                                                    </g>
-                                                </svg>
-                                            </div>
-                                            <p class="fs-15 font-weight-bold text-white pt-3">
-                                                Preview this course
-                                            </p>
-                                        </div> --}}
                                     </a>
                                 </div>
                                 <!-- end preview-course-video -->
@@ -340,38 +318,48 @@
                                         price!
                                     </p>
                                     <div class="buy-course-btn-box">
-                                        @if (Auth::user()->verified)
-                                            @if (!Auth::user()->enrollments->where('course_id', $course->id)->first())
-                                                <form action="{{ route('enroll.store') }}" method="POST"
+                                        @if (Auth::user()->role === 'tutee')
+                                            @if (Auth::user()->verified)
+                                                @if (!Auth::user()->enrollments->where('course_id', $course->id)->first())
+                                                    <!-- Enroll Now Button -->
+                                                    <button type="button" class="btn theme-btn w-100 mb-2"
+                                                        data-bs-toggle="modal" data-bs-target="#enrollModal">
+                                                        <i class="la la-book fs-18 me-1"></i> Enroll Now
+                                                    </button>
+                                                @elseif (Auth::user()->enrollments->where('course_id', $course->id)->first()->status === 'approved')
+                                                    <button type="button" class="btn theme-btn w-100 mb-2 disabled">
+                                                        <i class="la la-book fs-18 me-1"></i> You are Enrolled
+                                                    </button>
+                                                @else
+                                                    <button type="button" class="btn theme-btn w-100 mb-2 disabled">
+                                                        <i class="la la-book fs-18 me-1"></i> Enrollment in progress...
+                                                    </button>
+                                                @endif
+                                            @elseif (Auth::user()->status === 'pending')
+                                                <button type="button" class="btn theme-btn w-100 mb-2 disabled">
+                                                    <i class="la la-book fs-18 me-1"></i> Enrollment in progress...
+                                                </button>
+                                            @else
+                                                <form action="javascript:void(0);" onsubmit="showVerificationAlert()"
                                                     class="w-100 mb-2">
-                                                    @csrf
-                                                    <input type="hidden" name="course_id" value="{{ $course->id }}">
                                                     <button type="submit" class="btn theme-btn w-100">
                                                         <i class="la la-book fs-18 me-1"></i> Enroll Now
                                                     </button>
                                                 </form>
-                                            @elseif (Auth::user()->enrollments->where('course_id', $course->id)->first()->status === 'approved')
-                                                <button type="button" class="btn theme-btn w-100 mb-2 disabled">
-                                                    <i class="la la-book fs-18 me-1"></i> You are Enrolled
-                                                </button>
-                                            @else
-                                                <button type="button" class="btn theme-btn w-100 mb-2 disabled">
-                                                    <i class="la la-book fs-18 me-1"></i> Enrollment in progress...
-                                                </button>
                                             @endif
-                                        @elseif (Auth::user()->status === 'pending')
-                                            <button type="button" class="btn theme-btn w-100 mb-2 disabled">
-                                                <i class="la la-book fs-18 me-1"></i> Enrollment in progress...
-                                            </button>
-                                        @else
-                                            <form action="javascript:void(0);" onsubmit="showVerificationAlert()"
-                                                class="w-100 mb-2">
-                                                <button type="submit" class="btn theme-btn w-100">
+                                        @elseif (Auth::user()->role === 'tutor')
+                                            @if ($course->user_id === Auth::id())
+                                                <button type="button" class="btn theme-btn w-100 mb-2"
+                                                    onclick="showTutorAlert('own')">
                                                     <i class="la la-book fs-18 me-1"></i> Enroll Now
                                                 </button>
-                                            </form>
+                                            @else
+                                                <button type="button" class="btn theme-btn w-100 mb-2"
+                                                    onclick="showTutorAlert('other')">
+                                                    <i class="la la-book fs-18 me-1"></i> Enroll Now
+                                                </button>
+                                            @endif
                                         @endif
-
                                         <div class="buy-course-btn-box">
                                             <button type="button" class="btn theme-btn w-100 mb-2">
                                                 <i class="la la-shopping-cart fs-18 me-1"></i> Save
@@ -383,6 +371,36 @@
                                 </div>
                             </div>
                             <!-- end card -->
+
+                            {{-- Tutor Enroll Now SweetAlert --}}
+
+                            <script>
+                                function showTutorAlert(type) {
+                                    if (type === 'own') {
+                                        Swal.fire({
+                                            icon: 'error',
+                                            title: 'Enrollment Not Allowed',
+                                            text: 'You cannot enroll in your uploaded course. Please use a tutee account.',
+                                        });
+                                    } else if (type === 'other') {
+                                        Swal.fire({
+                                            icon: 'info',
+                                            title: 'Action Restricted',
+                                            text: 'Please create and use a tutee account to enroll.',
+                                        });
+                                    }
+                                }
+
+                                function showVerificationAlert() {
+                                    Swal.fire({
+                                        icon: 'warning',
+                                        title: 'Verification Required',
+                                        text: 'Please complete your account verification to enroll in courses.',
+                                    });
+                                }
+                            </script>
+
+                            {{-- End of Tutor Sweetalert --}}
 
                             @if (session('success'))
                                 <script>
@@ -451,6 +469,68 @@
             </div>
             <!-- end container -->
     </section>
+
+
+    {{-- Modal for Payment --}}
+    <!-- Enrollment Modal -->
+    <div class="modal fade" id="enrollModal" tabindex="-1" aria-labelledby="enrollModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form action="{{ route('enroll.store') }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    <input type="hidden" name="course_id" value="{{ $course->id }}">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="enrollModalLabel">Enrollment Payment</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="send_to" class="form-label">Send to</label>
+
+                                <div class="me-3 mb-2">
+                                    <!-- Name of Receiver (read-only) -->
+                                    <input type="text" class="form-control text-center" id="receiver_name" name="receiver_name"
+                                        value="Gcash - El John Tanola" readonly style="background-color: #f0f0f0;">
+                                </div>
+                                <div class="me-3">
+                                    <!-- Number of Receiver (read-only) -->
+                                    <input type="text" class="form-control text-center" id="gcash_number" name="gcash_number"
+                                        value="09690940143" readonly style="background-color: #f0f0f0;">
+                                </div>
+
+                        </div>
+                        <div class="mb-3">
+                            <label for="sender_number" class="form-label">Your Number</label>
+                            <input type="text" class="form-control" id="sender_number" name="sender_number" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="sender_name" class="form-label">Name of Sender</label>
+                            <input type="text" class="form-control" id="sender_name" name="sender_name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="amount" class="form-label">Amount</label>
+                            <input type="number" class="form-control" id="amount" name="amount" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="ref_no" class="form-label">Ref. No.</label>
+                            <input type="text" class="form-control" id="ref_no" name="ref_no" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="screenshot" class="form-label">Screenshot Photo</label>
+                            <input type="file" class="form-control" id="screenshot" name="screenshot"
+                                accept="image/*" required>
+                            <small class="text-muted">Upload a screenshot of your payment confirmation.</small>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Submit Enrollment</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    {{-- End of Payment --}}
 
     {{-- SweetAlert Scripts --}}
     <script>

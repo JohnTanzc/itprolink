@@ -14,52 +14,52 @@ class DashboardController extends Controller
      * Show the dashboard based on user role.
      */
 
-     public function dashboard()
-     {
-         $user = Auth::user();
-         $role = $user->role;
+    public function dashboard()
+    {
+        $user = Auth::user();
+        $role = $user->role;
 
-         // Fetch counts for active users
-         $activeTutees = User::where('role', 'tutee')->where('active', 1)->count();
-         $activeTutors = User::where('role', 'tutor')->where('active', 1)->count();
+        // Fetch counts for active users
+        $activeTutees = User::where('role', 'tutee')->where('active', 1)->count();
+        $activeTutors = User::where('role', 'tutor')->where('active', 1)->count();
 
-         $totalTutors = User::where('role', 'tutor')->count();
-         $totalTutees = User::where('role', 'tutee')->count();
+        $totalTutors = User::where('role', 'tutor')->count();
+        $totalTutees = User::where('role', 'tutee')->count();
 
-         // Fetch the course count for the authenticated user
-         $courseCount = $user->courses()->count(); // Assuming the relationship 'courses' is defined in User model
+        // Fetch the course count for the authenticated user
+        $courseCount = $user->courses()->count(); // Assuming the relationship 'courses' is defined in User model
 
-         // Fetch the count of completed courses for the authenticated user
-         $completedCourseCount = $user->enrollments()->where('status', 'completed')->count(); // Assuming 'status' column exists in the Enrollment model
+        // Fetch the count of completed courses for the authenticated user
+        $completedCourseCount = $user->enrollments()->where('status', 'completed')->count(); // Assuming 'status' column exists in the Enrollment model
 
-         // Fetch the count of uploaded courses for the authenticated tutor
-         $uploadedCourseCount = ($role === 'tutor') ? Course::where('user_id', $user->id)->count() : null;
+        // Fetch the count of uploaded courses for the authenticated tutor
+        $uploadedCourseCount = ($role === 'tutor') ? Course::where('user_id', $user->id)->count() : null;
 
-         // Fetch the count of enrolled courses for the authenticated tutee
-         $enrolledCourseCount = ($role === 'tutee') ? $user->enrollments()->count() : 0; // Default to 0 if no enrollments
+        // Fetch the count of enrolled courses for the authenticated tutee
+        $enrolledCourseCount = ($role === 'tutee') ? $user->enrollments()->count() : 0; // Default to 0 if no enrollments
 
-         // Fetch the total number of courses uploaded by all tutors (only for admin)
-         $totalCourses = ($role === 'admin') ? Course::count() : null;
+        // Fetch the total number of courses uploaded by all tutors (only for admin)
+        $totalCourses = ($role === 'admin') ? Course::count() : null;
 
-         // Fetch notifications for the user (including rejection notifications)
-         $notifications = $user->notifications;
+        // Fetch notifications for the user (including rejection notifications)
+        $notifications = $user->notifications;
 
-         // Return the view with all data
-         return view('dash.dashboard', compact(
-             'user',
-             'role',
-             'activeTutees',
-             'activeTutors',
-             'courseCount',
-             'completedCourseCount',
-             'uploadedCourseCount',
-             'enrolledCourseCount', // Pass enrolled course count to the view
-             'totalTutees',
-             'totalTutors',
-             'totalCourses',
-             'notifications'
-         ));
-     }
+        // Return the view with all data
+        return view('dash.dashboard', compact(
+            'user',
+            'role',
+            'activeTutees',
+            'activeTutors',
+            'courseCount',
+            'completedCourseCount',
+            'uploadedCourseCount',
+            'enrolledCourseCount', // Pass enrolled course count to the view
+            'totalTutees',
+            'totalTutors',
+            'totalCourses',
+            'notifications'
+        ));
+    }
 
 
 
@@ -117,25 +117,25 @@ class DashboardController extends Controller
         $user = User::findOrFail($id); // Fetch the user by their ID
         $courses = Course::where('user_id', $id)->paginate(6); // Fetch courses for this tutor with pagination
 
-        // Add the enrolled count to each course
+        // Add the enrolled count to each course (approved enrollments only)
         $courses->getCollection()->transform(function ($course) {
-            // Check if enrollments exist and assign the enrolledCount
-            $course->enrolledCount = $course->enrollments()->count();
+            // Count only the approved enrollments
+            $course->enrolledCount = $course->enrollments()->where('status', 'approved')->count();
             return $course;
         });
 
         $role = $user->role; // Get the user's role
         $totalCourses = $courses->total(); // Get the total number of courses
 
-        return view('dash.dashpub', compact('courses', 'user', 'role', 'tutor', 'totalCourses'));
+        // Ensure the 'about_me' field is included for Blade use
+        $aboutMe = $user->about_me; // Retrieve the about_me attribute
+
+        return view('dash.dashpub', compact('courses', 'user', 'role', 'tutor', 'totalCourses', 'aboutMe')); // Passing 'aboutMe'
     }
 
 
-
-
-
     /**View Public Profile */
-    public function coursedetail()
+    public function coursedetail($courseId)
     {
         if (!Auth::check()) {
             return redirect('/login');
@@ -143,21 +143,30 @@ class DashboardController extends Controller
 
         $user = Auth::user();
 
-        if ($user->role === 'tutor') {
-            // Fetch courses uploaded by the tutor and eager load lectures and requirements
-            $courses = Course::where('user_id', $user->id)
-                ->with('lectures', 'requirements')  // Eager load lectures and requirements
-                ->get();
-        } elseif ($user->role === 'tutee') {
-            // Fetch courses available to the tutee and eager load lectures and requirements
-            $courses = Course::with('lectures', 'requirements')  // Eager load lectures and requirements
-                ->get();
-        } else {
-            abort(403, 'Unauthorized action.');
+        // Fetch the specific course based on the ID and ensure it belongs to the logged-in tutor
+        $course = Course::where('id', $courseId)->where('user_id', $user->id)->first();
+
+        // If the user is a tutor but the course doesn't belong to them, abort with an error
+        if ($user->role === 'tutor' && !$course) {
+            return redirect()->route('tutors.courses')->with('error', 'Course not found.');
         }
 
-        return view('dash.dashcourse', compact('user', 'courses'));
+        // Fetch all courses for the tutee (you can modify this as needed)
+        if ($user->role === 'tutee') {
+            $course = Course::find($courseId);
+            if (!$course) {
+                abort(404, 'Course not found.');
+            }
+        }
+
+        // If no matching course found for the tutee, abort
+        if (!$course) {
+            abort(404, 'Course not found.');
+        }
+
+        return view('dash.dashcourse', compact('user', 'course'));
     }
+
 
 
     /** Submit Course */
@@ -305,5 +314,41 @@ class DashboardController extends Controller
         return back();
     }
 
-}
+    public function tutcourse(Request $request)
+    {
+        // Fetch the tutor ID from the query string
+        $tutorId = $request->input('id');
 
+        // Fetch courses for the tutor using the user_id column
+        $courses = Course::where('user_id', $tutorId)->get();
+
+        // Fetch tutor details (optional, for display in the view)
+        $tutor = User::find($tutorId);
+
+        // Check if the tutor exists
+        if (!$tutor) {
+            return redirect()->back()->with('error', 'Tutor not found.');
+        }
+
+        // Pass courses and tutor data to the view
+        return view('dash.dashtutcourse', compact('courses', 'tutor'));
+    }
+
+    public function destroy($id)
+    {
+        $course = Course::findOrFail($id);
+
+        // Optionally, delete the course's image if it exists
+        if ($course->image && file_exists(public_path('storage/courses/' . $course->image))) {
+            unlink(public_path('storage/courses/' . $course->image));
+        }
+
+        // Delete the course
+        $course->delete();
+
+        // Redirect with success message
+        return redirect()->route('dash.dashtutcourse')->with('success', 'Course deleted successfully');
+    }
+
+
+}

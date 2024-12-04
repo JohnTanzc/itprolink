@@ -10001,35 +10001,13 @@ textarea {
 }
 
 
-/* Dropdown container */
-.dropdown {
-    position: relative;
-    display: inline-block;
+.btn {
+    padding: px; /* Adjust padding if necessary */
+    font-size: 20px; /* Adjust the size of the icon */
 }
 
-/* Dropdown content styling */
-.dropdown-content {
-    position: absolute;
-    background-color: white;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 4px;
-    padding: 8px;
-    z-index: 10;
-    min-width: 150px;
-}
-
-/* Dropdown links */
-.dropdown-content a {
-    display: block;
-    padding: 8px 12px;
-    color: black;
-    text-decoration: none;
-    border-bottom: 2px solid transparent; /* Add an underline that is initially transparent */
-    border-radius: 4px;
-}
-
-.dropdown-content a:hover {
-    background-color: #f1f1f1;
+.la-ellipsis-v {
+    font-size: 20px; /* Control icon size here */
 }
 
 

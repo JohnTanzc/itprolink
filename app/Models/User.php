@@ -137,9 +137,5 @@ class User extends Authenticatable
 
     use Notifiable;
 
-    public function ratings()
-    {
-        return $this->morphMany(Rating::class, 'rateable');
-    }
 
 }

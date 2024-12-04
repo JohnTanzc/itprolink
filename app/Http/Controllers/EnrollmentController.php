@@ -7,6 +7,7 @@ use App\Models\Course;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Payment;
 
 class EnrollmentController extends Controller
 {
@@ -14,7 +15,7 @@ class EnrollmentController extends Controller
     public function showEnrollee()
     {
         // Fetch users with their enrollments (eager loading)
-        $users = User::with('enrollments')->paginate(10);
+        $users = User::with('enrollments')->paginate(6);
 
         // Pass the users to the view
         return view('dash.dashenrollee', compact('users'));
@@ -30,17 +31,21 @@ class EnrollmentController extends Controller
         // Validate the request
         $validated = $request->validate([
             'course_id' => 'required|exists:courses,id',
+            'sender_number' => 'required|string|max:15',
+            'sender_name' => 'required|string|max:255',
+            'amount' => 'required|numeric|min:0',
+            'ref_no' => 'required|string|unique:payments,ref_no',
+            'screenshot' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         $user = Auth::user();
 
         // Check if the user is verified
         if (!$user->verified) {
-            // If not verified, return an error and ask for verification
             return redirect()->back()->with('error', 'You need to get verified first to enroll.');
         }
 
-        // Check if the user is already enrolled in the course
+        // Check if the user is already enrolled
         $existingEnrollment = Enrollment::where('user_id', $user->id)
             ->where('course_id', $validated['course_id'])
             ->first();
@@ -49,14 +54,27 @@ class EnrollmentController extends Controller
             return redirect()->back()->with('error', 'You are already enrolled in this course.');
         }
 
-        // Enroll the user if they are verified and not already enrolled
-        Enrollment::create([
+        // Create a new enrollment
+        $enrollment = Enrollment::create([
             'user_id' => $user->id,
             'course_id' => $validated['course_id'],
+            'status' => 'pending', // Default status
         ]);
 
-        // Update the UI state in the front-end to show the button is disabled (in progress)
-        return redirect()->back()->with('success', 'You have successfully enrolled in this course! Enrollment is in progress...');
+        // Handle the screenshot upload
+        $screenshotPath = $request->file('screenshot')->store('payments', 'public');
+
+        // Create a payment record
+        Payment::create([
+            'enrollment_id' => $enrollment->id,
+            'sender_number' => $validated['sender_number'],
+            'sender_name' => $validated['sender_name'],
+            'amount' => $validated['amount'],
+            'ref_no' => $validated['ref_no'],
+            'screenshot' => $screenshotPath,
+        ]);
+
+        return redirect()->back()->with('success', 'You have successfully enrolled and submitted your payment. Enrollment is in progress...');
     }
 
 
@@ -93,6 +111,19 @@ class EnrollmentController extends Controller
         }
     }
 
+    public function updatePaymentStatus(Request $request, $id)
+    {
+        $request->validate([
+            'isPaid' => 'required|in:0,1,2', // Validate the input
+        ]);
+
+        $enrollment = Enrollment::findOrFail($id);
+        $enrollment->isPaid = $request->input('isPaid');
+        $enrollment->save();
+
+        return redirect()->back()->with('success', 'Payment status updated successfully.');
+    }
+
     public function getEnrolledStudentsCount($courseId)
     {
         // Count the number of enrollments for the specific course
@@ -106,5 +137,14 @@ class EnrollmentController extends Controller
     public function course()
     {
         return $this->belongsTo(Course::class, 'course_id'); // Assuming 'course_id' is the course's ID
+    }
+
+    public function payments()
+    {
+        // Correct eager loading for the singular relationship
+        $payments = Payment::with(['enrollment.user'])->paginate(6);  // 'enrollment' should be singular
+
+        // Pass the payments data to the view
+        return view('dash.dashpayments', compact('payments'));
     }
 }

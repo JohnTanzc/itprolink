@@ -29,7 +29,7 @@ class CreateCoursesTable extends Migration
         $table->boolean('active')->default(1); // Adds the 'active' column with a default value of 1
         $table->string('instructor_name');
         $table->string('courselanguage')->nullable();
-        $table->string('requirement')->nullable();
+        $table->text('requirement')->nullable();
         $table->integer('class');
         $table->integer('course_time');
         $table->text('category');
