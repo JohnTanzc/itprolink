@@ -22,7 +22,6 @@ class CreatePaymentsTable extends Migration
             $table->string('ref_no')->unique();
             $table->string('screenshot');
             $table->timestamps();
-
             // Foreign key to link payment to enrollment
             $table->foreign('enrollment_id')->references('id')->on('enrollments')->onDelete('cascade');
         });

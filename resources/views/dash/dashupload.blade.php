@@ -34,15 +34,23 @@
                                 <div class="form-group">
                                     <label class="label-text">Course Title</label>
                                     <input class="form-control form--control ps-3" type="text" name="title" required
-                                        placeholder="e.g. Learn JavaScript for Beginners" />
+                                        placeholder="e.g. Learn Webdesign" />
                                 </div>
                             </div>
 
                             <div class="col-lg-6">
                                 <div class="form-group">
-                                    <label class="label-text">Course Section</label>
+                                    <label class="label-text">Course Benefits</label>
                                     <input class="form-control form--control ps-3" type="text" name="section" required
-                                        placeholder="e.g. Comprehensive JavaScript course" />
+                                        placeholder="e.g. Design your own website" />
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <label class="label-text">Price</label>
+                                    <input class="form-control form--control ps-3" type="number" name="price" required
+                                        placeholder="e.g. Input Course Price" />
                                 </div>
                             </div>
 
@@ -58,8 +66,8 @@
                                 <div class="form-group select2-full-wrapper dropdown-arrow">
                                     <label class="label-text">Course Category</label>
                                     <div class="select-container w-auto">
-                                        <select id="category" class="form-control form--control ps-3" name="category"
-                                            required aria-label="Course Category">
+                                        <select id="category" class="form-control form--control ps-3 text-black"
+                                            name="category" required aria-label="Course Category">
                                             <option value="" disabled selected>Select a course category</option>
                                             <option value="graphic-design" id="category-graphic-designt">Graphic Design
                                             </option>
@@ -87,17 +95,17 @@
 
                             <div class="col-lg-6">
                                 <div class="form-group">
-                                    <label class="label-text">Total Class</label>
+                                    <label class="label-text">Total Lectures</label>
                                     <input class="form-control form--control ps-3" type="number" name="class" required
-                                        placeholder="Total classes" />
+                                        placeholder="Total Lectures" />
                                 </div>
                             </div>
 
                             <div class="col-lg-6">
                                 <div class="form-group">
-                                    <label class="label-text">Course Hours</label>
+                                    <label class="label-text">Course Duration</label>
                                     <input class="form-control form--control ps-3" type="number" name="course_time"
-                                        required placeholder="e.g. 30" />
+                                        required placeholder="e.g. Enter Duration" />
                                 </div>
                             </div>
 
@@ -108,34 +116,16 @@
                                         <input type="text" id="selected-languages"
                                             class="form-control form--control ps-3"
                                             value="{{ old('courselanguage') ? implode(', ', old('courselanguage')) : '' }}"
-                                            readonly>
-
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="checkbox" value="english" id="english"
-                                                name="courselanguage[]"
-                                                {{ in_array('english', old('courselanguage', [])) ? 'checked' : '' }}>
-                                            <label class="form-check-label" for="english">English</label>
-                                        </div>
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="checkbox" value="cebuano"
-                                                id="cebuano" name="courselanguage[]"
-                                                {{ in_array('cebuano', old('courselanguage', [])) ? 'checked' : '' }}>
-                                            <label class="form-check-label" for="cebuano">Cebuano</label>
-                                        </div>
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="checkbox" value="tagalog"
-                                                id="tagalog" name="courselanguage[]"
-                                                {{ in_array('tagalog', old('courselanguage', [])) ? 'checked' : '' }}>
-                                            <label class="form-check-label" for="tagalog">Tagalog</label>
-                                        </div>
+                                            name="courselanguage[]" placeholder="Type languages and press Enter"
+                                            data-role="tagsinput" autocomplete="off">
                                     </div>
                                 </div>
                             </div>
                             <div class="col-lg-6">
                                 <div class="form-group select2-full-wrapper dropdown-arrow">
                                     <label class="label-text">Level</label>
-                                    <select class="form-control form--control ps-3" id="level" name="level"
-                                        required>
+                                    <select class="form-control form--control ps-3 text-black" id="level"
+                                        name="level" required>
                                         <option value="" disabled selected>Select Level</option>
                                         <option value="All Levels">All Levels</option>
                                         <option value="Beginner">Beginner</option>
@@ -144,6 +134,64 @@
                                     </select>
                                 </div>
                             </div>
+
+                            {{-- Resource --}}
+                            <div class="col-lg-12">
+                                <div class="form-group">
+                                    <label class="label-text">Course Resources (Optional)</label>
+
+                                    <!-- Loop for Multiple Lecture and Resource Titles -->
+                                    <div id="resource-section">
+                                        <div class="resource-item">
+                                            <div class="form-group">
+                                                <label class="label-text">Lecture Title</label>
+                                                <input class="form-control form--control ps-3" type="text" name="lectures[0][lecture_title]" placeholder="e.g. Introduction to Web Design" required />
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="label-text">Resource Title</label>
+                                                <input class="form-control form--control ps-3" type="text" name="lectures[0][resources][0][title]" placeholder="e.g. Course PDF, Study Materials" required />
+                                            </div>
+                                            <div class="file-upload-wrap">
+                                                <input type="file" name="lectures[0][resources][0][file]" class="form-control ps-3" multiple required>
+                                                <small class="form-text text-muted">You can upload multiple resource files (PDF, DOCX, etc.) for this lecture.</small>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Button to Add More Resources -->
+                                    <div class="course-submit-btn-box pb-4" id="add-resource-btn">
+                                        <button type="button" class="btn btn-secondary bg-6" onclick="addResourceSection()">+ Add Another Resource</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <script>
+                                // Function to Add New Resource Section
+                                function addResourceSection() {
+                                    var resourceSection = document.getElementById('resource-section');
+                                    var newResourceItem = document.createElement('div');
+                                    newResourceItem.classList.add('resource-item');
+
+                                    newResourceItem.innerHTML = `
+                                        <div class="form-group">
+                                            <label class="label-text">Lecture Title</label>
+                                            <input class="form-control form--control ps-3" type="text" name="lecture_title[]" placeholder="e.g. Introduction to Web Design" required />
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="label-text">Resource Title</label>
+                                            <input class="form-control form--control ps-3" type="text" name="resource_title[]" placeholder="e.g. Course PDF, Study Materials" required />
+                                        </div>
+                                        <div class="file-upload-wrap">
+                                            <input type="file" name="resources[]" class="form-control ps-3" multiple required>
+                                            <small class="form-text text-muted">You can upload multiple resource files (PDF, DOCX, etc.) for this lecture.</small>
+                                        </div>
+                                    `;
+
+                                    resourceSection.appendChild(newResourceItem);
+                                }
+                            </script>
+                            {{-- End of Resource --}}
+
                             <div class="col-lg-12">
                                 <div class="form-group">
                                     <label class="label-text mb-0">Requirements</label>
@@ -198,21 +246,14 @@
         </div>
     </div>
 
+    <!-- Include this script for tagsinput functionality -->
     <script>
-        function updateSelectedLanguages() {
-            var selectedLanguages = [];
-            var checkboxes = document.querySelectorAll('input[name="courselanguage[]"]:checked');
-            checkboxes.forEach(function(checkbox) {
-                selectedLanguages.push(checkbox.value);
+        $(document).ready(function () {
+            $('#selected-languages').tagsinput({
+                trimValue: true,
+                confirmKeys: [13, 32]  // Allow Enter and Space to confirm input
             });
-            document.getElementById('selected-languages').value = selectedLanguages.join(', ');
-        }
-
-        document.querySelectorAll('input[name="courselanguage[]"]').forEach(function(checkbox) {
-            checkbox.addEventListener('change', updateSelectedLanguages);
         });
-
-        updateSelectedLanguages();
     </script>
 
     <script>

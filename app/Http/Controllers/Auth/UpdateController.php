@@ -46,7 +46,10 @@ class UpdateController extends Controller
             'mobile' => 'nullable|string|max:20',
             'phone' => 'nullable|string|max:20',
             'profile_picture' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'about_me' => 'nullable|string|max:1000', // Add validation for "About Me"
+            'about_me' => 'nullable|string', // Add validation for "About Me"
+            'edu' => 'nullable|string',
+            'career' => 'nullable|string',
+            'exp' => 'nullable|string',
         ]);
 
         // Update user details with the validated data
@@ -59,6 +62,9 @@ class UpdateController extends Controller
             'mobile' => $request->mobile,
             'phone' => $request->phone,
             'about_me' => $request->about_me,
+            'edu' => $request->edu,
+            'career' => $request->career,
+            'exp' => $request->exp,
         ]);
 
         // Check if a new profile picture is uploaded

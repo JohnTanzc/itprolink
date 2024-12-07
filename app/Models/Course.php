@@ -25,6 +25,7 @@ class Course extends Model
         'user_id',
         'uploaded_date',
         'level',
+        'price',
     ];
 
     protected $casts = [

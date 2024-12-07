@@ -22,7 +22,7 @@
                     </div>
                     <!-- end section-heading -->
                     <div class="d-flex flex-wrap align-items-center pt-3">
-                        <h6 class="ribbon ribbon-lg me-2 bg-3 text-white">Bestseller</h6>
+                        <h6 class="ribbon ribbon-lg me-2 bg-3 text-white">{{ $course->level}}</h6>
                         <div class="rating-wrap d-flex flex-wrap align-items-center">
                             <div class="review-stars">
                                 <span class="rating-number">{{ $course->rating }}</span>
@@ -43,8 +43,8 @@
                     </div>
                     <!-- end d-flex -->
                     <p class="pt-2 pb-1">
-                        Tutor
-                        <a href="teacher-detail.html" class="text-color hover-underline">
+                        Created by
+                        <a href="{{ route('pub.profile', ['id' => $course->user_id]) }}" class="text-color hover-underline">
                             {{ $course->instructor_name }}
                         </a>
                     </p>
@@ -112,9 +112,6 @@
                                     <span class="curriculum-total__text me-2"><strong
                                             class="text-black font-weight-semi-bold">Total:</strong>
                                         17 lectures</span>
-                                    <span class="curriculum-total__hours"><strong
-                                            class="text-black font-weight-semi-bold">Total hours:</strong>
-                                        02:35:47</span>
                                 </div>
                             </div>
                             <div class="curriculum-content">
@@ -143,7 +140,6 @@
                                                             <span>
                                                                 <i class="la la-play-circle me-1"></i>
                                                                 Introductory words
-                                                                <span class="ribbon ms-2 fs-13">Preview</span>
                                                             </span>
                                                             <span>02:27</span>
                                                         </a>
@@ -308,15 +304,15 @@
                                 </div>
                                 <!-- end preview-course-video -->
                                 <div class="preview-course-feature-content pt-40px">
-                                    <p class="d-flex align-items-center pb-2">
-                                        <span class="fs-35 font-weight-semi-bold text-black">$76.99</span>
-                                        <span class="before-price mx-1">$104.99</span>
-                                        <span class="price-discount">24% off</span>
-                                    </p>
-                                    <p class="preview-price-discount-text pb-35px">
-                                        <span class="text-color-3">4 days</span> left at this
-                                        price!
-                                    </p>
+                                    <div class="d-flex justify-content-center align-items-center pb-3">
+                                        <span class="fs-35 font-weight-semi-bold text-black">
+                                            @if ($course->price == 0)
+                                                Free
+                                            @else
+                                                ₱{{ number_format($course->price, 2) }}
+                                            @endif
+                                        </span>
+                                    </div>
                                     <div class="buy-course-btn-box">
                                         @if (Auth::user()->role === 'tutee')
                                             @if (Auth::user()->verified)
@@ -351,7 +347,7 @@
                                             @if ($course->user_id === Auth::id())
                                                 <button type="button" class="btn theme-btn w-100 mb-2"
                                                     onclick="showTutorAlert('own')">
-                                                    <i class="la la-book fs-18 me-1"></i> Enroll Now
+                                                    <i class="la la-book fs-18 me-1"></i> Edit Course
                                                 </button>
                                             @else
                                                 <button type="button" class="btn theme-btn w-100 mb-2"
@@ -487,33 +483,42 @@
                         <div class="mb-3">
                             <label for="send_to" class="form-label">Send to</label>
 
-                                <div class="me-3 mb-2">
-                                    <!-- Name of Receiver (read-only) -->
-                                    <input type="text" class="form-control text-center" id="receiver_name" name="receiver_name"
-                                        value="Gcash - El John Tanola" readonly style="background-color: #f0f0f0;">
-                                </div>
-                                <div class="me-3">
-                                    <!-- Number of Receiver (read-only) -->
-                                    <input type="text" class="form-control text-center" id="gcash_number" name="gcash_number"
-                                        value="09690940143" readonly style="background-color: #f0f0f0;">
-                                </div>
+                            <div class="me-3 mb-2">
+                                <!-- Name of Receiver (read-only) -->
+                                <input type="text" class="form-control text-center" id="receiver_name"
+                                    name="receiver_name" value="Gcash - El John Tanola" readonly
+                                    style="background-color: #f0f0f0;">
+                            </div>
+                            <div class="me-3">
+                                <!-- Number of Receiver (read-only) -->
+                                <input type="text" class="form-control text-center" id="gcash_number"
+                                    name="gcash_number" value="09690940143" readonly style="background-color: #f0f0f0;">
+                            </div>
 
                         </div>
                         <div class="mb-3">
-                            <label for="sender_number" class="form-label">Your Number</label>
-                            <input type="text" class="form-control" id="sender_number" name="sender_number" required>
+                            <label for="sender_number" class="form-label">Your Gcash Number</label>
+                            <input type="text" class="form-control" id="sender_number" name="sender_number" required
+                                placeholder="Enter your number">
                         </div>
                         <div class="mb-3">
                             <label for="sender_name" class="form-label">Name of Sender</label>
-                            <input type="text" class="form-control" id="sender_name" name="sender_name" required>
+                            <input type="text" class="form-control" id="sender_name" name="sender_name" required
+                                placeholder="Enter your complete name">
                         </div>
                         <div class="mb-3">
                             <label for="amount" class="form-label">Amount</label>
-                            <input type="number" class="form-control" id="amount" name="amount" required>
+                            <input type="number" class="form-control" id="amount" name="amount" required
+                                placeholder="Enter the exact amount">
                         </div>
                         <div class="mb-3">
-                            <label for="ref_no" class="form-label">Ref. No.</label>
-                            <input type="text" class="form-control" id="ref_no" name="ref_no" required>
+                            <label for="refNo" class="form-label"><strong>Ref. No.</strong></label>
+                            <input type="text" class="form-control" id="refNo" name="ref_no" maxlength="13"
+                                required placeholder="Enter 13-digit reference number">
+                            <!-- Warning message that is initially hidden -->
+                            <small id="refNoWarning" style="color: red; display: none;">
+                                You have exceeded the 13-digit limit!
+                            </small>
                         </div>
                         <div class="mb-3">
                             <label for="screenshot" class="form-label">Screenshot Photo</label>

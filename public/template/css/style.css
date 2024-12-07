@@ -10001,16 +10001,28 @@ textarea {
 }
 
 
-.btn {
-    padding: px; /* Adjust padding if necessary */
-    font-size: 20px; /* Adjust the size of the icon */
-}
 
 .la-ellipsis-v {
     font-size: 20px; /* Control icon size here */
 }
 
+/* Default text color for select and options */
+.text-black, .text-black option {
+    color: black !important;
+}
 
+/* Dark mode specific override */
+@media (prefers-color-scheme: dark) {
+    .text-black, .text-black option {
+        color: black !important;
+    }
+}
 
+.no-style-button {
+    background: none;
+    padding: 0;
+    border: none;
+    color: blue; /* Makes the text blue */
+}
 
 

@@ -113,6 +113,17 @@
         </div>
     </section>
 
+    @if (session('success'))
+    <script>
+        Swal.fire({
+            icon: 'success',
+            title: 'Success!',
+            text: '{{ session('success') }}',
+            showConfirmButton: false,
+            timer: 10000, // The alert will automatically close after 1.5 seconds
+        });
+    </script>
+@endif
     @include('layouts.footer')
 @endsection
 

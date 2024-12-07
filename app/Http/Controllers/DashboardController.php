@@ -129,8 +129,11 @@ class DashboardController extends Controller
 
         // Ensure the 'about_me' field is included for Blade use
         $aboutMe = $user->about_me; // Retrieve the about_me attribute
+        $education = $tutor->edu;
+        $career = $tutor->career;
+        $experience = $tutor->exp;
 
-        return view('dash.dashpub', compact('courses', 'user', 'role', 'tutor', 'totalCourses', 'aboutMe')); // Passing 'aboutMe'
+        return view('dash.dashpub', compact('courses', 'user', 'role', 'tutor', 'totalCourses', 'aboutMe','education','career','experience')); // Passing 'aboutMe'
     }
 
 
@@ -197,7 +200,10 @@ class DashboardController extends Controller
                 'regex:/^(?:\+63|0)(9\d{2})\s?\d{3}\s?\d{4}$/', // Regex for Philippine phone numbers
             ],
             'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg|max:5120', // 5MB
-            'about_me' => 'nullable|string|max:1000', // Add validation for "About Me"
+            'about_me' => 'nullable|string', // Add validation for "About Me"
+            'edu' => 'nullable|string',
+            'career' => 'nullable|string',
+            'exp' => 'nullable|string',
         ]);
 
         // Update user details
@@ -206,6 +212,10 @@ class DashboardController extends Controller
         $user->email = $request->email;
         $user->phone = $request->input('phone', $user->phone);
         $user->about_me = $request->input('about_me', $user->about_me);
+        $user->edu = $request->input('edu', $user->edu);
+        $user->career = $request->input('career', $user->career);
+        $user->exp = $request->input('exp', $user->exp);
+
 
         // Check if a new profile picture is uploaded
         if ($request->hasFile('profile_picture')) {

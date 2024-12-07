@@ -21,14 +21,7 @@
             <div class="section-block"></div>
             <h3 class="card-title fs-18 pt-4">Kevin Martin</h3>
             <div class="d-flex align-items-center">
-              <span class="lh-18 pe-2">Student</span>
-              <div class="review-stars">
-                <span class="la la-star"></span>
-                <span class="la la-star"></span>
-                <span class="la la-star"></span>
-                <span class="la la-star"></span>
-                <span class="la la-star"></span>
-              </div>
+              <span class="lh-18 pe-2">Tutee</span>
             </div>
           </div>
           <!-- end card-body -->
@@ -48,14 +41,7 @@
             <div class="section-block"></div>
             <h3 class="card-title fs-18 pt-4">Kevin Martin</h3>
             <div class="d-flex align-items-center">
-              <span class="lh-18 pe-2">Student</span>
-              <div class="review-stars">
-                <span class="la la-star"></span>
-                <span class="la la-star"></span>
-                <span class="la la-star"></span>
-                <span class="la la-star"></span>
-                <span class="la la-star"></span>
-              </div>
+              <span class="lh-18 pe-2">Tutee</span>
             </div>
           </div>
           <!-- end card-body -->
@@ -75,14 +61,7 @@
             <div class="section-block"></div>
             <h3 class="card-title fs-18 pt-4">Kevin Martin</h3>
             <div class="d-flex align-items-center">
-              <span class="lh-18 pe-2">Student</span>
-              <div class="review-stars">
-                <span class="la la-star"></span>
-                <span class="la la-star"></span>
-                <span class="la la-star"></span>
-                <span class="la la-star"></span>
-                <span class="la la-star"></span>
-              </div>
+              <span class="lh-18 pe-2">Tutee</span>
             </div>
           </div>
           <!-- end card-body -->
@@ -102,14 +81,7 @@
             <div class="section-block"></div>
             <h3 class="card-title fs-18 pt-4">Kevin Martin</h3>
             <div class="d-flex align-items-center">
-              <span class="lh-18 pe-2">Student</span>
-              <div class="review-stars">
-                <span class="la la-star"></span>
-                <span class="la la-star"></span>
-                <span class="la la-star"></span>
-                <span class="la la-star"></span>
-                <span class="la la-star"></span>
-              </div>
+              <span class="lh-18 pe-2">Tutee</span>
             </div>
           </div>
           <!-- end card-body -->
@@ -129,14 +101,7 @@
             <div class="section-block"></div>
             <h3 class="card-title fs-18 pt-4">Kevin Martin</h3>
             <div class="d-flex align-items-center">
-              <span class="lh-18 pe-2">Student</span>
-              <div class="review-stars">
-                <span class="la la-star"></span>
-                <span class="la la-star"></span>
-                <span class="la la-star"></span>
-                <span class="la la-star"></span>
-                <span class="la la-star"></span>
-              </div>
+              <span class="lh-18 pe-2">Tutee</span>
             </div>
           </div>
           <!-- end card-body -->
@@ -156,14 +121,7 @@
             <div class="section-block"></div>
             <h3 class="card-title fs-18 pt-4">Kevin Martin</h3>
             <div class="d-flex align-items-center">
-              <span class="lh-18 pe-2">Student</span>
-              <div class="review-stars">
-                <span class="la la-star"></span>
-                <span class="la la-star"></span>
-                <span class="la la-star"></span>
-                <span class="la la-star"></span>
-                <span class="la la-star"></span>
-              </div>
+              <span class="lh-18 pe-2">Tutee</span>
             </div>
           </div>
           <!-- end card-body -->

@@ -106,7 +106,7 @@ Route::middleware(['auth', 'checkuserrole:tutor', 'verified'])->group(function (
     Route::put('/tutor/password/update/{id}', [DashboardController::class, 'updatePassword'])->name('tutor.password.update');
     Route::put('/tutor/email/update/{id}', [DashboardController::class, 'updateEmail'])->name('tutor.email.update');
     Route::get('/submit-course', [DashboardController::class, 'submitCourse'])->name('submit.course');
-    Route::get('/profile/detail/{id}', [DashboardController::class, 'pubprofile'])->name('pub.profile');
+
     Route::post('/submit-course', [CourseController::class, 'store'])->name('courses.store');  // POST route for course submission
     // Route::get('/tutor/course/detail/{id}', [DashboardController::class, 'coursedetail'])->name('tutors.coursedetail');
     Route::post('/tutor/upload-verification', [VerificationController::class, 'uploadVerification'])->name('tutor.uploadverification');
@@ -156,6 +156,9 @@ Route::middleware('auth')->group(function () {
     // Route to handle the update submission
     Route::put('/User/Profile/Update/{id}', [UpdateController::class, 'update'])->name('user.update');
     Route::get('/course/detail/{course}', [CourseController::class, 'show'])->name('course.detail');
+    Route::get('/profile/detail/{id}', [DashboardController::class, 'pubprofile'])
+    ->name('pub.profile')
+    ->middleware('checkuserrole:tutee,admin,tutor');  // Make sure it's applied here
 });
 
 // Guest-only routes

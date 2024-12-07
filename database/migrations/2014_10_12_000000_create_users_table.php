@@ -33,6 +33,9 @@ class CreateUsersTable extends Migration
             $table->string('selfie_with_id')->nullable(); // Path to the uploaded selfie
             $table->string('diploma')->nullable(); // Path to the uploaded diploma, specific to tutors
             $table->enum('verification_status', ['not_submitted', 'pending', 'approved', 'rejected'])->default('not_submitted'); // Admin review status
+            $table->text('edu')->nullable();
+            $table->text('career')->nullable();
+            $table->text('exp')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

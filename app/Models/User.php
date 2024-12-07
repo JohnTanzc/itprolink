@@ -11,6 +11,7 @@ use Spatie\Permission\Traits\HasRoles;
 use App\Notifications\CustomResetPassword;
 
 
+
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, HasRoles;
@@ -135,6 +136,10 @@ class User extends Authenticatable
         return $this->hasMany(Enrollment::class); // Assuming you have an Enrollment model
     }
 
+    public function payments()
+    {
+        return $this->hasMany(Payment::class);
+    }
     use Notifiable;
 
 

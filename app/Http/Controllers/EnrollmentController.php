@@ -17,15 +17,16 @@ class EnrollmentController extends Controller
         // Fetch users with their enrollments (eager loading)
         $users = User::with('enrollments')->paginate(6);
 
+        $payments = Payment::all(); // Or fetch specific payment data as needed
+
         // Pass the users to the view
-        return view('dash.dashenrollee', compact('users'));
+        return view('dash.dashenrollee', compact('users', 'payments'));
     }
 
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id'); // Adjust if necessary
     }
-
     public function store(Request $request)
     {
         // Validate the request
@@ -34,10 +35,11 @@ class EnrollmentController extends Controller
             'sender_number' => 'required|string|max:15',
             'sender_name' => 'required|string|max:255',
             'amount' => 'required|numeric|min:0',
-            'ref_no' => 'required|string|unique:payments,ref_no',
+            'ref_no' => 'required|string|regex:/^\d{13}$/|unique:payments,ref_no',
             'screenshot' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
+        // Get the authenticated user
         $user = Auth::user();
 
         // Check if the user is verified
@@ -45,7 +47,7 @@ class EnrollmentController extends Controller
             return redirect()->back()->with('error', 'You need to get verified first to enroll.');
         }
 
-        // Check if the user is already enrolled
+        // Check if the user is already enrolled in the course
         $existingEnrollment = Enrollment::where('user_id', $user->id)
             ->where('course_id', $validated['course_id'])
             ->first();
@@ -54,9 +56,9 @@ class EnrollmentController extends Controller
             return redirect()->back()->with('error', 'You are already enrolled in this course.');
         }
 
-        // Create a new enrollment
+        // Create a new enrollment record
         $enrollment = Enrollment::create([
-            'user_id' => $user->id,
+            'user_id' => $user->id, // Link the enrollment to the authenticated user (tutee)
             'course_id' => $validated['course_id'],
             'status' => 'pending', // Default status
         ]);
@@ -64,19 +66,19 @@ class EnrollmentController extends Controller
         // Handle the screenshot upload
         $screenshotPath = $request->file('screenshot')->store('payments', 'public');
 
-        // Create a payment record
+        // Create a payment record linked to the enrollment and user (tutee)
         Payment::create([
-            'enrollment_id' => $enrollment->id,
+            'enrollment_id' => $enrollment->id, // Link to the newly created enrollment
             'sender_number' => $validated['sender_number'],
             'sender_name' => $validated['sender_name'],
             'amount' => $validated['amount'],
-            'ref_no' => $validated['ref_no'],
-            'screenshot' => $screenshotPath,
+            'ref_no' => $validated['ref_no'], // Unique reference number
+            'screenshot' => $screenshotPath,  // Uploaded file path
         ]);
 
+        // Redirect back with a success message
         return redirect()->back()->with('success', 'You have successfully enrolled and submitted your payment. Enrollment is in progress...');
     }
-
 
 
     public function updateStatus(Request $request, $id)

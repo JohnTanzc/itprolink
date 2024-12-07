@@ -14,7 +14,9 @@
         </div>
         <!-- end section-heading -->
         <div class="cat-btn-box mt-28px">
-          <a href="{{route('course')}}" class="btn theme-btn">Enroll Now <i class="la la-arrow-right icon ms-1"></i></a>
+            @if (!auth()->check())  <!-- Check if the user is not logged in -->
+                <a href="{{ route('course') }}" class="btn theme-btn">Enroll Now <i class="la la-arrow-right icon ms-1"></i></a>
+            @endif
         </div>
         <!-- end cat-btn-box -->
       </div>

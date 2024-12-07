@@ -12,11 +12,11 @@
         </div>
         <!-- end breadcrumb-content -->
         {{-- <div class="section-block mb-5"></div> --}}
-        <div class="dashboard-heading mb-5">
+        <div class="dashboard-heading mb-5" style="margin-left: 20px; margin-right: 20px;">
             <h3 class="fs-22 font-weight-semi-bold">Settings</h3>
         </div>
         <ul class="nav nav-tabs generic-tab pb-30px" id="myTab" role="tablist">
-            <li class="nav-item">
+            <li class="nav-item" style="margin-left: 10px; margin-right: 10px;">
                 <a class="nav-link active" id="edit-profile-tab" data-bs-toggle="tab" href="#edit-profile" role="tab"
                     aria-controls="edit-profile" aria-selected="false">
                     Profile
@@ -38,7 +38,7 @@
             @endif
         </ul>
         <div class="section-block mb-5"></div>
-        <div class="tab-content" id="myTabContent">
+        <div class="tab-content" id="myTabContent" style="margin-left: 10px; margin-right: 10px;">
             <div class="tab-pane fade show active" id="edit-profile" role="tabpanel" aria-labelledby="edit-profile-tab">
                 <div class="setting-body">
                     <h3 class="fs-17 font-weight-semi-bold pb-4">Edit Profile</h3>
@@ -143,12 +143,56 @@
                         <div class="input-box col-lg-12">
                             <label class="label-text">Bio</label>
                             <div class="form-group">
-                                <textarea class="form-control form--control text-editor ps-2" name="about_me">{{ old('about_me', $user->about_me) }}</textarea>
+                                <textarea class="form-control form--control ps-2" name="about_me" style="height: 200px !important;">{{ old('about_me', $user->about_me) }}</textarea>
                                 @error('about_me')
                                     <small class="text-danger">{{ $message }}</small>
                                 @enderror
                             </div>
                         </div>
+                        @auth
+                            @if (Auth::user()->role === 'tutor')
+                                <div class="section-block mb-2 mt-2"></div>
+                                <div class="input-box col-lg-12 mb-4">
+                                    <label class="label-text" style="font-size: 30px; font-weight: bold;">Other Info</label>
+                                </div>
+
+                                <div class="input-box col-lg-4">
+                                    <label class="label-text" style="font-size: 20px; font-weight: bold;">Education</label>
+                                    <div class="form-group">
+                                        <input type="text" class="form-control form--control" name="edu"
+                                            id="edu" value="{{ old('edu', $user->edu) }}">
+                                        <span class="la la-graduation-cap input-icon"></span>
+                                        @error('edu')
+                                            <small class="text-danger">{{ $message }}</small>
+                                        @enderror
+                                    </div>
+                                </div>
+
+                                <div class="input-box col-lg-4">
+                                    <label class="label-text" style="font-size: 20px; font-weight: bold;">Career</label>
+                                    <div class="form-group">
+                                        <input type="text" class="form-control form--control" name="career"
+                                            id="career" value="{{ old('career', $user->career) }}">
+                                        <span class="la la-building input-icon"></span>
+                                        @error('career')
+                                            <small class="text-danger">{{ $message }}</small>
+                                        @enderror
+                                    </div>
+                                </div>
+
+                                <div class="input-box col-lg-4">
+                                    <label class="label-text" style="font-size: 20px; font-weight: bold;">Experience</label>
+                                    <div class="form-group">
+                                        <input type="text" class="form-control form--control" name="exp"
+                                            id="exp" value="{{ old('exp', $user->exp) }}">
+                                        <span class="la la-suitcase input-icon"></span>
+                                        @error('exp')
+                                            <small class="text-danger">{{ $message }}</small>
+                                        @enderror
+                                    </div>
+                                </div>
+                            @endif
+                        @endauth
                         <!-- end input-box -->
                         <div class="input-box col-lg-12 py-2">
                             <button type="submit " class="btn theme-btn">Save Changes</button>
@@ -265,35 +309,6 @@
                             });
                         </script>
                     @endif
-
-                    {{-- <form method="POST" action="{{ route('password.email') }}"
-                            class="pt-5 mt-5 border-top border-top-gray">
-                            @csrf
-                            <h3 class="fs-17 font-weight-semi-bold pb-1">
-                                Forgot Password? Recover Password
-                            </h3>
-                            <p class="pb-4">
-                                Enter the email address associated with your account to receive a password reset link. If
-                                you
-                                encounter any issues, feel free to <a href="{{ route('contacts') }}"
-                                    class="text-color">contact us</a>.
-                            </p>
-
-                            <div class="input-box">
-                                <label class="label-text">Email Address</label>
-                                <div class="form-group">
-                                    <input class="form-control form--control" type="email" name="email"
-                                        placeholder="Enter email address" value="{{ old('email') }}" required />
-                                    <span class="la la-envelope input-icon"></span>
-                                </div>
-                            </div>
-
-                            <!-- end input-box -->
-                            <div class="input-box py-2">
-                                <button class="btn theme-btn">Recover Password</button>
-                            </div>
-                            <!-- end input-box -->
-                        </form> --}}
                 </div>
                 <!-- end setting-body -->
             </div>
@@ -349,6 +364,7 @@
 
         <!-- end tab-pane -->
     </div>
+
 
     <script>
         document.getElementById('profile_picture').addEventListener('change', function(e) {

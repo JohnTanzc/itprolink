@@ -24,7 +24,7 @@
                             <th scope="col" style="width: 5%;">Role</th>
                             <th scope="col" style="width: 5%;">Joined</th>
                             <th scope="col" style="width: 5%;">Verification Status</th>
-                            <th scope="col" style="width: 5%;">View</th>
+                            <th scope="col" style="width: 5%; text-align: center;">View</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -54,7 +54,7 @@
                                             </option>
                                         </select>
                                     </td>
-                                    <td>
+                                    <td class="text-center">
                                         <!-- Action Buttons -->
                                         <button class="custom-btn me-3" title="View" data-bs-toggle="modal"
                                             data-bs-target="#viewVerificationModal" data-id-photo="{{ $user->id_photo }}"

@@ -63,14 +63,21 @@ class CourseController extends Controller
             'class' => 'required|integer',
             'course_time' => 'required|integer',
             'level' => 'required|string',
-            'category' => 'required|string', // Added category field
+            'category' => 'required|string',
             'image' => 'nullable|image|max:2048',
+            'price' => 'nullable|numeric|min:0',
+            'lectures' => 'nullable|array',
+            'lectures.*.lecture_title' => 'required|string|max:255', // Each lecture should have a title
+            'lectures.*.resources' => 'nullable|array', // Each lecture can have resources
+            'lectures.*.resources.*.title' => 'required|string|max:255', // Each resource in lecture must have a title
+            'lectures.*.resources.*.file' => 'nullable|file|mimes:pdf|max:10240', // PDF files for resources
         ]);
 
         if (Auth::user()->role !== 'tutor') {
             return redirect()->back()->with('error', 'Only tutors can upload courses.');
         }
 
+        // Create course record
         $course = new Course();
         $course->title = $request->title;
         $course->section = $request->section;
@@ -80,12 +87,13 @@ class CourseController extends Controller
         $course->description = $request->description;
         $course->class = $request->class;
         $course->course_time = $request->course_time;
-        $course->category = $request->category; // Store the selected category
+        $course->category = $request->category;
         $course->user_id = Auth::id();
         $course->level = $request->level;
+        $course->price = $request->price;
         $course->uploaded_date = now();
 
-        // Handle the image
+        // Handle the image upload
         if ($request->hasFile('image')) {
             $file = $request->file('image');
             $originalPath = $file->getPathname(); // Get the temporary file path
@@ -97,7 +105,7 @@ class CourseController extends Controller
 
             $course->image = 'courses/' . $newFilename; // Store the relative path in the database
         } else {
-            // If no image uploaded, assign the default image based on category
+            // Default image based on category
             $defaultImages = [
                 'graphic-design' => 'graphicdesign-default.png',
                 'ui/ux' => 'uiux-default.png',
@@ -119,10 +127,42 @@ class CourseController extends Controller
             $course->image = 'courses/' . $image;
         }
 
+        // Handle lectures and their resources
+        $lectures = [];
+        $resources = [];
+        if ($request->has('lectures')) {
+            foreach ($request->lectures as $lecture) {
+                // Save only the lecture title
+                $lectures[] = ['lecture_title' => $lecture['lecture_title']];
+
+                // Save resources (title and file)
+                if (isset($lecture['resources'])) {
+                    foreach ($lecture['resources'] as $resource) {
+                        // Store the PDF file in the 'resources' directory
+                        if (isset($resource['file']) && $resource['file']) {
+                            $filePath = $resource['file']->store('resources', 'public'); // Store file in public storage
+                            $resources[] = [
+                                'resource_title' => $resource['title'], // Resource title
+                                'resource_file' => $filePath // Stored file path
+                            ];
+                        }
+                    }
+                }
+            }
+        }
+
+        // Store only lecture titles in the `lectures` column as JSON
+        $course->lectures = json_encode($lectures);
+
+        // Store resources (title and file) in the `resources` column as JSON
+        $course->resources = json_encode($resources);
+
+        // Save the course record
         $course->save();
 
         return redirect()->route('courses.store')->with('success', 'Course created successfully.');
     }
+
     /**
      * Get the default image for a given category.
      */
@@ -247,6 +287,7 @@ class CourseController extends Controller
             'course_time' => 'required|integer',
             'level' => 'required|string',
             'image' => 'nullable|image|max:2048',
+            'price' => 'nullable|numeric|min:0',
         ]);
 
         if (Auth::id() !== $course->user_id) {
@@ -262,6 +303,7 @@ class CourseController extends Controller
         $course->class = $request->class;
         $course->level = $request->level;
         $course->course_time = $request->course_time;
+        $course->price = $request->price;
 
         if ($request->file('image')) {
             $course->image = $request->file('image')->store('courses', 'public');

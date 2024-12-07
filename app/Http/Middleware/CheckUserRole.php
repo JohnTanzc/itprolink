@@ -27,9 +27,15 @@ class CheckUserRole
             if ($user) {  // Ensure user is not null
                 // Check if the user has one of the allowed roles
                 if (in_array($user->role, $roles)) {
+
+                    if ($request->route()->getName() == 'pub.profile' && in_array($user->role, ['tutee', 'admin','tutor'])) {
+                        return $next($request);
+                    }
+
                     // Store the previous valid page for the user to be able to go back
                     $this->storeValidPage($request, $user);
                     return $next($request);
+
                 }
             }
         }

@@ -62,7 +62,7 @@ class UserRegistrationController extends Controller
         $user->notify(new WelcomeDashboardNotification());
 
         // Redirect back to the registration page with SweetAlert success message
-        return redirect()->route('user.register') // Redirect to registration page
+        return redirect()->route('user.login') // Redirect to login page
             ->with('success', 'Registration successful!'); // Add success message to session
     }
 

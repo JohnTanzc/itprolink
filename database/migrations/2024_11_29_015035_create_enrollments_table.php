@@ -31,8 +31,5 @@ class CreateEnrollmentsTable extends Migration
     public function down()
     {
         Schema::dropIfExists('enrollments');
-        Schema::table('enrollments', function (Blueprint $table) {
-            $table->dropColumn('status');
-        });
     }
 }
