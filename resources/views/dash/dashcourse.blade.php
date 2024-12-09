@@ -22,7 +22,7 @@
                     </div>
                     <!-- end section-heading -->
                     <div class="d-flex flex-wrap align-items-center pt-3">
-                        <h6 class="ribbon ribbon-lg me-2 bg-3 text-white">{{ $course->level}}</h6>
+                        <h6 class="ribbon ribbon-lg me-2 bg-3 text-white">{{ $course->level }}</h6>
                         <div class="rating-wrap d-flex flex-wrap align-items-center">
                             <div class="review-stars">
                                 <span class="rating-number">{{ $course->rating }}</span>
@@ -34,9 +34,9 @@
                             <span class="rating-total ps-1">(20,230 ratings)</span>
                             <span class="student-total ps-2">{{ $enrolledCount }}
                                 @if ($enrolledCount === 1)
-                                    Student
+                                    Tutee
                                 @else
-                                    Students
+                                    Tutees
                                 @endif
                             </span>
                         </div>
@@ -109,181 +109,94 @@
                             <div class="curriculum-header d-flex align-items-center justify-content-between pb-4">
                                 <h3 class="fs-24 font-weight-semi-bold">Course content</h3>
                                 <div class="curriculum-duration fs-15">
-                                    <span class="curriculum-total__text me-2"><strong
-                                            class="text-black font-weight-semi-bold">Total:</strong>
-                                        17 lectures</span>
+                                    <span class="curriculum-total__text me-2">
+                                        <strong class="text-black font-weight-semi-bold">Total:</strong>
+                                        @php
+                                            // Decode the JSON string
+                                            $resources = json_decode($course->resources, true);
+
+                                            // Initialize resource count
+                                            $totalResourceTitles = 0;
+
+                                            // Check if resources are available and count each resource_title
+                                            if ($resources) {
+                                                foreach ($resources as $lecture) {
+                                                    // Count the number of resources for each lecture
+                                                    $totalResourceTitles += count($lecture['resources']);
+                                                }
+                                            }
+                                        @endphp
+                                        {{ $totalResourceTitles }}
+                                        @if ($totalResourceTitles === 1)
+                                            Resource
+                                        @else
+                                            Resources
+                                        @endif
+                                    </span>
                                 </div>
                             </div>
                             <div class="curriculum-content">
                                 <div id="accordion" class="generic-accordion">
-                                    <div class="card">
-                                        <div class="card-header" id="headingOne">
-                                            <button
-                                                class="btn btn-link collapsed d-flex align-items-center justify-content-between"
-                                                data-bs-toggle="collapse" data-bs-target="#collapseOne"
-                                                aria-expanded="false" aria-controls="collapseOne">
-                                                <i class="la la-plus"></i>
-                                                <i class="la la-minus"></i>
-                                                Course introduction
-                                                <span class="fs-15 text-gray font-weight-medium">6 lectures</span>
-                                            </button>
-                                        </div>
-                                        <!-- end card-header -->
-                                        <div id="collapseOne" class="collapse show" aria-labelledby="headingOne"
-                                            data-bs-parent="#accordion">
-                                            <div class="card-body">
-                                                <ul class="generic-list-item">
-                                                    <li>
-                                                        <a href="#"
-                                                            class="d-flex align-items-center justify-content-between text-color"
-                                                            data-bs-toggle="modal" data-bs-target="#previewModal">
-                                                            <span>
-                                                                <i class="la la-play-circle me-1"></i>
-                                                                Introductory words
-                                                            </span>
-                                                            <span>02:27</span>
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <div class="d-flex align-items-center justify-content-between">
-                                                            <span>
-                                                                <i class="la la-play-circle me-1"></i>
-                                                                Remaster in Progress
-                                                            </span>
-                                                            <span>03:09</span>
-                                                        </div>
-                                                    </li>
-                                                    <li>
-                                                        <div class="d-flex align-items-center justify-content-between">
-                                                            <span>
-                                                                <i class="la la-play-circle me-1"></i>
-                                                                Video Quality
-                                                            </span>
-                                                            <span>01:16</span>
-                                                        </div>
-                                                    </li>
-                                                    <li>
-                                                        <div class="d-flex align-items-center justify-content-between">
-                                                            <span>
-                                                                <i class="la la-play-circle me-1"></i>
-                                                                Important Tip - Source Code
-                                                            </span>
-                                                            <span>02:07</span>
-                                                        </div>
-                                                    </li>
-                                                </ul>
+                                    @foreach ($resources as $lectureIndex => $lectureWithResources)
+                                        <div class="card">
+                                            <div class="card-header" id="heading{{ $lectureIndex }}">
+                                                <button
+                                                    class="btn btn-link d-flex align-items-center justify-content-between"
+                                                    data-bs-toggle="collapse" data-bs-target="#collapse{{ $lectureIndex }}"
+                                                    aria-expanded="{{ $lectureIndex === 0 ? 'true' : 'false' }}"
+                                                    aria-controls="collapse{{ $lectureIndex }}">
+                                                    <i class="la la-plus"></i>
+                                                    <i class="la la-minus"></i>
+                                                    {{ $lectureWithResources['lecture_title'] }}
+                                                    <span class="fs-15 text-gray font-weight-medium">
+                                                        @php
+                                                            $resourceCount = !empty($lectureWithResources['resources'])
+                                                                ? count($lectureWithResources['resources'])
+                                                                : 0;
+                                                        @endphp
+                                                        {{ $resourceCount }}
+                                                        @if ($resourceCount === 1)
+                                                            Resource
+                                                        @else
+                                                            Resources
+                                                        @endif
+                                                    </span>
+                                                </button>
                                             </div>
-                                            <!-- end card-body -->
-                                        </div>
-                                        <!-- end collapse -->
-                                    </div>
-                                    <!-- end card -->
-                                    <div class="card">
-                                        <div class="card-header" id="headingTwo">
-                                            <button
-                                                class="btn btn-link collapsed d-flex align-items-center justify-content-between"
-                                                data-bs-toggle="collapse" data-bs-target="#collapseTwo"
-                                                aria-expanded="false" aria-controls="collapseTwo">
-                                                <i class="la la-plus"></i>
-                                                <i class="la la-minus"></i>
-                                                Software tools setup
-                                                <span class="fs-15 text-gray font-weight-medium">6 lectures</span>
-                                            </button>
-                                        </div>
-                                        <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo"
-                                            data-bs-parent="#accordion">
-                                            <div class="card-body">
-                                                <ul class="generic-list-item">
-                                                    <li>
-                                                        <div class="d-flex align-items-center justify-content-between">
-                                                            <span>
-                                                                <i class="la la-play-circle me-1"></i>
-                                                                Biggest Tip to Succeed as a Java Programmer
-                                                            </span>
-                                                            <span>02:27</span>
-                                                        </div>
-                                                    </li>
-                                                    <li>
-                                                        <div class="d-flex align-items-center justify-content-between">
-                                                            <span>
-                                                                <i class="la la-file me-1"></i>
-                                                                ** IMPORTANT ** - Configuring IntelliJ IDEA
-                                                            </span>
-                                                            <span>00:16</span>
-                                                        </div>
-                                                    </li>
-                                                    <li>
-                                                        <div class="d-flex align-items-center justify-content-between">
-                                                            <span>
-                                                                <i class="la la-play-circle me-1"></i>
-                                                                Video Quality
-                                                            </span>
-                                                            <span>01:16</span>
-                                                        </div>
-                                                    </li>
-                                                    <li>
-                                                        <div class="d-flex align-items-center justify-content-between">
-                                                            <span>
-                                                                <i class="la la-play-circle me-1"></i>
-                                                                Important Tip - Source Code
-                                                            </span>
-                                                            <span>02:07</span>
-                                                        </div>
-                                                    </li>
-                                                    <li>
-                                                        <div class="d-flex align-items-center justify-content-between">
-                                                            <span>
-                                                                <i class="la la-code me-1"></i>
-                                                                Interface
-                                                            </span>
-                                                            <span>1 question</span>
-                                                        </div>
-                                                    </li>
-                                                </ul>
+                                            <div id="collapse{{ $lectureIndex }}"
+                                                class="collapse {{ $lectureIndex === 0 ? 'show' : '' }}"
+                                                aria-labelledby="heading{{ $lectureIndex }}" data-bs-parent="#accordion">
+                                                <div class="card-body">
+                                                    <ul class="generic-list-item" id="resources-{{ $lectureIndex }}">
+                                                        @if (!empty($lectureWithResources['resources']))
+                                                            @foreach ($lectureWithResources['resources'] as $resourceIndex => $resource)
+                                                                <li class="resource-item"
+                                                                    id="resource-item-{{ $lectureIndex }}-{{ $resourceIndex }}">
+                                                                    <div
+                                                                        class="d-flex align-items-center justify-content-between">
+                                                                        <span>
+                                                                            <i class="la la-file me-1"></i>
+                                                                            {{ $resource['resource_title'] }}
+                                                                        </span>
+                                                                        <span>
+                                                                            <a href="{{ asset('storage/' . $resource['resource_file']) }}"
+                                                                                target="_blank">
+                                                                                Download
+                                                                            </a>
+                                                                        </span>
+                                                                    </div>
+                                                                </li>
+                                                            @endforeach
+                                                        @else
+                                                            <li>No resources available for this lecture.</li>
+                                                        @endif
+                                                    </ul>
+                                                </div>
                                             </div>
-                                            <!-- end card-body -->
                                         </div>
-                                    </div>
-                                    <!-- end card -->
-                                    <div class="card">
-                                        <div class="card-header" id="headingThree">
-                                            <button
-                                                class="btn btn-link collapsed d-flex align-items-center justify-content-between"
-                                                data-bs-toggle="collapse" data-bs-target="#collapseThree"
-                                                aria-expanded="false" aria-controls="collapseThree">
-                                                <i class="la la-plus"></i>
-                                                <i class="la la-minus"></i>
-                                                Conclusion
-                                                <span class="fs-15 text-gray font-weight-medium">1 lectures</span>
-                                            </button>
-                                        </div>
-                                        <div id="collapseThree" class="collapse" aria-labelledby="headingThree"
-                                            data-bs-parent="#accordion">
-                                            <div class="card-body">
-                                                <ul class="generic-list-item">
-                                                    <li>
-                                                        <a href="#"
-                                                            class="d-flex align-items-center justify-content-between text-color"
-                                                            data-bs-toggle="modal" data-bs-target="#previewModal">
-                                                            <span>
-                                                                <i class="la la-play-circle me-1"></i>
-                                                                Conclusion
-                                                                <span class="ribbon ms-2 fs-13">Watch</span>
-                                                            </span>
-                                                            <span>02:27</span>
-                                                        </a>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                            <!-- end card-body -->
-                                        </div>
-                                        <!-- end collapse -->
-                                    </div>
-                                    <!-- end card -->
+                                    @endforeach
                                 </div>
-                                <!-- end generic-accordion -->
                             </div>
-                            <!-- end curriculum-content -->
                         </div>
                         <!-- end course-overview-card -->
                     </div>
@@ -439,6 +352,33 @@
                                         {{ $course->class }}
                                     </li>
                                     <li class="d-flex align-items-center justify-content-between">
+                                        <span>
+                                            <i class="la la-play-circle-o me-1 text-color"></i>
+                                            @php
+                                                // Decode the JSON string to access the resources
+                                                $resources = json_decode($course->resources, true);
+
+                                                // Initialize resource count
+                                                $totalResourceTitles = 0;
+
+                                                // Check if resources are available and count each resource_title
+                                                if ($resources) {
+                                                    foreach ($resources as $lecture) {
+                                                        // Count the number of resources for each lecture
+                                                        $totalResourceTitles += count($lecture['resources']);
+                                                    }
+                                                }
+                                            @endphp
+
+                                            @if ($totalResourceTitles === 1)
+                                                Resource
+                                            @else
+                                                Resources
+                                            @endif
+                                        </span>
+                                        {{ $totalResourceTitles }}
+                                    </li>
+                                    <li class="d-flex align-items-center justify-content-between">
                                         <span><i class="la la-language me-2 text-color"></i>Language</span>
 
 
@@ -447,7 +387,14 @@
 
                                     </li>
                                     <li class="d-flex align-items-center justify-content-between">
-                                        <span><i class="la la-users me-2 text-color"></i>Enrolled Students</span>
+                                        <span><i class="la la-users me-2 text-color"></i>
+                                            Enrolled
+                                            @if ($enrolledCount === 1)
+                                                Student
+                                            @else
+                                                Students
+                                            @endif
+                                        </span>
                                         {{ $enrolledCount }}
                                     </li>
                                     <li class="d-flex align-items-center justify-content-between">

@@ -26,10 +26,14 @@ class Course extends Model
         'uploaded_date',
         'level',
         'price',
+        'resources',   // Add resources here
+        'lectures'     // Add lectures here
     ];
 
     protected $casts = [
         'uploaded_date' => 'datetime',
+        'lectures' => 'array',
+        'resources' => 'array',
     ];
 
     // Define the relationships

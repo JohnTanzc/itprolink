@@ -16,12 +16,17 @@
 
             <div class="card-body">
                 @if (session('success'))
-                    <div id="success-message" class="alert alert-success alert-dismissible fade show" role="alert">
-                        {{ session('success') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
+                    <script>
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success',
+                            text: '{{ session('success') }}',
+                            confirmButtonText: 'OK'
+                        });
+                    </script>
                 @endif
             </div>
+
 
             <form action="{{ route('courses.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
@@ -142,52 +147,99 @@
 
                                     <!-- Loop for Multiple Lecture and Resource Titles -->
                                     <div id="resource-section">
-                                        <div class="resource-item">
+                                        <div class="lecture-item" id="lecture-item-0">
                                             <div class="form-group">
                                                 <label class="label-text">Lecture Title</label>
-                                                <input class="form-control form--control ps-3" type="text" name="lectures[0][lecture_title]" placeholder="e.g. Introduction to Web Design" required />
+                                                <input class="form-control form--control ps-3" type="text"
+                                                    name="lectures[0][lecture_title]"
+                                                    placeholder="e.g. Introduction to Web Design" required />
                                             </div>
-                                            <div class="form-group">
-                                                <label class="label-text">Resource Title</label>
-                                                <input class="form-control form--control ps-3" type="text" name="lectures[0][resources][0][title]" placeholder="e.g. Course PDF, Study Materials" required />
+                                            <div id="resources-0" class="resources-wrapper">
+                                                <div class="resource-item" id="resource-item-0-0">
+                                                    <div class="form-group">
+                                                        <label class="label-text">Resource Title</label>
+                                                        <input class="form-control form--control ps-3" type="text"
+                                                            name="lectures[0][resources][0][title]"
+                                                            placeholder="e.g. Course PDF, Study Materials" required />
+                                                    </div>
+                                                    <div class="file-upload-wrap">
+                                                        <input type="file" name="lectures[0][resources][0][file]"
+                                                            class="form-control ps-3" required>
+                                                        <small class="form-text text-muted">Upload a resource file (PDF,
+                                                            DOCX, etc.).</small>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div class="file-upload-wrap">
-                                                <input type="file" name="lectures[0][resources][0][file]" class="form-control ps-3" multiple required>
-                                                <small class="form-text text-muted">You can upload multiple resource files (PDF, DOCX, etc.) for this lecture.</small>
+                                            <!-- Button to Add More Resources to This Lecture -->
+                                            <div class="course-submit-btn-box pb-4">
+                                                <button type="button" class="btn btn-secondary bg-6"
+                                                    onclick="addResourceToLecture(0)">+ Add Another Resource</button>
                                             </div>
                                         </div>
                                     </div>
 
-                                    <!-- Button to Add More Resources -->
-                                    <div class="course-submit-btn-box pb-4" id="add-resource-btn">
-                                        <button type="button" class="btn btn-secondary bg-6" onclick="addResourceSection()">+ Add Another Resource</button>
+                                    <!-- Button to Add More Lectures -->
+                                    <div class="course-submit-btn-box pb-4" id="add-lecture-btn">
+                                        <button type="button" class="btn btn-secondary bg-6"
+                                            onclick="addLectureSection()">+ Add Another Lecture</button>
                                     </div>
                                 </div>
                             </div>
 
                             <script>
-                                // Function to Add New Resource Section
-                                function addResourceSection() {
+                                // Function to Add New Lecture Section
+                                function addLectureSection() {
                                     var resourceSection = document.getElementById('resource-section');
-                                    var newResourceItem = document.createElement('div');
-                                    newResourceItem.classList.add('resource-item');
+                                    var newLectureIndex = resourceSection.getElementsByClassName('lecture-item').length;
+                                    var newLectureItem = document.createElement('div');
+                                    newLectureItem.classList.add('lecture-item');
+                                    newLectureItem.id = 'lecture-item-' + newLectureIndex;
 
-                                    newResourceItem.innerHTML = `
+                                    newLectureItem.innerHTML = `
                                         <div class="form-group">
                                             <label class="label-text">Lecture Title</label>
-                                            <input class="form-control form--control ps-3" type="text" name="lecture_title[]" placeholder="e.g. Introduction to Web Design" required />
+                                            <input class="form-control form--control ps-3" type="text" name="lectures[${newLectureIndex}][lecture_title]" placeholder="e.g. Introduction to Web Design" required />
                                         </div>
-                                        <div class="form-group">
-                                            <label class="label-text">Resource Title</label>
-                                            <input class="form-control form--control ps-3" type="text" name="resource_title[]" placeholder="e.g. Course PDF, Study Materials" required />
+                                        <div id="resources-${newLectureIndex}" class="resources-wrapper">
+                                            <div class="resource-item" id="resource-item-${newLectureIndex}-0">
+                                                <div class="form-group">
+                                                    <label class="label-text">Resource Title</label>
+                                                    <input class="form-control form--control ps-3" type="text" name="lectures[${newLectureIndex}][resources][0][title]" placeholder="e.g. Course PDF, Study Materials" required />
+                                                </div>
+                                                <div class="file-upload-wrap">
+                                                    <input type="file" name="lectures[${newLectureIndex}][resources][0][file]" class="form-control ps-3" required>
+                                                    <small class="form-text text-muted">Upload a resource file (PDF, DOCX, etc.).</small>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div class="file-upload-wrap">
-                                            <input type="file" name="resources[]" class="form-control ps-3" multiple required>
-                                            <small class="form-text text-muted">You can upload multiple resource files (PDF, DOCX, etc.) for this lecture.</small>
+                                        <div class="course-submit-btn-box pb-4">
+                                            <button type="button" class="btn btn-secondary bg-6" onclick="addResourceToLecture(${newLectureIndex})">+ Add Another Resource</button>
                                         </div>
                                     `;
 
-                                    resourceSection.appendChild(newResourceItem);
+                                    resourceSection.appendChild(newLectureItem);
+                                }
+
+                                // Function to Add New Resource to an Existing Lecture
+                                function addResourceToLecture(lectureIndex) {
+                                    var resourceWrapper = document.getElementById(`resources-${lectureIndex}`);
+                                    var newResourceIndex = resourceWrapper.getElementsByClassName('resource-item').length;
+                                    var newResourceItem = document.createElement('div');
+                                    newResourceItem.classList.add('resource-item');
+                                    newResourceItem.id = `resource-item-${lectureIndex}-${newResourceIndex}`;
+
+                                    newResourceItem.innerHTML = `
+                                        <div class="form-group">
+                                            <label class="label-text">Resource Title</label>
+                                            <input class="form-control form--control ps-3" type="text" name="lectures[${lectureIndex}][resources][${newResourceIndex}][title]" placeholder="e.g. Course PDF, Study Materials" required />
+                                        </div>
+                                        <div class="file-upload-wrap">
+                                            <input type="file" name="lectures[${lectureIndex}][resources][${newResourceIndex}][file]" class="form-control ps-3" required>
+                                            <small class="form-text text-muted">Upload a resource file (PDF, DOCX, etc.).</small>
+                                        </div>
+                                    `;
+
+                                    resourceWrapper.appendChild(newResourceItem);
                                 }
                             </script>
                             {{-- End of Resource --}}
@@ -248,10 +300,10 @@
 
     <!-- Include this script for tagsinput functionality -->
     <script>
-        $(document).ready(function () {
+        $(document).ready(function() {
             $('#selected-languages').tagsinput({
                 trimValue: true,
-                confirmKeys: [13, 32]  // Allow Enter and Space to confirm input
+                confirmKeys: [13, 32] // Allow Enter and Space to confirm input
             });
         });
     </script>

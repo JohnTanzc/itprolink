@@ -65,6 +65,7 @@
 
 
 
+
     @yield('modals')
     @yield('content')
     <!-- start scroll top -->

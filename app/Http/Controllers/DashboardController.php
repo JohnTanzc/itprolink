@@ -133,7 +133,7 @@ class DashboardController extends Controller
         $career = $tutor->career;
         $experience = $tutor->exp;
 
-        return view('dash.dashpub', compact('courses', 'user', 'role', 'tutor', 'totalCourses', 'aboutMe','education','career','experience')); // Passing 'aboutMe'
+        return view('dash.dashpub', compact('courses', 'user', 'role', 'tutor', 'totalCourses', 'aboutMe', 'education', 'career', 'experience')); // Passing 'aboutMe'
     }
 
 
@@ -167,9 +167,13 @@ class DashboardController extends Controller
             abort(404, 'Course not found.');
         }
 
-        return view('dash.dashcourse', compact('user', 'course'));
-    }
+         // Decode lectures and resources from JSON if they exist and are not already arrays
+    $lectures = is_array($course->lectures) ? $course->lectures : json_decode($course->lectures, true);
+    $resources = is_array($course->resources) ? $course->resources : json_decode($course->resources, true);
 
+        // Pass lectures and resources to the view alongside course and user
+        return view('dash.dashcourse', compact('user', 'course', 'lectures', 'resources'));
+    }
 
 
     /** Submit Course */
