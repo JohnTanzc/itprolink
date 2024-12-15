@@ -42,22 +42,18 @@
                                  <td>{{ $payment['enrollment_id'] }}</td>
                                  <td>{{ $payment->enrollment->user->fname }} {{ $payment->enrollment->user->lname }}</td>
                                  <td>{{ $payment->enrollment->course->title }}</td>
-                                 <td>{{ $payment->enrollment->course->user->fname }} {{ $payment->enrollment->course->user->lname }}</td>
+                                 <td>{{ $payment->enrollment->course->user->fname }}
+                                     {{ $payment->enrollment->course->user->lname }}</td>
                                  <td>
-                                     <form action="{{ route('enrollment.updatePaymentStatus', $payment->enrollment->id) }}"
-                                         method="POST">
-                                         @csrf
-                                         @method('PUT')
-                                         <select name="isPaid" class="form-select form-select-sm"
-                                             onchange="this.form.submit()">
-                                             <option value="0"
-                                                 {{ $payment->enrollment->isPaid == 0 ? 'selected' : '' }}>Pending</option>
-                                             <option value="1"
-                                                 {{ $payment->enrollment->isPaid == 1 ? 'selected' : '' }}>Paid</option>
-                                             <option value="2"
-                                                 {{ $payment->enrollment->isPaid == 2 ? 'selected' : '' }}>Reject</option>
-                                         </select>
-                                     </form>
+                                     <select name="isPaid" class="form-select form-select-sm"
+                                         onchange="updatePaymentStatus({{ $payment->enrollment->id }}, this.value)">
+                                         <option value="0" {{ $payment->enrollment->isPaid == 0 ? 'selected' : '' }}>
+                                             Pending</option>
+                                         <option value="1" {{ $payment->enrollment->isPaid == 1 ? 'selected' : '' }}>
+                                             Paid</option>
+                                         <option value="2" {{ $payment->enrollment->isPaid == 2 ? 'selected' : '' }}>
+                                             Reject</option>
+                                     </select>
                                  </td>
                                  <td>{{ $payment->created_at->format('Y-m-d') }}</td>
                                  <td>
@@ -156,6 +152,38 @@
                      },
                      error: function(xhr, status, error) {
                          alert('Failed to fetch payment details: ' + xhr.responseText);
+                     }
+                 });
+             }
+         </script>
+
+         <script>
+             function updatePaymentStatus(id, status) {
+                 $.ajax({
+                     url: `/enrollment/${id}/update-payment-status`, // Update the URL to match the route
+                     method: 'PUT', // Change to PUT to match the route method
+                     data: {
+                         isPaid: status, // Send the selected status
+                         _token: '{{ csrf_token() }}' // Include CSRF token for security
+                     },
+                     success: function(response) {
+                         // Show success alert if the status update is successful
+                         Swal.fire({
+                             icon: 'success',
+                             title: 'Success!',
+                             text: 'Verification status updated successfully.',
+                             showConfirmButton: false,
+                             timer: 1500
+                         });
+                     },
+                     error: function(xhr, status, error) {
+                         // Log error and show error alert if something goes wrong
+                         console.log(xhr.responseText); // Log the full response for debugging
+                         Swal.fire({
+                             icon: 'error',
+                             title: 'Error',
+                             text: xhr.responseText || 'Something went wrong. Please try again later.',
+                         });
                      }
                  });
              }

@@ -140,6 +140,15 @@ class User extends Authenticatable
     {
         return $this->hasMany(Payment::class);
     }
+
+
+
+    public function savedCourses()
+    {
+        return $this->belongsToMany(Course::class, 'saved_courses')->withTimestamps();
+    }
+
+
     use Notifiable;
 
 

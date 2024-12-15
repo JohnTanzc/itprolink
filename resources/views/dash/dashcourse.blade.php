@@ -198,6 +198,234 @@
                                 </div>
                             </div>
                         </div>
+
+                        {{-- About Instructor --}}
+                        <div class="course-overview-card pt-5">
+                            <h3 class="fs-24 font-weight-semi-bold pb-4">
+                                About the instructor
+                            </h3>
+                            <div class="instructor-wrap">
+                                <div class="media media-card">
+                                    <div class="instructor-img">
+                                        <a href="teacher-detail.html" class="media-img d-block">
+                                            <img class="rounded-full"
+                                                src="{{ asset('storage/profile_pictures/' . ($course->tutor->profile_picture ?? 'default-image.png')) }}"
+                                                alt="Tutor thumbnail image" />
+                                        </a>
+                                        <ul class="generic-list-item pt-3">
+                                            <li>
+                                                <i class="la la-star me-2 text-color-3"></i> 4.6
+                                                Instructor Rating
+                                            </li>
+                                            <li>
+                                                <i class="la la-user me-2 text-color-3"></i>
+                                                {{ $enrolledCount }}
+                                                @if ($enrolledCount === 1)
+                                                    Tutee
+                                                @else
+                                                    Tutees
+                                                @endif
+                                                </span>
+                                            </li>
+                                            <li>
+                                                <i class="la la-comment-o me-2 text-color-3"></i>
+                                                2,533 Reviews
+                                            </li>
+                                            <li>
+                                                <i class="la la-play-circle-o me-2 text-color-3"></i>
+                                                {{ $tutorCourseCount }}
+                                                @if ($tutorCourseCount === 1)
+                                                    Course
+                                                @else
+                                                    Courses
+                                                @endif
+                                            </li>
+                                            <li>
+                                                <a href="{{ route('pub.profile', ['id' => $course->user_id]) }}">View all
+                                                    Courses</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <!-- end instructor-img -->
+                                    <div class="media-body">
+                                        <h5><a href="teacher-detail.html">{{ $course->instructor_name }}</a></h5>
+                                        <span class="d-block lh-18 pt-2 pb-3">Joined 4 years ago</span>
+                                        <p class="text-black lh-18 pb-3">
+                                            Java Python Android and C# Expert Developer - 878K+
+                                            students
+                                        </p>
+                                        <p class="pb-3">
+                                            Lorem Ipsum is simply dummy text of the printing and
+                                            typesetting industry. Lorem Ipsum has been the
+                                            industry’s standard dummy text ever since the 1500s,
+                                            when an unknown printer took a galley of type and
+                                            scrambled it to make a type specimen book. It has
+                                            survived not only five centuries, but also the leap into
+                                            electronic typesetting, remaining essentially unchanged.
+                                        </p>
+                                        <div class="collapse" id="collapseMoreTwo">
+                                            <p class="pb-3">
+                                                After learning the hard way, Tim was determined to
+                                                become the best teacher he could, and to make his
+                                                training as painless as possible, so that you, or
+                                                anyone else with the desire to become a software
+                                                developer, could become one.
+                                            </p>
+                                            <p class="pb-3">
+                                                If you want to become a financial analyst, a finance
+                                                manager, an FP&A analyst, an investment banker, a
+                                                business executive, an entrepreneur, a business
+                                                intelligence analyst, a data analyst, or a data
+                                                scientist,
+                                                <strong class="text-black font-weight-semi-bold">Tim Buchalka's courses are
+                                                    the perfect course to
+                                                    start</strong>.
+                                            </p>
+                                        </div>
+                                        <a class="collapse-btn collapse--btn fs-15" data-bs-toggle="collapse"
+                                            href="#collapseMoreTwo" role="button" aria-expanded="false"
+                                            aria-controls="collapseMoreTwo">
+                                            <span class="collapse-btn-hide">Show more<i
+                                                    class="la la-angle-down ms-1 fs-14"></i></span>
+                                            <span class="collapse-btn-show">Show less<i
+                                                    class="la la-angle-up ms-1 fs-14"></i></span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- end instructor-wrap -->
+                        </div>
+                        {{-- End of Instructor --}}
+
+                        {{-- Ratings View  --}}
+                        <div class="course-overview-card pt-4">
+                            <h3 class="fs-24 font-weight-semi-bold pb-4">Reviews</h3>
+                            <div class="review-wrap">
+                                <div class="d-flex flex-wrap align-items-center pb-4">
+                                    <form method="post" class="me-3 flex-grow-1">
+                                        <div class="form-group">
+                                            <input class="form-control form--control ps-3" type="text" name="search"
+                                                placeholder="Search reviews" />
+                                            <span class="la la-search search-icon"></span>
+                                        </div>
+                                    </form>
+                                    <div class="select-container select2-full-wrapper mb-3">
+                                        <select class="select-container-select">
+                                            <option value="all-rating">All ratings</option>
+                                            <option value="five-star">Five stars</option>
+                                            <option value="four-star">Four stars</option>
+                                            <option value="three-star">Three stars</option>
+                                            <option value="two-star">Two stars</option>
+                                            <option value="one-star">One star</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="media media-card border-bottom border-bottom-gray pb-4 mb-4">
+                                    <div class="media-img me-4 rounded-full">
+                                        <img class="rounded-full lazy" src="images/img-loading.png"
+                                            data-src="images/small-avatar-1.jpg" alt="User image" />
+                                    </div>
+                                    <div class="media-body">
+                                        <div class="d-flex flex-wrap align-items-center justify-content-between pb-1">
+                                            <h5>Kavi arasan</h5>
+                                            <div class="review-stars">
+                                                <span class="la la-star"></span>
+                                                <span class="la la-star"></span>
+                                                <span class="la la-star"></span>
+                                                <span class="la la-star"></span>
+                                                <span class="la la-star"></span>
+                                            </div>
+                                        </div>
+                                        <span class="d-block lh-18 pb-2">a month ago</span>
+                                        <p class="pb-2">
+                                            This is one of the best courses I have taken in Udemy.
+                                            It is very complete, and it has made continue learning
+                                            about Java and SQL databases as well.
+                                        </p>
+                                        <div class="helpful-action">
+                                            <span class="d-block fs-13">Was this review helpful?</span>
+                                            <button class="btn">Yes</button>
+                                            <button class="btn">No</button>
+                                            <span class="btn-text fs-14 cursor-pointer ps-1" data-bs-toggle="modal"
+                                                data-bs-target="#reportModal">Report</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- end media -->
+                                <div class="media media-card border-bottom border-bottom-gray pb-4 mb-4">
+                                    <div class="media-img me-4 rounded-full">
+                                        <img class="rounded-full lazy" src="images/img-loading.png"
+                                            data-src="images/small-avatar-2.jpg" alt="User image" />
+                                    </div>
+                                    <div class="media-body">
+                                        <div class="d-flex flex-wrap align-items-center justify-content-between pb-1">
+                                            <h5>Jitesh Shaw</h5>
+                                            <div class="review-stars">
+                                                <span class="la la-star"></span>
+                                                <span class="la la-star"></span>
+                                                <span class="la la-star"></span>
+                                                <span class="la la-star"></span>
+                                                <span class="la la-star"></span>
+                                            </div>
+                                        </div>
+                                        <span class="d-block lh-18 pb-2">1 months ago</span>
+                                        <p class="pb-2">
+                                            This is one of the best courses I have taken in Udemy.
+                                            It is very complete, and it has made continue learning
+                                            about Java and SQL databases as well.
+                                        </p>
+                                        <div class="helpful-action">
+                                            <span class="d-block fs-13">Was this review helpful?</span>
+                                            <button class="btn">Yes</button>
+                                            <button class="btn">No</button>
+                                            <span class="btn-text fs-14 cursor-pointer ps-1" data-bs-toggle="modal"
+                                                data-bs-target="#reportModal">Report</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- end media -->
+                                <div class="media media-card border-bottom border-bottom-gray pb-4 mb-4">
+                                    <div class="media-img me-4 rounded-full">
+                                        <img class="rounded-full lazy" src="images/img-loading.png"
+                                            data-src="images/small-avatar-3.jpg" alt="User image" />
+                                    </div>
+                                    <div class="media-body">
+                                        <div class="d-flex flex-wrap align-items-center justify-content-between pb-1">
+                                            <h5>Miguel Sanches</h5>
+                                            <div class="review-stars">
+                                                <span class="la la-star"></span>
+                                                <span class="la la-star"></span>
+                                                <span class="la la-star"></span>
+                                                <span class="la la-star"></span>
+                                                <span class="la la-star"></span>
+                                            </div>
+                                        </div>
+                                        <span class="d-block lh-18 pb-2">2 month ago</span>
+                                        <p class="pb-2">
+                                            This is one of the best courses I have taken in Udemy.
+                                            It is very complete, and it has made continue learning
+                                            about Java and SQL databases as well.
+                                        </p>
+                                        <div class="helpful-action">
+                                            <span class="d-block fs-13">Was this review helpful?</span>
+                                            <button class="btn">Yes</button>
+                                            <button class="btn">No</button>
+                                            <span class="btn-text fs-14 cursor-pointer ps-1" data-bs-toggle="modal"
+                                                data-bs-target="#reportModal">Report</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- end media -->
+                            </div>
+                            <!-- end review-wrap -->
+                            <div class="see-more-review-btn text-center">
+                                <button type="button" class="btn theme-btn theme-btn-transparent">
+                                    Load more reviews
+                                </button>
+                            </div>
+                        </div>
+                        {{-- End of Ratings View  --}}
+
                         <!-- end course-overview-card -->
                     </div>
                     <!-- end course-details-content-wrap -->
@@ -269,9 +497,10 @@
                                                 </button>
                                             @endif
                                         @endif
-                                        <div class="buy-course-btn-box">
-                                            <button type="button" class="btn theme-btn w-100 mb-2">
-                                                <i class="la la-shopping-cart fs-18 me-1"></i> Save
+                                        <div class="buy-course-btn-box save-course-btn">
+                                            <button type="button" class="btn theme-btn w-100 mb-2" id="save-course-btn"
+                                                data-course-id="{{ $course->id }}">
+                                                <i class="la la-heart-o fs-18 me-1"></i> Save
                                             </button>
                                         </div>
                                         <!-- end preview-course-incentives -->
@@ -281,6 +510,73 @@
                             </div>
                             <!-- end card -->
 
+                            {{-- Save Courses --}}
+                            <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                            <script>
+                                document.addEventListener('DOMContentLoaded', function() {
+                                    const saveButton = document.getElementById('save-course-btn');
+                                    const courseId = saveButton.getAttribute('data-course-id'); // Get the course ID from the data attribute
+
+                                    // Check if the course is already saved in localStorage
+                                    if (localStorage.getItem('savedCourse_' + courseId)) {
+                                        // If the course is saved, update the button state
+                                        saveButton.disabled = true;
+                                        saveButton.innerHTML = '<i class="la la-heart"></i> Saved'; // Change button text and icon
+                                    }
+
+                                    // Event listener for the save button
+                                    saveButton.addEventListener('click', function() {
+                                        // Send AJAX request to save the course
+                                        fetch('/save-course', {
+                                                method: 'POST',
+                                                headers: {
+                                                    'Content-Type': 'application/json',
+                                                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                                                },
+                                                body: JSON.stringify({
+                                                    course_id: courseId
+                                                })
+                                            })
+                                            .then(response => response.json())
+                                            .then(data => {
+                                                if (data.success) {
+                                                    Swal.fire({
+                                                        icon: 'success',
+                                                        title: 'Success',
+                                                        text: data.message,
+                                                        timer: 1500,
+                                                        showConfirmButton: false
+                                                    });
+
+                                                    // Store the saved course in localStorage
+                                                    localStorage.setItem('savedCourse_' + courseId, true);
+
+                                                    // Update the button to reflect the saved state
+                                                    saveButton.disabled = true;
+                                                    saveButton.innerHTML =
+                                                    '<i class="la la-heart"></i> Saved'; // Change icon and text
+                                                } else {
+                                                    Swal.fire({
+                                                        icon: 'error',
+                                                        title: 'Error',
+                                                        text: data.message,
+                                                        timer: 1500,
+                                                        showConfirmButton: false
+                                                    });
+                                                }
+                                            })
+                                            .catch(error => {
+                                                Swal.fire({
+                                                    icon: 'error',
+                                                    title: 'Error',
+                                                    text: 'Something went wrong. Please try again later.',
+                                                    timer: 1500,
+                                                    showConfirmButton: false
+                                                });
+                                            });
+                                    });
+                                });
+                            </script>
                             {{-- Tutor Enroll Now SweetAlert --}}
 
                             <script>
@@ -344,10 +640,6 @@
                                         {{ $course->course_time }} Hours
                                     </li>
                                     <li class="d-flex align-items-center justify-content-between">
-                                        <span><i class="la la-language me-2 text-color"></i>Ratings</span>
-                                        {{ $course->rating }}
-                                    </li>
-                                    <li class="d-flex align-items-center justify-content-between">
                                         <span><i class="la la-play-circle-o me-2 text-color"></i>Lectures</span>
                                         {{ $course->class }}
                                     </li>
@@ -387,12 +679,12 @@
 
                                     </li>
                                     <li class="d-flex align-items-center justify-content-between">
-                                        <span><i class="la la-users me-2 text-color"></i>
+                                        <span><i class="la la-users me-1 text-color"></i>
                                             Enrolled
                                             @if ($enrolledCount === 1)
-                                                Student
+                                                Tutee
                                             @else
-                                                Students
+                                                Tutees
                                             @endif
                                         </span>
                                         {{ $enrolledCount }}
@@ -411,6 +703,7 @@
                 <!-- end row -->
             </div>
             <!-- end container -->
+        </div>
     </section>
 
 
@@ -575,7 +868,6 @@
                 });
         });
     </script>
-
 
     @include('layouts.footer')
 @endsection

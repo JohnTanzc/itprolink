@@ -14,6 +14,7 @@
         <div class="dashboard-heading mb-5">
             <h3 class="fs-22 font-weight-semi-bold">My Courses</h3>
         </div>
+
         <div class="dashboard-cards mb-5">
             @forelse($courses as $course)
                 <div class="card card-item card-item-list-layout">
@@ -93,15 +94,19 @@
             @empty
                 <p>No courses uploaded yet.</p>
             @endforelse
+        </div>
 
-
+        <!-- Pagination links -->
+        <!-- Pagination links -->
+        <div class="d-flex justify-content-center">
+            {{ $courses->links() }} <!-- This will generate the pagination links -->
         </div>
 
         @include('dash.dashfooter')
     </div>
     <!-- end dashboard-content-wrap -->
 
-    <!-- Modal for Deleting -->
+    <!-- Modal for item deletion -->
     <div class="modal fade modal-container" id="itemDeleteModal" tabindex="-1" role="dialog"
         aria-labelledby="itemDeleteModalTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
@@ -117,21 +122,37 @@
                             Cancel
                         </button>
                         <!-- Delete Form -->
-                        <form id="deleteForm" method="POST" action="" style="display: inline;">
+                        <form id="deleteForm-{{ $course->id }}" method="POST"
+                            action="{{ route('course.delete', $course->id) }}" style="display: inline;">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn theme-btn theme-btn-sm lh-30">
                                 Ok, Delete
                             </button>
                         </form>
+
                     </div>
                 </div>
-                <!-- end modal-body -->
             </div>
-            <!-- end modal-content -->
         </div>
     </div>
-    <!-- end modal -->
+    {{-- End of Modal --}}
+
+    <!-- Show SweetAlert on success -->
+    @if (session('success'))
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: 'Verification status updated successfully.',
+                        showConfirmButton: false,
+                        timer: 2000
+                });
+            });
+        </script>
+    @endif
+
 
     <script>
         function setDeleteUrl(url) {

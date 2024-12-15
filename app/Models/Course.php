@@ -59,8 +59,15 @@ class Course extends Model
     }
 
     public function tutor()
-{
-    return $this->belongsTo(User::class, 'user_id'); // assuming 'user_id' is the foreign key
-}
+    {
+        return $this->belongsTo(User::class, 'user_id'); // assuming 'user_id' is the foreign key
+    }
+
+    // app/Models/Course.php
+    public function savedCourses()
+    {
+        return $this->belongsToMany(Course::class, 'saved_courses', 'user_id', 'course_id');
+    }
+
 
 }

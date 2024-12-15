@@ -18,19 +18,17 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="collections-tab" data-bs-toggle="tab" href="#collections" role="tab"
+                        <a class="nav-link" id="collections-tab" data-bs-toggle="tab" href="#enrolled" role="tab"
                             aria-controls="collections" aria-selected="true">
                             Enrolled
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="wishlist-tab" data-bs-toggle="tab" href="#wishlist" role="tab"
-                            aria-controls="wishlist" aria-selected="false">
-                            Favorite
-                        </a>
+                        <a class="nav-link" id="wishlist-tab" data-bs-toggle="tab" href="#favorite" role="tab"
+                            aria-controls="wishlist" aria-selected="false">Saved Courses</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="archived-tab" data-bs-toggle="tab" href="#archived" role="tab"
+                        <a class="nav-link" id="archived-tab" data-bs-toggle="tab" href="#completed" role="tab"
                             aria-controls="archived" aria-selected="false">
                             Completed
                         </a>
@@ -70,19 +68,9 @@
                                         <div class="select-container me-1 select2-full-wrapper">
                                             <select class="select-container-select">
                                                 <option value="0" selected="">Categories</option>
-                                                <option value="1">Favorites</option>
-                                                <option value="2">Enrolled</option>
-                                                <option value="3">All Categories</option>
-                                                <option value="4">Development</option>
-                                                <option value="5">Design</option>
-                                                <option value="6">Business</option>
-                                                <option value="7">Marketing</option>
-                                                <option value="8">IT & Software</option>
-                                                <option value="9">Finance & Accounting</option>
-                                                <option value="10">Personal Development</option>
-                                                <option value="11">Office Productivity</option>
-                                                <option value="12">Teaching & Academics</option>
-                                                <option value="13">Lifestyle</option>
+                                                <option value="1">Enrolled</option>
+                                                <option value="2">Saved</option>
+                                                <option value="3">Completed</option>
                                             </select>
                                         </div>
                                         <div class="select-container me-1 select2-full-wrapper">
@@ -122,7 +110,8 @@
                                         <div class="col-lg-4 responsive-column-half">
                                             <div class="card card-item">
                                                 <div class="card-image">
-                                                    <a href="lesson-details.html" class="d-block">
+                                                    <a href="{{ route('course.detail', ['course' => $enrollment->course->id]) }}"
+                                                        class="d-block">
                                                         <img class="card-img-top lazy"
                                                             src="{{ asset('template/images/img-loading.png') }}"
                                                             data-src="{{ $enrollment->course->image
@@ -130,92 +119,234 @@
                                                                 : asset('storage/' . $this->getDefaultImage($enrollment->course->category)) }}"
                                                             alt="Course image" />
                                                     </a>
-                                                    <div class="course-badge-labels course--badge-labels">
-                                                        <div
-                                                            class="generic-action-wrap generic--action-wrap generic--action-wrap-2">
-                                                            <div class="dropdown">
-                                                                <a class="action-btn bg-white text-gray dropdown-btn"
-                                                                    href="#" role="button" id="allCourseMenuLink"
-                                                                    data-toggle="dropdown" aria-haspopup="true"
-                                                                    aria-expanded="false">
-                                                                    <i class="la la-ellipsis-v"></i>
-                                                                </a>
-                                                                <div class="dropdown-menu dropdown-menu-right dropdown-menu-wrap"
-                                                                    aria-labelledby="allCourseMenuLink">
-                                                                    <div class="section-block my-2"></div>
-                                                                    <a href="javascript:void(0)"
-                                                                        class="dropdown-item d-flex align-items-center justify-content-between">
-                                                                        <span class="swapping-btn w-100"
-                                                                            data-text-swap="Unfavorite"
-                                                                            data-text-original="Favorite">Favorite</span>
-                                                                        <i class="ms-auto la la-star"></i>
-                                                                    </a>
-                                                                    <a href="javascript:void(0)"
-                                                                        class="dropdown-item d-flex align-items-center justify-content-between">
-                                                                        <span>In Progress</span>
-                                                                        <i class="la la-circle-notch la-spin"></i>
-                                                                    </a>
-                                                                    <a href="javascript:void(0)"
-                                                                        class="dropdown-item d-flex align-items-center justify-content-between">
-                                                                        <span>Completed</span>
-                                                                        <i class="la la-check"></i>
-                                                                    </a>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
                                                 </div>
+                                                <!-- end card-image -->
                                                 <div class="card-body">
+                                                    <h6 class="ribbon ribbon-blue-bg fs-14 mb-3">
+                                                        {{ $enrollment->course->level }}
+                                                    </h6>
                                                     <h5 class="card-title">
-                                                        <a href="lesson-details.html">{{ $enrollment->course->title }}</a>
+                                                        <a
+                                                            href="{{ route('course.detail', ['course' => $enrollment->course->id]) }}">
+                                                            {{ $enrollment->course->title }}
+                                                        </a>
                                                     </h5>
-                                                    <p class="card-text lh-22 pt-2">
+                                                    <p class="card-text">
                                                         <a
                                                             href="teacher-detail.html">{{ $enrollment->course->instructor_name ?? 'Instructor Name Not Found' }}</a>
                                                     </p>
-                                                    <div
-                                                        class="my-course-progress-bar-wrap d-flex flex-wrap align-items-center mt-3 position-relative">
-                                                        <p class="skillbar-title">Completed</p>
-                                                        <div class="skillbar-box">
-                                                            <div class="skillbar skillbar-skillbar-2">
-                                                                <div class="skillbar-bar skillbar--bar-2 bg-1"></div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="skill-bar-percent">OK</div>
-                                                    </div>
-                                                    <div
-                                                        class="rating-wrap d-flex align-items-center justify-content-between pt-3">
+                                                    <div class="rating-wrap d-flex align-items-center py-2">
                                                         <div class="review-stars">
-
+                                                            <span class="rating-number">4.4</span>
+                                                            <span class="la la-star"></span>
+                                                            <span class="la la-star"></span>
+                                                            <span class="la la-star"></span>
+                                                            <span class="la la-star"></span>
+                                                            <span class="la la-star-o"></span>
                                                         </div>
-                                                        <button type="button" class="btn theme-btn"
-                                                            data-bs-toggle="modal" data-bs-target="#reviewModal">
-                                                            Add a Review
-                                                        </button>
+                                                        <span class="rating-total ps-1">(20,230)</span>
+                                                    </div>
+                                                    <!-- end rating-wrap -->
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        <p class="card-price text-black font-weight-bold">
+                                                            @if ($enrollment->course->price == 0)
+                                                                Free
+                                                            @else
+                                                                ₱{{ number_format($enrollment->course->price, 2) }}
+                                                            @endif
+                                                        </p>
                                                     </div>
                                                 </div>
+                                                <!-- end card-body -->
                                             </div>
+                                            <!-- end card -->
                                         </div>
+                                        <!-- end col-lg-4 -->
                                     @endforeach
                                 </div>
                             </div>
 
 
-
-                            <!-- end my-collection-item -->
                         </div>
                         <!-- end my-course-body -->
                     </div>
-                    <!-- end tab-pane -->
-                    <div class="tab-pane fade" id="wishlist" role="tabpanel" aria-labelledby="wishlist-tab">
-
-                        <!-- end my-course-body -->
+                    <div class="tab-pane fade" id="enrolled" role="tabpanel" aria-labelledby="wishlist-tab">
+                        <div class="my-course-body">
+                            <div
+                                class="my-course-info pb-40px d-flex flex-wrap align-items-center justify-content-between">
+                                <h3 class="fs-22 font-weight-semi-bold">Enrolled Courses</h3>
+                                <form method="post">
+                                    <div class="input-group">
+                                        <input class="form-control form--control form--control-gray ps-3" type="text"
+                                            name="search" placeholder="Search courses" />
+                                        <div class="input-group-append">
+                                            <button class="btn theme-btn shadow-none">
+                                                <i class="la la-search"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <!-- end my-course-info -->
+                            <div class="my-course-cards pt-40px">
+                                <div class="row">
+                                    @forelse ($enrolledCourses as $enrollment)
+                                        <div class="col-lg-4 responsive-column-half">
+                                            <div class="card card-item">
+                                                <div class="card-image">
+                                                    <a href="{{ route('course.detail', ['course' => $enrollment->course->id]) }}"
+                                                        class="d-block">
+                                                        <img class="card-img-top lazy"
+                                                            src="{{ asset('template/images/img-loading.png') }}"
+                                                            data-src="{{ $enrollment->course->image
+                                                                ? asset('storage/' . $enrollment->course->image)
+                                                                : asset('storage/' . $this->getDefaultImage($enrollment->course->category)) }}"
+                                                            alt="Course image" />
+                                                    </a>
+                                                </div>
+                                                <!-- end card-image -->
+                                                <div class="card-body">
+                                                    <h6 class="ribbon ribbon-blue-bg fs-14 mb-3">
+                                                        {{ $enrollment->course->level }}
+                                                    </h6>
+                                                    <h5 class="card-title">
+                                                        <a
+                                                            href="{{ route('course.detail', ['course' => $enrollment->course->id]) }}">
+                                                            {{ $enrollment->course->title }}
+                                                        </a>
+                                                    </h5>
+                                                    <p class="card-text">
+                                                        <a
+                                                            href="teacher-detail.html">{{ $enrollment->course->instructor_name ?? 'Instructor Name Not Found' }}</a>
+                                                    </p>
+                                                    <div class="rating-wrap d-flex align-items-center py-2">
+                                                        <div class="review-stars">
+                                                            <span class="rating-number">4.4</span>
+                                                            <span class="la la-star"></span>
+                                                            <span class="la la-star"></span>
+                                                            <span class="la la-star"></span>
+                                                            <span class="la la-star"></span>
+                                                            <span class="la la-star-o"></span>
+                                                        </div>
+                                                        <span class="rating-total ps-1">(20,230)</span>
+                                                    </div>
+                                                    <!-- end rating-wrap -->
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        <p class="card-price text-black font-weight-bold">
+                                                            @if ($enrollment->course->price == 0)
+                                                                Free
+                                                            @else
+                                                                ₱{{ number_format($enrollment->course->price, 2) }}
+                                                            @endif
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <!-- end card-body -->
+                                            </div>
+                                            <!-- end card -->
+                                        </div>
+                                        <!-- end col-lg-4 -->
+                                    @empty
+                                        <p class="text-center">You have no enrolled courses.</p>
+                                    @endforelse
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <!-- end tab-pane -->
-                    <div class="tab-pane fade" id="archived" role="tabpanel" aria-labelledby="archived-tab">
+                    <div class="tab-content" id="myTabContent">
+                        <div class="tab-pane fade" id="favorite" role="tabpanel" aria-labelledby="wishlist-tab">
+                            <div class="my-course-body">
+                                <div
+                                    class="my-course-info pb-40px d-flex flex-wrap align-items-center justify-content-between">
+                                    <h3 class="fs-22 font-weight-semi-bold">Saved Courses</h3>
+                                    <form method="post">
+                                        <div class="input-group">
+                                            <input class="form-control form--control form--control-gray ps-3"
+                                                type="text" name="search" placeholder="Search courses" />
+                                            <div class="input-group-append">
+                                                <button class="btn theme-btn shadow-none">
+                                                    <i class="la la-search"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+
+                                {{-- Save Course Card --}}
+                                <div class="my-course-cards">
+                                    <div class="row">
+                                        @forelse ($savedCourses as $course)
+                                            <div class="col-lg-4 responsive-column-half">
+                                                <div class="card card-item">
+                                                    <div class="card-image">
+                                                        <a href="{{ route('course.detail', $course->id) }}"
+                                                            class="d-block">
+                                                            <img class="card-img-top lazy"
+                                                                src="{{ asset('template/images/img-loading.png') }}"
+                                                                data-src="{{ $course->image ? asset('storage/' . $course->image) : asset('storage/' . $this->getDefaultImage($course->category)) }}"
+                                                                alt="Course image" />
+                                                        </a>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <h6 class="ribbon ribbon-blue-bg fs-14 mb-3">
+                                                            {{ $course->level ?? 'All Levels' }}</h6>
+                                                        <h5 class="card-title">
+                                                            <a
+                                                                href="{{ route('course.detail', $course->id) }}">{{ $course->title }}</a>
+                                                        </h5>
+                                                        <p class="card-text"><a
+                                                                href="#">{{ $course->instructor_name ?? 'Unknown User' }}</a>
+                                                        </p>
+                                                        <div class="rating-wrap d-flex align-items-center py-2">
+                                                            <div class="review-stars">
+                                                                <span
+                                                                    class="rating-number">{{ $course->rating ?? 'N/A' }}</span>
+                                                                @for ($i = 1; $i <= 5; $i++)
+                                                                    <span
+                                                                        class="la {{ $i <= ($course->rating ?? 0) ? 'la-star' : 'la-star-o' }}"></span>
+                                                                @endfor
+                                                            </div>
+                                                            <span
+                                                                class="rating-total ps-1">({{ $course->reviews_count ?? 0 }})</span>
+                                                        </div>
+                                                        <div class="d-flex justify-content-between align-items-center">
+                                                            <p class="card-price text-black font-weight-bold">
+                                                                {{ $course->price ? '$' . number_format($course->price, 2) : 'Free' }}
+                                                            </p>
+                                                            <div class="icon-element icon-element-sm shadow-sm cursor-pointer remove-saved-course-btn"
+                                                                data-saved-course-id="{{ $course->id }}"
+                                                                title="Remove">
+                                                                <i class="la la-heart"></i>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @empty
+                                            <p class="text-center">You have no saved courses.</p>
+                                        @endforelse
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12 d-flex justify-content-center mt-4">
+                                            <div class="pagination-wrapper">
+                                                {{ $savedCourses->links() }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end col-lg-4 -->
+
+                    {{-- End of Card --}}
+
+                    <!-- end tab-pane -->
+                    <div class="tab-pane fade" id="completed" role="tabpanel" aria-labelledby="archived-tab">
                         <div class="my-course-body">
                             <div class="my-course-info pb-40px">
-                                <h3 class="fs-22 font-weight-semi-bold">My archives</h3>
+                                <h3 class="fs-22 font-weight-semi-bold">Completed Courses</h3>
                             </div>
 
 
@@ -241,5 +372,102 @@
     <!-- end modal-dialog -->
     </div>
     <!-- end modal -->
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const removeButtons = document.querySelectorAll('.remove-saved-course-btn');
+
+            removeButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const courseId = this.getAttribute('data-saved-course-id');
+
+                    // Send AJAX request to remove saved course
+                    fetch('/remove-saved-course', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector(
+                                    'meta[name="csrf-token"]').content
+                            },
+                            body: JSON.stringify({
+                                course_id: courseId
+                            })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Success',
+                                    text: data.message,
+                                    timer: 1500,
+                                    showConfirmButton: false
+                                });
+
+                                // Optionally, remove the course card from the DOM
+                                button.closest('.col-lg-4').remove();
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: data.message,
+                                    timer: 1500,
+                                    showConfirmButton: false
+                                });
+                            }
+                        })
+                        .catch(error => {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'Something went wrong. Please try again later.',
+                                timer: 1500,
+                                showConfirmButton: false
+                            });
+                        });
+                });
+            });
+        });
+    </script>
+
+    <script>
+        $(document).ready(function() {
+            // Check if an active tab is saved in localStorage
+            var activeTab = localStorage.getItem('activeTab') || 'favorite'; // Default to 'Saved Courses' tab
+            $("#" + activeTab + "-tab").addClass('active'); // Activate the correct tab
+            $("#" + activeTab).addClass('active show'); // Display the correct tab content
+
+            // Handle tab switch and save the active tab in localStorage
+            $('#myTab .nav-link').on('click', function() {
+                var tabId = $(this).attr('id').replace('-tab', ''); // Get the tab ID without '-tab'
+                localStorage.setItem('activeTab', tabId); // Save active tab to localStorage
+            });
+
+            // Handle AJAX pagination click
+            $(document).on('click', '.pagination a', function(e) {
+                e.preventDefault(); // Prevent default pagination behavior
+
+                var page = $(this).attr('href').split('page=')[1]; // Get the page number
+                var url = "{{ route('mycourses') }}?page=" + page;
+
+                // Make the AJAX request to fetch the paginated saved courses
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    success: function(data) {
+                        // Update the saved courses and pagination with the new content
+                        $('#favorite .my-course-cards').html(data.savedCourses);
+                        $('#favorite .pagination-wrapper').html(data.pagination);
+
+                        // After loading the content, ensure the correct tab is active
+                        var activeTab = localStorage.getItem('activeTab') ||
+                        'favorite'; // Default to 'Saved Courses'
+                        $("#" + activeTab + "-tab").addClass('active');
+                        $("#" + activeTab).addClass('active show');
+                    }
+                });
+            });
+        });
+    </script>
     @include('layouts.footer')
 @endsection

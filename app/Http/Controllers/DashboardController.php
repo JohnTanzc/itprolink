@@ -63,13 +63,13 @@ class DashboardController extends Controller
 
 
 
-    public function myCourses()
+    public function myCourses(Request $request)
     {
         // Retrieve the authenticated user
         $user = auth()->user();
 
-        // Retrieve the enrolled courses where the status is 'approved' and eager load the 'course' relationship
-        $enrolledCourses = $user->enrollments()->where('status', 'approved')->with('course')->get();
+        // Retrieve the enrolled courses where the status is 'approved' and eager load the 'course' relationship with pagination
+        $enrolledCourses = $user->enrollments()->where('status', 'approved')->with('course')->paginate(9); // Paginate results (adjust number as needed)
 
         // Get courses directly related to the user, if the user is a tutor
         $courses = $user->courses;
@@ -77,17 +77,26 @@ class DashboardController extends Controller
         // Retrieve the tutor data (if you want to display tutor info, assuming 'tutor' relationship is defined)
         $tutor = $user->tutor; // Assuming user has a 'tutor' relationship
 
-        // Check if courses or tutor is null and set appropriate error message
-        if ($enrolledCourses->isEmpty() && $courses->isEmpty() && !$tutor) {
-            session()->flash('error', 'No courses or tutor data available.');
+        // Retrieve the saved courses for the tutee with pagination
+        $savedCourses = $user->savedCourses()->with('users')->paginate(6); // Paginate saved courses (adjust number as needed)
+
+        // If the request is via AJAX, return the partial content for saved courses and pagination
+        if ($request->ajax()) {
+            return response()->json([
+                'savedCourses' => view('partials.saved_courses', compact('savedCourses'))->render(),
+                'pagination' => view('partials.pagination', compact('savedCourses'))->render(),
+                'activeTab' => 'favorite',  // Add the active tab state
+            ]);
         }
 
-        // Return the view with necessary data for both courses and enrolled courses
-        return view('dash.dashmycourse', compact('courses', 'enrolledCourses', 'tutor'));
+        // Check if no courses, enrolled courses, saved courses, or tutor data is available
+        if ($enrolledCourses->isEmpty() && $courses->isEmpty() && $savedCourses->isEmpty() && !$tutor) {
+            session()->flash('error', 'No courses, saved courses, or tutor data available.');
+        }
+
+        // Return the view with necessary data for courses, enrolled courses, saved courses, and tutor
+        return view('dash.dashmycourse', compact('courses', 'enrolledCourses', 'savedCourses', 'tutor'));
     }
-
-
-
 
 
 
@@ -141,7 +150,7 @@ class DashboardController extends Controller
     public function coursedetail($courseId)
     {
         if (!Auth::check()) {
-            return redirect('/login');
+            return redirect('/Login');
         }
 
         $user = Auth::user();
@@ -167,9 +176,9 @@ class DashboardController extends Controller
             abort(404, 'Course not found.');
         }
 
-         // Decode lectures and resources from JSON if they exist and are not already arrays
-    $lectures = is_array($course->lectures) ? $course->lectures : json_decode($course->lectures, true);
-    $resources = is_array($course->resources) ? $course->resources : json_decode($course->resources, true);
+        // Decode lectures and resources from JSON if they exist and are not already arrays
+        $lectures = is_array($course->lectures) ? $course->lectures : json_decode($course->lectures, true);
+        $resources = is_array($course->resources) ? $course->resources : json_decode($course->resources, true);
 
         // Pass lectures and resources to the view alongside course and user
         return view('dash.dashcourse', compact('user', 'course', 'lectures', 'resources'));
@@ -328,16 +337,13 @@ class DashboardController extends Controller
         return back();
     }
 
-    public function tutcourse(Request $request)
+    public function tutcourse($id)
     {
-        // Fetch the tutor ID from the query string
-        $tutorId = $request->input('id');
-
-        // Fetch courses for the tutor using the user_id column
-        $courses = Course::where('user_id', $tutorId)->get();
+        // Fetch courses for the tutor using the user_id column with pagination
+        $courses = Course::where('user_id', $id)->paginate(5);
 
         // Fetch tutor details (optional, for display in the view)
-        $tutor = User::find($tutorId);
+        $tutor = User::find($id);
 
         // Check if the tutor exists
         if (!$tutor) {
@@ -348,8 +354,10 @@ class DashboardController extends Controller
         return view('dash.dashtutcourse', compact('courses', 'tutor'));
     }
 
+
     public function destroy($id)
     {
+        // Find the course by ID
         $course = Course::findOrFail($id);
 
         // Optionally, delete the course's image if it exists
@@ -360,8 +368,8 @@ class DashboardController extends Controller
         // Delete the course
         $course->delete();
 
-        // Redirect with success message
-        return redirect()->route('dash.dashtutcourse')->with('success', 'Course deleted successfully');
+        // Redirect back to the tutor's course list (including the tutor's ID) with a success message
+        return redirect()->route('tut.course', ['id' => Auth::user()->id])->with('success', 'Course deleted successfully');
     }
 
 

@@ -49,7 +49,18 @@
 <body>
 
     <!-- start cssload-loader -->
-    @if (!in_array(Route::currentRouteName(), ['tutor.setting', 'tutee.setting', 'admin.setting']))
+    @if (
+        !in_array(Route::currentRouteName(), [
+            'tutor.setting',
+            'tutee.setting',
+            'admin.setting',
+            'tut.course',
+            'tutor.enrollee',
+            'submit.course',
+            'admin.dashcreate',
+            'admin.users',
+            'payment.view',
+        ]))
         <!-- Check if route is not one of these -->
         <div class="preloader">
             <div class="loader">

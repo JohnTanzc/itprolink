@@ -116,7 +116,7 @@
 
                             <div class="col-lg-6">
                                 <div class="form-group">
-                                    <label class="label-text">Language (Select all that apply)</label>
+                                    <label class="label-text">Language (eg. English, Cebuano, Tagalog)</label>
                                     <div class="form-group text-center">
                                         <input type="text" id="selected-languages"
                                             class="form-control form--control ps-3"

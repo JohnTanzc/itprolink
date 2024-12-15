@@ -97,7 +97,7 @@ class EnrollmentController extends Controller
             // If the status is 'rejected', delete the enrollment
             if ($newStatus === 'rejected') {
                 $enrollment->delete();  // Delete the enrollment record
-                return back()->with('success', 'Enrollment has been rejected and deleted.');
+                return response()->json(['success' => 'Enrollment has been rejected and deleted.']);
             }
 
             // Otherwise, update the enrollment's status
@@ -106,25 +106,26 @@ class EnrollmentController extends Controller
             $enrollment->save();
 
             // Return a success response
-            return back()->with('success', 'Enrollment status updated successfully.');
+            return response()->json(['success' => 'Enrollment status updated successfully.']);
         } else {
             // Handle invalid status
-            return back()->with('error', 'Invalid status selected.');
+            return response()->json(['error' => 'Invalid status selected.'], 400);
         }
     }
 
     public function updatePaymentStatus(Request $request, $id)
     {
         $request->validate([
-            'isPaid' => 'required|in:0,1,2', // Validate the input
+            'isPaid' => 'required|in:0,1,2',
         ]);
 
         $enrollment = Enrollment::findOrFail($id);
         $enrollment->isPaid = $request->input('isPaid');
         $enrollment->save();
 
-        return redirect()->back()->with('success', 'Payment status updated successfully.');
+        return response()->json(['success' => 'Payment status updated successfully.']);
     }
+
 
     public function getEnrolledStudentsCount($courseId)
     {

@@ -446,7 +446,7 @@
                 <li class="{{ request()->routeIs('payment.view') ? 'page-active' : '' }}">
                     <a href="{{ route('payment.view') }}">
                         <svg class="me-2" viewBox="0 0 490.11 490.109" fill="none"
-                            xmlns="http://www.w3.org/2000/svg" height="15px" width="15px" stroke="#ffffff"
+                            xmlns="http://www.w3.org/2000/svg" height="15px" width="18px" stroke="#ffffff"
                             stroke-width="0.12">
                             <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                             <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
@@ -487,7 +487,7 @@
             </li>
         @endif
         @if (Auth::user()->role === 'tutor')
-            <li class="{{ request()->is('tut.course') ? 'page-active' : '' }}">
+            <li class="{{ request()->routeIs('tut.course') ? 'page-active' : '' }}">
                 <a href="{{ route('tut.course', ['id' => Auth::user()->id]) }}">
                     <svg class="me-2" xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 0 24 24"
                         width="18px">
@@ -495,7 +495,7 @@
                         <path
                             d="M8 16h8v2H8zm0-4h8v2H8zm6-10H6c-1.1 0-2 .9-2 2v16c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11z" />
                     </svg>
-                    My Course
+                    My Courses
                 </a>
             </li>
         @endif

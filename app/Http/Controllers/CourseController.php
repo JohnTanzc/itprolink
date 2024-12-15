@@ -6,6 +6,7 @@ use App\Models\Course;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Enrollment;
+use App\Models\SavedCourse;
 class CourseController extends Controller
 {
 
@@ -232,7 +233,7 @@ class CourseController extends Controller
     public function show(Course $course)
     {
         // Ensure only tutee and tutor roles can access
-        if (Auth::check() && !in_array(Auth::user()->role, ['tutee', 'tutor'])) {
+        if (Auth::check() && !in_array(Auth::user()->role, ['tutee', 'tutor', 'admin'])) {
             abort(403, 'Forbidden');
         }
 
@@ -258,6 +259,9 @@ class CourseController extends Controller
         $enrolledCount = Enrollment::where('course_id', $course->id)
             ->where('status', 'approved') // Filter by approved status
             ->count();
+
+        $tutor = $course->user;
+        $tutorCourseCount = $tutor->courses()->count();
 
         // Decode resources if stored as JSON
         $resources = is_string($course->resources) ? json_decode($course->resources, true) : $course->resources;
@@ -294,8 +298,9 @@ class CourseController extends Controller
         }
 
         // Pass the course details, verification status, enrollment count, and grouped resources to the view
-        return view('dash.dashcourse', compact('course', 'isVerified', 'isInProgress', 'enrolledCount', 'lecturesWithResources'));
+        return view('dash.dashcourse', compact('course', 'isVerified', 'isInProgress', 'enrolledCount', 'lecturesWithResources', 'tutorCourseCount'));
     }
+
 
 
 
@@ -378,6 +383,69 @@ class CourseController extends Controller
     public function enrollments()
     {
         return $this->hasMany(Enrollment::class, 'course_id');
+    }
+
+    public function saveCourse(Request $request)
+    {
+        $user = Auth::user(); // Get the authenticated user
+        $courseId = $request->course_id;
+
+        if (!$courseId) {
+            return response()->json(['success' => false, 'message' => 'Course ID is required']);
+        }
+
+        $course = Course::find($courseId);
+
+        if (!$course) {
+            return response()->json(['success' => false, 'message' => 'Course not found']);
+        }
+
+        if ($user->savedCourses()->where('course_id', $courseId)->exists()) {
+            return response()->json(['success' => false, 'message' => 'Course already saved']);
+        }
+
+        $user->savedCourses()->attach($courseId);
+
+        return response()->json(['success' => true, 'message' => 'Course saved successfully']);
+    }
+
+    public function checkSavedCourse(Request $request)
+    {
+        $user = Auth::user();  // Get the authenticated user (tutee)
+        $courseId = $request->course_id;
+
+        // Validate course ID
+        if (!$courseId) {
+            return response()->json(['success' => false, 'message' => 'Course ID is required']);
+        }
+
+        // Check if the course is already saved by the user
+        $isSaved = $user->savedCourses()->where('course_id', $courseId)->exists();
+
+        return response()->json(['success' => $isSaved]);
+    }
+
+    public function removeSavedCourse(Request $request)
+    {
+        $user = Auth::user(); // Get the authenticated user
+        $courseId = $request->course_id;
+
+        // Validate course ID
+        if (!$courseId) {
+            return response()->json(['success' => false, 'message' => 'Course ID is required'], 400);
+        }
+
+        // Check if the course exists in the user's saved courses
+        $savedCourse = $user->savedCourses()->where('course_id', $courseId)->first();
+
+        if (!$savedCourse) {
+            return response()->json(['success' => false, 'message' => 'Course not found in saved courses'], 404);
+        }
+
+        // Remove the course from saved_courses
+        $user->savedCourses()->detach($courseId);
+
+        return response()->json(['success' => true, 'message' => 'Course removed from saved successfully']);
     }
 
 }
