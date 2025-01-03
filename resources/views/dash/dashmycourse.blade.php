@@ -312,7 +312,7 @@
                                                         </div>
                                                         <div class="d-flex justify-content-between align-items-center">
                                                             <p class="card-price text-black font-weight-bold">
-                                                                {{ $course->price ? '$' . number_format($course->price, 2) : 'Free' }}
+                                                                {{ $course->price ? '₱' . number_format($course->price, 2) : 'Free' }}
                                                             </p>
                                                             <div class="icon-element icon-element-sm shadow-sm cursor-pointer remove-saved-course-btn"
                                                                 data-saved-course-id="{{ $course->id }}"

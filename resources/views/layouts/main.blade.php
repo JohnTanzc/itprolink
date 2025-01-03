@@ -60,6 +60,10 @@
             'admin.dashcreate',
             'admin.users',
             'payment.view',
+            'dashcourse',
+            'message.index',
+            'messages.fetch',
+
         ]))
         <!-- Check if route is not one of these -->
         <div class="preloader">
@@ -92,7 +96,7 @@
                     <div class="card-body">
                         <p class="card-text pb-2">
                             By <a
-                                href="{{ route('tutor.profile', $course->user_id) }}">{{ $course->instructor_name ? $course->instructor_name : 'Unknown Instructor' }}</a>
+                                href="{{ route('pub.profile', ['id' => $course->user_id]) }}">{{ $course->instructor->fname }} {{ $course->instructor->lname }}</a>
                         </p>
                         <h5 class="card-title pb-1">
                             <a href="{{ route('course.detail', $course->id) }}">{{ $course->title }}</a>
@@ -158,6 +162,7 @@
     <script src="{{ asset('template/js/animated.skills.js') }}"></script>
     <script src="{{ asset('template/js/jquery.MultiFile.min.js') }}"></script>
     <script src="{{ asset('template/js/jquery-te-1.4.0.min.js') }}"></script>
+    {{-- <script src="{{ mix('js/app.js') }}"></script> --}}
 
     <!-- Include SweetAlert (if not already included) -->
 

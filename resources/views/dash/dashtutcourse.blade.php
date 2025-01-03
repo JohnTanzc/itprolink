@@ -62,8 +62,12 @@
                                 <span>{{ $course->course_time }}</span>
                             </li>
                             <li class="me-2">
-                                <span class="text-black">Students:</span>
-                                <span>{{ $course->students_count }}</span>
+                                <span class="text-black">
+                                    {{ $course->tutees_count == 1 ? 'Tutee:' : 'Tutees:' }}
+                                </span>
+                                <span>
+                                    {{ $course->tutees_count }}
+                                </span>
                             </li>
                         </ul>
                         <div class="d-flex justify-content-between align-items-center">
@@ -145,7 +149,7 @@
                 Swal.fire({
                         icon: 'success',
                         title: 'Success!',
-                        text: 'Verification status updated successfully.',
+                        text: 'Course deleted successfully',
                         showConfirmButton: false,
                         timer: 2000
                 });

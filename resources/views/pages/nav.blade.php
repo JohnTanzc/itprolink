@@ -69,7 +69,7 @@
                                     </ul>
                                 @endguest
                             </div>
-                            @guest
+                            {{-- @guest
                             <div class="theme-picker d-flex align-items-center">
                                 <button
                                   class="theme-picker-btn dark-mode-btn"
@@ -115,7 +115,7 @@
                                   </svg>
                                 </button>
                               </div>
-                              @endguest
+                              @endguest --}}
                             @auth
                                 <nav class="shop-cart user-profile-cart">
                                     <ul>
@@ -147,7 +147,8 @@
                                                         {{-- <span class="d-block fs-14 lh-20">{{ $user->email }}</span> --}}
                                                     </div>
                                                 </li>
-                                                <li>
+                                                {{-- Darkmode --}}
+                                                {{-- <li>
                                                     <div
                                                         class="theme-picker d-flex align-items-center justify-content-center lh-40">
                                                         <button
@@ -187,7 +188,7 @@
                                                             Light Mode
                                                         </button>
                                                     </div>
-                                                </li>
+                                                </li> --}}
                                                 <li>
                                                     <ul class="generic-list-item">
                                                         <li>

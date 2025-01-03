@@ -46,7 +46,8 @@
                         <div class="media-img media-img-lg me-4 bg-gray">
                             <img class="me-3"
                                 src="{{ asset('storage/profile_pictures/' . (auth()->user()->profile_picture ?? 'default-image.png')) }}"
-                                alt="Profile Picture" id="profileImagePreview" style="width: 200px; max-height;">
+                                alt="Profile Picture" id="profileImagePreview"
+                                style="width: 200px; max-height: 200px; border: 3px solid #ccc; border-radius: 10px;">
                         </div>
                         @php
                             $user = auth()->user(); // This ensures you have the authenticated user
@@ -104,18 +105,7 @@
                             </div>
                         </div>
                         <!-- end input-box -->
-                        <div class="input-box col-lg-6">
-                            <label class="label-text">User Name</label>
-                            <div class="form-group">
-                                <input class="form-control form--control" type="text" name="text"
-                                    value="alex-admin" />
-                                <span class="la la-user input-icon"></span>
-                                @error('username')
-                                    <small class="text-danger">{{ $message }}</small>
-                                @enderror
-                            </div>
-                        </div>
-                        <!-- end input-box -->
+
                         <div class="input-box col-lg-6">
                             <label class="label-text">Email Address</label>
                             <div class="form-group">
@@ -128,7 +118,7 @@
                             </div>
                         </div>
                         <!-- end input-box -->
-                        <div class="input-box col-lg-12">
+                        <div class="input-box col-lg-6">
                             <label class="label-text">Phone Number</label>
                             <div class="form-group">
                                 <input class="form-control form--control" type="tel" name="phone"
@@ -139,6 +129,64 @@
                                 @enderror
                             </div>
                         </div>
+                        <!-- end input-box -->
+                        <div class="input-box col-lg-6">
+                            <label class="label-text">Age</label>
+                            <div class="form-group">
+                                <input class="form-control form--control" type="number" name="age"
+                                    value="{{ old('age', $user->age ?? '') }}" />
+                                <span class="la la-user input-icon"></span>
+                                @error('age')
+                                    <small class="text-danger">{{ $message }}</small>
+                                @enderror
+                            </div>
+                        </div>
+                        <!-- end input-box -->
+                        <div class="input-box col-lg-6">
+                            <label class="label-text">Birthday</label>
+                            <div class="form-group">
+                                <input type="date" class="form-control form--control" name="birthday"
+                                    value="{{ old('birthday', isset($user->birthday) && $user->birthday ? \Carbon\Carbon::parse($user->birthday)->format('Y-m-d') : '') }}" />
+                                <span class="la la-calendar input-icon"></span>
+                                @error('birthday')
+                                    <small class="text-danger">{{ $message }}</small>
+                                @enderror
+                            </div>
+                        </div>
+                        <!-- end input-box -->
+                        <div class="input-box col-lg-6">
+                            <label class="label-text">Gender</label>
+                            <div class="form-group">
+                                <select class="form-control form--control form-select" name="gender">
+                                    <option value="" disabled selected>Select Gender</option>
+                                    <option value="Male"
+                                        {{ old('gender', $user->gender ?? '') == 'Male' ? 'selected' : '' }}>Male</option>
+                                    <option value="Female"
+                                        {{ old('gender', $user->gender ?? '') == 'Female' ? 'selected' : '' }}>Female
+                                    </option>
+                                </select>
+                                <span class="la la-user input-icon"></span>
+                                @error('gender')
+                                    <small class="text-danger">{{ $message }}</small>
+                                @enderror
+                            </div>
+                        </div>
+                        <!-- end input-box -->
+                        @auth
+                            @if (Auth::user()->role === 'tutor')
+                                <div class="input-box col-lg-6">
+                                    <label class="label-text">Designation</label>
+                                    <div class="form-group">
+                                        <input class="form-control form--control" type="text" name="designation"
+                                            value="{{ $user->designation }}" />
+                                        <span class="la la-user input-icon"></span>
+                                        @error('designation')
+                                            <small class="text-danger">{{ $message }}</small>
+                                        @enderror
+                                    </div>
+                                </div>
+                            @endif
+                        @endauth
                         <!-- end input-box -->
                         <div class="input-box col-lg-12">
                             <label class="label-text">Bio</label>
@@ -204,21 +252,19 @@
                 <!-- end setting-body -->
             </div>
             <!-- end tab-pane -->
+
+
             <div class="tab-pane fade" id="password" role="tabpanel" aria-labelledby="password-tab">
                 <div class="setting-body">
                     <h3 class="fs-17 font-weight-semi-bold pb-4">
                         Change Password
                     </h3>
-                    <form
-                        action="{{ $user->role == 'admin'
-                            ? route('admin.password.update', ['id' => $user->id])
-                            : ($user->role == 'tutor'
-                                ? route('tutor.password.update', ['id' => $user->id])
-                                : route('tutee.password.update', ['id' => $user->id])) }}"
-                        method="POST" enctype="multipart/form-data" class="row">
-
+                    <form action="{{ route($user->role . '.password.update', ['id' => $user->id]) }}" method="POST"
+                        enctype="multipart/form-data" class="row" onsubmit="return validatePasswordLength();">
                         @csrf
                         @method('PUT')
+
+                        <!-- Old Password -->
                         <div class="input-box col-lg-4">
                             <label class="label-text">Old Password</label>
                             <div class="form-group position-relative">
@@ -230,21 +276,23 @@
                                     style="right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer;"></span>
                             </div>
                         </div>
-                        <!-- end input-box -->
 
+                        <!-- New Password -->
                         <div class="input-box col-lg-4">
                             <label class="label-text">New Password</label>
                             <div class="form-group position-relative">
                                 <input class="form-control form--control" type="password" name="new_password"
-                                    id="new_password" placeholder="New Password" required />
+                                    id="new_password" placeholder="New Password" required
+                                    oninput="checkPasswordLength();" />
                                 <span class="la la-lock input-icon"></span>
                                 <span class="la la-eye toggle-password position-absolute"
                                     onclick="togglePassword('new_password')"
                                     style="right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer;"></span>
+                                <small id="password-error" class="text-danger"></small>
                             </div>
                         </div>
-                        <!-- end input-box -->
 
+                        <!-- Confirm New Password -->
                         <div class="input-box col-lg-4">
                             <label class="label-text">Confirm New Password</label>
                             <div class="form-group position-relative">
@@ -255,12 +303,43 @@
                                 <small id="password-message"></small>
                             </div>
                         </div>
-                        <!-- end input-box -->
+
+                        <!-- Submit Button -->
                         <div class="input-box col-lg-12 py-4">
                             <button class="btn theme-btn">Change Password</button>
                         </div>
-                        <!-- end input-box -->
                     </form>
+
+                    <script>
+                        function checkPasswordLength() {
+                            const newPassword = document.getElementById('new_password').value;
+                            const passwordError = document.getElementById('password-error');
+                            if (newPassword.length < 8) {
+                                passwordError.textContent = 'Password must be at least 8 characters.';
+                            } else {
+                                passwordError.textContent = '';
+                            }
+                        }
+
+                        function validatePasswordLength() {
+                            const newPassword = document.getElementById('new_password').value;
+                            if (newPassword.length < 8) {
+                                alert('New password must be at least 8 characters.');
+                                return false; // Prevent form submission
+                            }
+                            return true; // Allow form submission
+                        }
+
+                        function togglePassword(fieldId) {
+                            const field = document.getElementById(fieldId);
+                            if (field.type === 'password') {
+                                field.type = 'text';
+                            } else {
+                                field.type = 'password';
+                            }
+                        }
+                    </script>
+
 
                     <!-- SweetAlert for Status -->
                     @if (session('status'))
@@ -345,7 +424,9 @@
                                 @elseif (Auth::user()->verification_status === 'pending')
                                     <button class="btn theme-btn" type="button" disabled>Wait for Admin Approval</button>
                                 @elseif (Auth::user()->verification_status === 'not_submitted')
-                                    <form action="{{ route('verification.submit') }}" method="POST">
+                                    <form
+                                        action="{{ route(auth()->user()->role == 'tutor' ? 'tutor.verificationsubmit' : 'tutee.verificationsubmit') }}"
+                                        method="POST">
                                         @csrf
                                         <button class="btn theme-btn" type="submit">Submit Verification</button>
                                     </form>

@@ -19,13 +19,23 @@ class CourseController extends Controller
         // Check if the user is authenticated
         $user = Auth::check() ? Auth::user() : null;
 
-        // Fetch courses based on user role or show all courses for guests
+        // Fetch courses based on user role or show all active users' courses for guests
         $courses = $user && $user->role === 'tutor'
-            ? Course::paginate(6) // Tutors see all courses, including their own
-            : Course::paginate(6); // Everyone else sees all courses
+            ? Course::whereHas('user', function ($query) {
+                $query->where('active', 1); // Only include courses from active users
+            })->paginate(6)
+            : Course::whereHas('user', function ($query) {
+                $query->where('active', 1); // Only include courses from active users
+            })->paginate(6);
 
-        return view('course', compact('courses'));
+        // Get the total count of courses from active users
+        $courseCount = Course::whereHas('user', function ($query) {
+            $query->where('active', 1); // Only count courses from active users
+        })->count();
+
+        return view('course', compact('courses', 'courseCount'));
     }
+
 
     /**
      * Display a listing of all courses.
@@ -65,13 +75,14 @@ class CourseController extends Controller
             'course_time' => 'required|integer',
             'level' => 'required|string',
             'category' => 'required|string',
-            'image' => 'nullable|image|max:2048',
+            'image' => 'nullable|image|max:2048', // Image for non-'Other' categories
             'price' => 'nullable|numeric|min:0',
             'lectures' => 'nullable|array',
             'lectures.*.lecture_title' => 'required|string|max:255',
             'lectures.*.resources' => 'nullable|array',
             'lectures.*.resources.*.title' => 'required|string|max:255',
             'lectures.*.resources.*.file' => 'nullable|file|mimes:pdf|max:10240', // PDF files for resources
+            'other_category_image' => 'nullable|image|max:2048', // Add validation for "Other" category image
         ]);
 
         if (Auth::user()->role !== 'tutor') {
@@ -99,52 +110,58 @@ class CourseController extends Controller
 
         if ($request->has('lectures')) {
             foreach ($request->lectures as $lecture) {
-                // Initialize resources array for the current lecture
                 $lectureResources = [];
 
                 if (isset($lecture['resources'])) {
                     foreach ($lecture['resources'] as $resource) {
                         if (isset($resource['file']) && $resource['file']) {
-                            // Store the PDF file in the 'resources' directory
                             $filePath = $resource['file']->store('resources', 'public');
-
-                            // Add resource info: lecture title, resource title, and resource file path
                             $lectureResources[] = [
-                                'resource_title' => $resource['title'], // Resource title
-                                'resource_file' => $filePath // Stored file path
+                                'resource_title' => $resource['title'],
+                                'resource_file' => $filePath
                             ];
                         }
                     }
                 }
 
-                // Add lecture with resources to the resources array
                 if (count($lectureResources) > 0) {
                     $resources[] = [
-                        'lecture_title' => $lecture['lecture_title'], // Lecture title
-                        'resources' => $lectureResources // Resources under the lecture title
+                        'lecture_title' => $lecture['lecture_title'],
+                        'resources' => $lectureResources
                     ];
                 }
             }
         }
 
-        // Store resources (lecture title, resource title, and resource file) in the `resources` column as JSON
         $course->resources = json_encode($resources);
 
-        // Handle the image upload if provided
+        // Handle the image upload if provided for non-'Other' categories
         if ($request->hasFile('image')) {
             $file = $request->file('image');
-            $originalPath = $file->getPathname(); // Get the temporary file path
-            $newFilename = uniqid() . '.jpg'; // Generate a unique filename
-            $newPath = public_path('storage/courses/' . $newFilename); // Destination path
+            $originalPath = $file->getPathname();
+            $newFilename = uniqid() . '.jpg';
+            $newPath = public_path('storage/courses/' . $newFilename);
 
-            // Resize the image using GD
+            // Resize the image using your resizeImageGD method
             $this->resizeImageGD($originalPath, $newPath, 600, 400);
+            $course->image = 'courses/' . $newFilename;
+        } elseif ($request->category == 'other' && $request->hasFile('other_category_image')) {
+            // If "Other" category and an image is uploaded
+            $file = $request->file('other_category_image');
+            $newFilename = uniqid() . '.' . $file->getClientOriginalExtension();
+            $file->storeAs('courses', $newFilename, 'public');
+            $newPath = public_path('storage/courses/' . $newFilename);
 
-            $course->image = 'courses/' . $newFilename; // Store the relative path in the database
+            // Resize and store the image for "Other" category
+            $this->resizeImageGD($file->getPathname(), $newPath, 600, 400);
+
+            // Store the custom image for "Other" category in the database with the filename
+            $course->image = 'courses/' . $newFilename;
         } else {
-            // Default image based on category
+            // Default image logic for other categories (no upload, default image for all categories except "Other")
             $defaultImages = [
                 'graphic-design' => 'graphicdesign-default.png',
+                'computer-programming-&-software-development' => 'computer-programming-&-software-development.png',
                 'ui/ux' => 'uiux-default.png',
                 'data-analysis' => 'data-analysis-default.png',
                 'itsuppport-&-troubleshooting' => 'itsuppport-&-troubleshooting-default.png',
@@ -154,12 +171,10 @@ class CourseController extends Controller
                 'character-animation' => 'character-animation-default.png',
                 'cloud-computing' => 'cloud-computing-default.png',
                 '3d-modeling' => '3d-modeling-default.png',
-                'other' => 'default-other.png',
             ];
 
             $category = $course->category;
-            $image = $defaultImages[$category] ?? 'default-other.jpg';
-
+            $image = $defaultImages[$category] ?? 'default-other.png';
             $course->image = 'courses/' . $image;
         }
 
@@ -171,6 +186,8 @@ class CourseController extends Controller
 
 
 
+
+
     /**
      * Get the default image for a given category.
      */
@@ -178,6 +195,7 @@ class CourseController extends Controller
     {
         $defaultImages = [
             'graphic-design' => 'graphicdesign-default.png',
+            'computer-programming-&-software-development' => 'computer-programming-&-software-development.png',
             'ui/ux' => 'uiux-default.png',
             'data-analysis' => 'data-analysis-default.png',
             'itsuppport-&-troubleshooting' => 'itsuppport-&-troubleshooting-default.png',
@@ -240,6 +258,7 @@ class CourseController extends Controller
         // Initialize verification and enrollment status variables
         $isVerified = false;
         $isInProgress = false;
+        $isEnrolled = false;
 
         if (Auth::check()) {
             $user = Auth::user();
@@ -253,6 +272,11 @@ class CourseController extends Controller
 
             // Check for ongoing enrollment process
             $isInProgress = $user->enrollment_in_progress ?? false;
+
+            // Check if the user is enrolled in the course (only for tutees)
+            if ($user->role === 'tutee') {
+                $isEnrolled = $course->tutees()->where('user_id', $user->id)->where('status', 'approved')->exists();
+            }
         }
 
         // Calculate enrolled count for the specific course
@@ -298,8 +322,9 @@ class CourseController extends Controller
         }
 
         // Pass the course details, verification status, enrollment count, and grouped resources to the view
-        return view('dash.dashcourse', compact('course', 'isVerified', 'isInProgress', 'enrolledCount', 'lecturesWithResources', 'tutorCourseCount'));
+        return view('dash.dashcourse', compact('course', 'isVerified', 'isInProgress', 'enrolledCount', 'lecturesWithResources', 'tutorCourseCount', 'isEnrolled'));
     }
+
 
 
 
@@ -447,5 +472,6 @@ class CourseController extends Controller
 
         return response()->json(['success' => true, 'message' => 'Course removed from saved successfully']);
     }
+
 
 }

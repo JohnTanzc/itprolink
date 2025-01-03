@@ -45,7 +45,7 @@ class Course extends Model
 
     public function instructor()
     {
-        return $this->belongsTo(User::class, 'instructor_name');
+        return $this->belongsTo(User::class, 'user_id');
     }
     public function users()
     {
@@ -68,6 +68,18 @@ class Course extends Model
     {
         return $this->belongsToMany(Course::class, 'saved_courses', 'user_id', 'course_id');
     }
+
+    public function tutees()
+    {
+        return $this->belongsToMany(User::class, 'enrollments')
+            ->wherePivot('status', 'approved'); // Filter by 'approved' status
+    }
+
+    public function getTuteesCountAttribute()
+    {
+        return $this->tutees()->count();
+    }
+
 
 
 }

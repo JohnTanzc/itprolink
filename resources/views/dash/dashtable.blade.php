@@ -11,12 +11,21 @@
             <i class="la la-bars me-1"></i> Dashboard Nav
         </div>
 
-        <h3 class="fs-22 font-weight-semi-bold mb-3 ms-3">User Data</h3>
+        <style>
+            .table-wrap {
+                overflow-x: auto;
+            }
 
-        <div class="card mx-3">
-            <div class="card-body">
-                <!-- Table with hoverable rows -->
-                <table class="table table-hover align-middle">
+            table {
+                white-space: nowrap;
+            }
+        </style>
+        <div class="container mt-4">
+            <h3 class="fs-22 font-weight-semi-bold mb-3 ms-0">User Verification</h3>
+
+            <!-- Table with hoverable rows -->
+            <div class="table-wrap">
+                <table class="table table-hover table-bordered">
                     <thead class="table-light">
                         <tr>
                             <th scope="col" style="width: 5%;">#ID</th>
@@ -28,112 +37,124 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($users as $user)
-                            @if ($user->role !== 'tuters')
-                                <!-- Exclude admin from being displayed -->
-                                <tr>
-                                    <th scope="row">{{ $user->id }}</th>
-                                    <td>{{ $user->fname }} {{ $user->lname }}</td>
-                                    <td>{{ ucfirst($user->role) }}</td>
-                                    <td>{{ $user->created_at->format('M j, Y') }}</td>
-                                    <td>
-                                        <!-- Use an onchange event to trigger AJAX call to update status -->
-                                        <select class="form-select form-select-sm verification-status"
-                                            data-user-id="{{ $user->id }}" data-role="{{ $user->role }}">
-                                            <option value="not_submitted"
-                                                {{ $user->verification_status == 'not_submitted' ? 'selected' : '' }}
-                                                disabled>Not Submitted</option>
-                                            <option value="pending"
-                                                {{ $user->verification_status == 'pending' ? 'selected' : '' }}>Pending
-                                            </option>
-                                            <option value="approved"
-                                                {{ $user->verification_status == 'approved' ? 'selected' : '' }}>Approved
-                                            </option>
-                                            <option value="rejected"
-                                                {{ $user->verification_status == 'rejected' ? 'selected' : '' }}>Rejected
-                                            </option>
-                                        </select>
-                                    </td>
-                                    <td class="text-center">
-                                        <!-- Action Buttons -->
-                                        <button class="custom-btn me-3" title="View" data-bs-toggle="modal"
-                                            data-bs-target="#viewVerificationModal" data-id-photo="{{ $user->id_photo }}"
-                                            data-selfie-with-id="{{ $user->selfie_with_id }}"
-                                            data-fname="{{ $user->fname }}" data-lname="{{ $user->lname }}"
-                                            @if ($user->role === 'tutor') data-diploma="{{ $user->diploma }}"
+                        @if ($users->isEmpty())
+                            <tr>
+                                <td colspan="7" class="text-center text-muted">No user data available.</td>
+                            </tr>
+                        @else
+                            @foreach ($users as $user)
+                                @if ($user->role !== 'tuters')
+                                    <!-- Exclude admin from being displayed -->
+                                    <tr>
+                                        <th scope="row">{{ $user->id }}</th>
+                                        <td>{{ $user->fname }} {{ $user->lname }}</td>
+                                        <td>{{ ucfirst($user->role) }}</td>
+                                        <td>{{ $user->created_at->format('M j, Y') }}</td>
+                                        <td>
+                                            <!-- Use an onchange event to trigger AJAX call to update status -->
+                                            <select class="form-select form-select-sm verification-status"
+                                                data-user-id="{{ $user->id }}" data-role="{{ $user->role }}">
+                                                <option value="not_submitted"
+                                                    {{ $user->verification_status == 'not_submitted' ? 'selected' : '' }}
+                                                    disabled>
+                                                    Not Submitted</option>
+                                                <option value="pending"
+                                                    {{ $user->verification_status == 'pending' ? 'selected' : '' }}>Pending
+                                                </option>
+                                                <option value="approved"
+                                                    {{ $user->verification_status == 'approved' ? 'selected' : '' }}>
+                                                    Approved
+                                                </option>
+                                                <option value="rejected"
+                                                    {{ $user->verification_status == 'rejected' ? 'selected' : '' }}>
+                                                    Rejected
+                                                </option>
+                                            </select>
+                                        </td>
+                                        <td class="text-center">
+                                            <!-- Action Buttons -->
+                                            <button class="custom-btn me-3" title="View" data-bs-toggle="modal"
+                                                data-bs-target="#viewVerificationModal"
+                                                data-id-photo="{{ $user->id_photo }}"
+                                                data-selfie-with-id="{{ $user->selfie_with_id }}"
+                                                data-fname="{{ $user->fname }}" data-lname="{{ $user->lname }}"
+                                                @if ($user->role === 'tutor') data-diploma="{{ $user->diploma }}"
                                         @else
                                         data-diploma="" @endif>
-                                            <i class="la la-eye fs-2 icon-primary"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                            @endif
-                        @endforeach
+                                                <i class="la la-eye fs-2 icon-primary"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                @endif
+                            @endforeach
+                        @endif
                     </tbody>
                 </table>
                 <!-- End Table with hoverable rows -->
             </div>
-        </div>
-        <div>
-            <!-- End of Card -->
-            <div class="d-flex justify-content-center mt-3">
-                {{ $users->links() }} <!-- Pagination links -->
+
+            <div>
+                <!-- End of Card -->
+                <div class="d-flex justify-content-center mt-4">
+                    {{ $users->links() }} <!-- Pagination links -->
+                </div>
+                <style>
+                    .pagination {
+                        display: flex;
+                        justify-content: center;
+                    }
+
+                    .pagination a,
+                    .pagination span {
+                        color: #EF6767;
+                        /* Set text color */
+                        background-color: transparent;
+                        /* Ensure no background color for normal links */
+                        border-color: #EF6767;
+                        /* Set border color to match text color */
+                    }
+
+                    .pagination a:hover {
+                        color: #C85A5A;
+                        /* Change color on hover */
+                        background-color: #F2D1D1;
+                        /* Light background on hover */
+                        border-color: #EF6767;
+                        /* Border color on hover */
+                    }
+
+                    .pagination .active {
+                        background-color: #EF6767;
+                        /* Set active page background color */
+                        color: white;
+                        /* Active page text color */
+                        border-color: #EF6767;
+                        /* Set border color for active page */
+                    }
+
+                    .pagination .disabled {
+                        color: #d6d6d6;
+                        /* Set color for disabled pages */
+                        background-color: transparent;
+                        /* Ensure no background color for disabled links */
+                        border-color: #d6d6d6;
+                        /* Set border color for disabled pages */
+                    }
+
+                    /* Override Bootstrap active state (to prevent the default blue background) */
+                    .pagination .page-item.active .page-link {
+                        background-color: #EF6767 !important;
+                        /* Force active background color */
+                        border-color: #EF6767 !important;
+                        /* Force active border color */
+                        color: white !important;
+                        /* Ensure active page text color is white */
+                    }
+                </style>
             </div>
-            <style>
-                .pagination {
-                    display: flex;
-                    justify-content: center;
-                }
-
-                .pagination a,
-                .pagination span {
-                    color: #EF6767;
-                    /* Set text color */
-                    background-color: transparent;
-                    /* Ensure no background color for normal links */
-                    border-color: #EF6767;
-                    /* Set border color to match text color */
-                }
-
-                .pagination a:hover {
-                    color: #C85A5A;
-                    /* Change color on hover */
-                    background-color: #F2D1D1;
-                    /* Light background on hover */
-                    border-color: #EF6767;
-                    /* Border color on hover */
-                }
-
-                .pagination .active {
-                    background-color: #EF6767;
-                    /* Set active page background color */
-                    color: white;
-                    /* Active page text color */
-                    border-color: #EF6767;
-                    /* Set border color for active page */
-                }
-
-                .pagination .disabled {
-                    color: #d6d6d6;
-                    /* Set color for disabled pages */
-                    background-color: transparent;
-                    /* Ensure no background color for disabled links */
-                    border-color: #d6d6d6;
-                    /* Set border color for disabled pages */
-                }
-
-                /* Override Bootstrap active state (to prevent the default blue background) */
-                .pagination .page-item.active .page-link {
-                    background-color: #EF6767 !important;
-                    /* Force active background color */
-                    border-color: #EF6767 !important;
-                    /* Force active border color */
-                    color: white !important;
-                    /* Ensure active page text color is white */
-                }
-            </style>
             @include('dash.dashfooter')
         </div>
+
         <!-- End Dashboard Content -->
 
         {{-- Modal for Rejection --}}

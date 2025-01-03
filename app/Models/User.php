@@ -27,6 +27,7 @@ class User extends Authenticatable
         'phone',
         'about_me',  // Short bio or profile description
         'gender',
+        'designation',
         'email',
         'role',      // User role like admin, tutor, tutee, etc.
         'password',
@@ -35,6 +36,7 @@ class User extends Authenticatable
         'id_photo',
         'selfie_with_id',
         'diploma',
+        'active',
         'verification_status',
         'verified'
     ];
@@ -141,14 +143,33 @@ class User extends Authenticatable
         return $this->hasMany(Payment::class);
     }
 
-
-
     public function savedCourses()
     {
         return $this->belongsToMany(Course::class, 'saved_courses')->withTimestamps();
     }
 
+    public function receivedMessages()
+    {
+        return $this->hasMany(Message::class, 'receiver_id');
+    }
 
+    public function lastMessage()
+    {
+        return $this->hasOne(Message::class, 'sender_id', 'id')
+            ->latest();
+    }
+
+    public function sentMessages()
+    {
+        return $this->hasMany(Message::class, 'sender_id');
+    }
+
+
+    public function conversations()
+    {
+        // Define the conversations based on some logic like fetching all users a particular user has messaged
+        return $this->belongsToMany(User::class, 'messages', 'sender_id', 'receiver_id');
+    }
     use Notifiable;
 
 

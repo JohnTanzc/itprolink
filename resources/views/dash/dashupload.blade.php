@@ -45,15 +45,15 @@
 
                             <div class="col-lg-6">
                                 <div class="form-group">
-                                    <label class="label-text">Course Benefits</label>
+                                    <label class="label-text">Course Subtitle</label>
                                     <input class="form-control form--control ps-3" type="text" name="section" required
-                                        placeholder="e.g. Design your own website" />
+                                        placeholder="e.g. Empower yourself with this comprehensive Javascript course." />
                                 </div>
                             </div>
 
                             <div class="col-lg-6">
                                 <div class="form-group">
-                                    <label class="label-text">Price</label>
+                                    <label class="label-text"> Course Price</label>
                                     <input class="form-control form--control ps-3" type="number" name="price" required
                                         placeholder="e.g. Input Course Price" />
                                 </div>
@@ -68,13 +68,59 @@
                             </div>
 
                             <div class="col-lg-6">
+                                <div class="form-group">
+                                    <label class="label-text">Total Lectures</label>
+                                    <input class="form-control form--control ps-3" type="number" name="class" required
+                                        placeholder="Total Lectures" />
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <label class="label-text">Course Hours</label>
+                                    <input class="form-control form--control ps-3" type="number" name="course_time"
+                                        required placeholder="e.g. 30" />
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <label class="label-text"> Course Language</label>
+                                    <div class="form-group text-center">
+                                        <input type="text" id="selected-languages"
+                                            class="form-control form--control ps-3"
+                                            value="{{ old('courselanguage') ? implode(', ', old('courselanguage')) : '' }}"
+                                            name="courselanguage[]" placeholder="e.g. English" data-role="tagsinput"
+                                            autocomplete="off">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="form-group select2-full-wrapper dropdown-arrow">
+                                    <label class="label-text">Level</label>
+                                    <select class="form-control form--control ps-3 text-black" id="level" name="level"
+                                        required>
+                                        <option value="" disabled selected>Select Level</option>
+                                        <option value="All Levels">All Levels</option>
+                                        <option value="Beginner">Beginner</option>
+                                        <option value="Intermediate">Intermediate</option>
+                                        <option value="Expert">Expert</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6">
                                 <div class="form-group select2-full-wrapper dropdown-arrow">
                                     <label class="label-text">Course Category</label>
                                     <div class="select-container w-auto">
                                         <select id="category" class="form-control form--control ps-3 text-black"
                                             name="category" required aria-label="Course Category">
-                                            <option value="" disabled selected>Select a course category</option>
-                                            <option value="graphic-design" id="category-graphic-designt">Graphic Design
+                                            <option value="" disabled selected>Select a course image category</option>
+                                            <option value="graphic-design" id="category-graphic-design">Graphic Design
+                                            </option>
+                                            <option value="computer-programming-&-software-development"
+                                                id="category-computer-programming-&-software-development">Computer
+                                                Programming and Software Development
                                             </option>
                                             <option value="ui/ux" id="category-ui/ux">UI/UX</option>
                                             <option value="data-analysis" id="category-data-analysis">Data Analysis &
@@ -85,9 +131,11 @@
                                             <option value="webdesign-&-development" id="category-webdesign-&-development">
                                                 Web Design & Development</option>
                                             <option value="game-design" id="category-game-design">Game Design</option>
-                                            <option value="digital-illustration" id="category-digital-illustration">Digital
+                                            <option value="digital-illustration" id="category-digital-illustration">
+                                                Digital
                                                 Illustratioin</option>
-                                            <option value="character-animation" id="category-character-animation">Character
+                                            <option value="character-animation" id="category-character-animation">
+                                                Character
                                                 Animation</option>
                                             <option value="cloud-computing" id="category-cloud-computing">Cloud Computing
                                             </option>
@@ -96,48 +144,27 @@
                                         </select>
                                     </div>
                                 </div>
-                            </div>
 
-                            <div class="col-lg-6">
-                                <div class="form-group">
-                                    <label class="label-text">Total Lectures</label>
-                                    <input class="form-control form--control ps-3" type="number" name="class" required
-                                        placeholder="Total Lectures" />
-                                </div>
-                            </div>
-
-                            <div class="col-lg-6">
-                                <div class="form-group">
-                                    <label class="label-text">Course Duration</label>
-                                    <input class="form-control form--control ps-3" type="number" name="course_time"
-                                        required placeholder="e.g. Enter Duration" />
+                                <!-- Additional form for "Other" category -->
+                                <div id="other-category-form" style="display: none; margin-top: 15px;">
+                                    <label for="other-category-image">Upload Course Thumbnail or Image</label>
+                                    <input type="file" id="other-category-image" class="form-control"
+                                        name="other_category_image" accept="image/*">
                                 </div>
                             </div>
 
+                            <!-- Image Viewer Section -->
                             <div class="col-lg-6">
-                                <div class="form-group">
-                                    <label class="label-text">Language (eg. English, Cebuano, Tagalog)</label>
-                                    <div class="form-group text-center">
-                                        <input type="text" id="selected-languages"
-                                            class="form-control form--control ps-3"
-                                            value="{{ old('courselanguage') ? implode(', ', old('courselanguage')) : '' }}"
-                                            name="courselanguage[]" placeholder="Type languages and press Enter"
-                                            data-role="tagsinput" autocomplete="off">
-                                    </div>
+                                <div id="image-viewer-container">
+                                    <img id="default-image" src="" alt="Default"
+                                        style="max-width: 100%; height: auto; border: 2px solid #ddd; border-radius: 5px; padding: 5px;">
                                 </div>
-                            </div>
-                            <div class="col-lg-6">
-                                <div class="form-group select2-full-wrapper dropdown-arrow">
-                                    <label class="label-text">Level</label>
-                                    <select class="form-control form--control ps-3 text-black" id="level"
-                                        name="level" required>
-                                        <option value="" disabled selected>Select Level</option>
-                                        <option value="All Levels">All Levels</option>
-                                        <option value="Beginner">Beginner</option>
-                                        <option value="Intermediate">Intermediate</option>
-                                        <option value="Expert">Expert</option>
-                                    </select>
+                                <div id="image-placeholder" style="margin-top: 15px;">
+                                    <p>No image selected</p>
                                 </div>
+
+                                <!-- Hidden Input for Default Image Path -->
+                                <input type="hidden" id="default-image-path" name="default_image">
                             </div>
 
                             {{-- Resource --}}
@@ -261,7 +288,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-lg-12">
+                            {{-- <div class="col-lg-12">
                                 <div class="form-group mb-0">
                                     <label class="label-text">Course Picture</label>
                                     <div class="file-upload-wrap">
@@ -277,7 +304,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </div> --}}
                         </div>
                     </div>
                 </div>
@@ -313,11 +340,21 @@
             const category = this.value;
             let defaultImage = ''; // Variable to store the image path
 
+            // Show/hide the upload form if "Other" is selected
+            const otherCategoryForm = document.getElementById('other-category-form');
+            if (category === 'other') {
+                otherCategoryForm.style.display = 'block';
+            } else {
+                otherCategoryForm.style.display = 'none';
+            }
 
             // Set default image based on the category selected
             switch (category) {
                 case 'graphic-design':
                     defaultImage = '/storage/categories/graphicdesign-default.png';
+                    break;
+                case 'computer-programming-&-software-development':
+                    defaultImage = '/storage/categories/computer-programming-&-software-development.png';
                     break;
                 case 'ui/ux':
                     defaultImage = '/storage/categories/uiux-default.png';
@@ -346,14 +383,9 @@
                 case '3d-modeling':
                     defaultImage = '/storage/categories/3d-modeling-default.png';
                     break;
-                case 'other':
-                    defaultImage = '/storage/categories/other-default.png';
-                    break;
                 default:
                     defaultImage = ''; // No default if category is not selected
             }
-
-
 
             // Update the default image and make it visible
             const imageViewer = document.getElementById('image-viewer-container');
@@ -373,10 +405,50 @@
             }
         });
 
+        // Handle "Other" category image upload
+        document.getElementById('other-category-image').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const imageViewer = document.getElementById('image-viewer-container');
+                    const imagePlaceholder = document.getElementById('image-placeholder');
+                    const defaultImageElement = document.getElementById('default-image');
+                    const hiddenInput = document.getElementById('default-image-path');
+
+                    imageViewer.style.display = 'block';
+                    imagePlaceholder.style.display = 'none';
+                    defaultImageElement.src = e.target.result; // Show uploaded image
+                    hiddenInput.value = file.name; // Set hidden input value with file name
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
         // Trigger the change event on page load to set the default image for any pre-selected category
         document.getElementById('category').dispatchEvent(new Event('change'));
+
+        // Submit the form and include the uploaded image
+        document.getElementById('course-form').addEventListener('submit', function(event) {
+            const category = document.getElementById('category').value;
+            const otherImageFile = document.getElementById('other-category-image').files[0];
+            const hiddenInput = document.getElementById('default-image-path');
+
+            // If "Other" category is selected and an image is uploaded, set the hidden input value to the uploaded image name
+            if (category === 'other' && otherImageFile) {
+                hiddenInput.value = otherImageFile.name; // Set the filename to the hidden input
+            }
+
+            // If no "Other" image uploaded, set the hidden input value to the default image path (if any)
+            if (!otherImageFile && category !== 'other') {
+                hiddenInput.value = document.getElementById('default-image')
+                    .src; // Use default image if category is not "Other"
+            }
+
+            // The hidden input 'default-image-path' will now carry the proper image path or uploaded file name.
+        });
     </script>
-    {{-- <script src="https://cdn.tiny.cloud/1/l5num6gjn56iw78en3nuw0kie4ol1afq31ocsjfy04yziuw5/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script> --}}
+
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {

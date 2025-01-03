@@ -10006,7 +10006,7 @@ textarea {
     font-size: 20px; /* Control icon size here */
 }
 
-/* Default text color for select and options */
+Default text color for select and options
 .text-black, .text-black option {
     color: black !important;
 }
@@ -10026,3 +10026,38 @@ textarea {
 }
 
 
+/* Message */
+/* .conversation-box {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+} */
+
+
+/* Default size for message reply body when no conversation */
+.message-reply-body {
+    min-height: 50px; /* Adjust this value as needed */
+    display: flex;
+    align-items: center;
+    padding-top: 2px;
+    padding-left: 16px;
+    padding-right: 16px;
+    border-top: 1px solid #ccc;
+}
+
+/* Default size for the conversation box when no conversation */
+.conversation-box.custom-scrollbar-styled {
+    min-height: 200px; /* Set a default minimum height */
+    max-height: 400px; /* Set a max height for scrolling */
+    overflow-y: auto; /* Allow scrolling when content exceeds max height */
+}
+
+/* Optional: Style for when there are no messages (empty state) */
+.conversation-box.empty {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 200px;
+    background-color: #f5f5f5;
+    color: #888;
+}

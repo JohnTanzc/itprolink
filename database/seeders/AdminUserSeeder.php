@@ -27,6 +27,7 @@ class AdminUserSeeder extends Seeder
             'fname' => 'Admin',
             'lname' => 'Admin',
             'email' => 'admin@gmail.com',
+            'phone' => '09690940143',
             'password' => Hash::make('111'),
             'role' => 'admin', // You may remove this if roles are managed via Spatie
             'active' => '1',

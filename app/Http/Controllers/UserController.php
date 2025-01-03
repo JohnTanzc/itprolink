@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\User;
 
 class UserController extends Controller
 {
@@ -57,6 +58,27 @@ class UserController extends Controller
 
         return back()->with('status', 'Documents uploaded successfully. Please wait for admin approval.');
     }
+
+    public function getProfileData($id)
+    {
+        $user = User::findOrFail($id);
+
+        return response()->json([
+            'profile_picture' => $user->profile_picture
+                ? asset('storage/profile_pictures/' . $user->profile_picture)
+                : asset('storage/profile_pictures/default-image.png'),
+            'fname' => $user->fname,
+            'lname' => $user->lname,
+            'age' => $user->age,
+            'role' => ucfirst($user->role),
+            'email' => $user->email,
+            'gender' => ucfirst($user->gender),
+            'birthday_formatted' => $user->birthday
+                ? \Carbon\Carbon::parse($user->birthday)->format('F d, Y')
+                : null, // Return null if birthday is not set
+        ]);
+    }
+
 
 
 }

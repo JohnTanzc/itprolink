@@ -101,7 +101,8 @@
                                                             {{-- <span class="d-block fs-14 lh-20">{{ $user->email }}</span> --}}
                                                         </div>
                                                     </li>
-                                                    <li>
+                                                    {{-- Darkmode --}}
+                                                    {{-- <li>
                                                         <div
                                                             class="theme-picker d-flex align-items-center justify-content-center lh-40">
                                                             <button
@@ -144,7 +145,7 @@
                                                                 Light Mode
                                                             </button>
                                                         </div>
-                                                    </li>
+                                                    </li> --}}
                                                     <li>
                                                         <ul class="generic-list-item">
                                                             <li>
@@ -224,8 +225,8 @@
     </div>
     <!-- end header-menu-content -->
     <div class="off-canvas-menu custom-scrollbar-styled main-off-canvas-menu">
-        <div class="off-canvas-menu-close main-menu-close icon-element icon-element-sm shadow-sm"
-            data-toggle="tooltip" data-placement="left" title="Close menu">
+        <div class="off-canvas-menu-close main-menu-close icon-element icon-element-sm shadow-sm" data-toggle="tooltip"
+            data-placement="left" title="Close menu">
             <i class="la la-times"></i>
         </div>
         <!-- end off-canvas-menu-close -->
@@ -392,21 +393,6 @@
         @endauth --}}
         @auth
             @if (Auth::user()->role === 'admin')
-                <li class="{{ request()->routeIs('dashcourse') ? 'page-active' : '' }}">
-                    <a href="{{ route('dashcourse') }}">
-                        <svg class="me-2" xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 0 24 24"
-                            width="18px">
-                            <path d="M0 0h24v24H0V0z" fill="none" />
-                            <path
-                                d="M8 16h8v2H8zm0-4h8v2H8zm6-10H6c-1.1 0-2 .9-2 2v16c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11z" />
-                        </svg>
-                        All Courses
-                    </a>
-                </li>
-            @endif
-        @endauth
-        @auth
-            @if (Auth::user()->role === 'admin')
                 <li class="{{ request()->routeIs('admin.dashcreate') ? 'page-active' : '' }}">
                     <a href="{{ route('admin.dashcreate') }}">
                         <svg class="me-2" xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 0 24 24"
@@ -420,7 +406,52 @@
                 </li>
             @endif
         @endauth
-
+        @auth
+            @if (Auth::user()->role === 'admin')
+                <li class="{{ request()->routeIs('dashcourse') ? 'page-active' : '' }}">
+                    <a href="{{ route('dashcourse') }}">
+                        <svg class="me-2" xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 0 24 24"
+                            width="18px">
+                            <path d="M0 0h24v24H0V0z" fill="none" />
+                            <path
+                                d="M8 16h8v2H8zm0-4h8v2H8zm6-10H6c-1.1 0-2 .9-2 2v16c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11z" />
+                        </svg>
+                        Courses
+                    </a>
+                </li>
+            @endif
+        @endauth
+        @auth
+            @if (Auth::user()->role === 'admin')
+                <li class="{{ request()->routeIs('payment.view') ? 'page-active' : '' }}">
+                    <a href="{{ route('payment.view') }}">
+                        <svg class="me-2" viewBox="0 0 490.11 490.109" fill="none"
+                            xmlns="http://www.w3.org/2000/svg" height="15px" width="18px" stroke="#ffffff"
+                            stroke-width="0.12">
+                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                            <g id="SVGRepo_iconCarrier">
+                                <path d="M449.958,175.251H399.55c1.892-10.802,2.837-22.363,2.837-34.687c0-4.865-0.201-9.525-0.496-14.088h48.066
+                                c8.086,0,14.635-6.555,14.635-14.641c0-8.08-6.549-14.635-14.635-14.635h-52.346c-2.211-9.002-5.154-17.271-8.914-24.689
+                                c-9.114-18.02-21.243-32.438-36.398-43.252c-15.167-10.811-32.663-18.388-52.487-22.742C279.999,2.172,259.489,0,238.29,0
+                                c0,0-69.428,0-106.016,0c-36.59,0-33.727,45.737-33.727,45.737V97.2H40.152c-8.074,0-14.635,6.555-14.635,14.635
+                                c0,8.086,6.561,14.641,14.635,14.641h58.396v48.782H40.152c-8.074,0-14.635,6.555-14.635,14.638
+                                c0,8.086,6.561,14.635,14.635,14.635h58.396v213.763c0,0.248-0.071,0.473-0.071,0.709v39.638c0,17.39,14.088,31.47,31.466,31.47
+                                s31.457-14.08,31.457-31.47v-10.97h0.121V289.711h59.909c59.977,0,105.152-12.508,135.463-37.534
+                                c15.415-12.717,26.864-28.623,34.442-47.652h58.616c8.086,0,14.636-6.549,14.636-14.638
+                                C464.586,181.807,458.037,175.251,449.958,175.251z M161.521,56.924h65.314c15.046,0,29.262,1.271,42.602,3.812
+                                c13.37,2.547,24.968,7.051,34.845,13.518c8.777,5.76,15.764,13.482,21.195,22.937H161.521V56.924z M161.521,126.47h173.319
+                                c0.644,4.956,1.087,10.107,1.087,15.682c0,12.238-1.549,23.229-4.444,33.1H161.526V126.47H161.521z M309.99,208.931
+                                c-8.996,7.424-20.723,13.09-35.121,17.018c-14.423,3.925-32.134,5.884-53.114,5.884h-60.228v-27.308h153.157
+                                C313.182,206.038,311.668,207.551,309.99,208.931z">
+                                </path>
+                            </g>
+                        </svg>
+                        Payments
+                    </a>
+                </li>
+            @endif
+        @endauth
         @auth
             @if (Auth::user()->role === 'admin')
                 <li class="{{ request()->routeIs('admin.users') ? 'page-active' : '' }}">
@@ -437,37 +468,6 @@
                             </g>
                         </svg>
                         User Verification
-                    </a>
-                </li>
-            @endif
-        @endauth
-        @auth
-            @if (Auth::user()->role === 'admin')
-                <li class="{{ request()->routeIs('payment.view') ? 'page-active' : '' }}">
-                    <a href="{{ route('payment.view') }}">
-                        <svg class="me-2" viewBox="0 0 490.11 490.109" fill="none"
-                            xmlns="http://www.w3.org/2000/svg" height="15px" width="18px" stroke="#ffffff"
-                            stroke-width="0.12">
-                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                            <g id="SVGRepo_iconCarrier">
-                                <path d="M449.958,175.251H399.55c1.892-10.802,2.837-22.363,2.837-34.687c0-4.865-0.201-9.525-0.496-14.088h48.066
-                        c8.086,0,14.635-6.555,14.635-14.641c0-8.08-6.549-14.635-14.635-14.635h-52.346c-2.211-9.002-5.154-17.271-8.914-24.689
-                        c-9.114-18.02-21.243-32.438-36.398-43.252c-15.167-10.811-32.663-18.388-52.487-22.742C279.999,2.172,259.489,0,238.29,0
-                        c0,0-69.428,0-106.016,0c-36.59,0-33.727,45.737-33.727,45.737V97.2H40.152c-8.074,0-14.635,6.555-14.635,14.635
-                        c0,8.086,6.561,14.641,14.635,14.641h58.396v48.782H40.152c-8.074,0-14.635,6.555-14.635,14.638
-                        c0,8.086,6.561,14.635,14.635,14.635h58.396v213.763c0,0.248-0.071,0.473-0.071,0.709v39.638c0,17.39,14.088,31.47,31.466,31.47
-                        s31.457-14.08,31.457-31.47v-10.97h0.121V289.711h59.909c59.977,0,105.152-12.508,135.463-37.534
-                        c15.415-12.717,26.864-28.623,34.442-47.652h58.616c8.086,0,14.636-6.549,14.636-14.638
-                        C464.586,181.807,458.037,175.251,449.958,175.251z M161.521,56.924h65.314c15.046,0,29.262,1.271,42.602,3.812
-                        c13.37,2.547,24.968,7.051,34.845,13.518c8.777,5.76,15.764,13.482,21.195,22.937H161.521V56.924z M161.521,126.47h173.319
-                        c0.644,4.956,1.087,10.107,1.087,15.682c0,12.238-1.549,23.229-4.444,33.1H161.526V126.47H161.521z M309.99,208.931
-                        c-8.996,7.424-20.723,13.09-35.121,17.018c-14.423,3.925-32.134,5.884-53.114,5.884h-60.228v-27.308h153.157
-                        C313.182,206.038,311.668,207.551,309.99,208.931z">
-                                </path>
-                            </g>
-                        </svg>
-                        Payments
                     </a>
                 </li>
             @endif
@@ -514,9 +514,22 @@
             </li>
         @endif
         @if (Auth::user()->role === 'tutor')
+            <li class="{{ request()->routeIs('tutor.enrollee') ? 'page-active' : '' }}">
+                <a href="{{ route('tutor.enrollee') }}">
+                    <svg class="me-2" xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 0 24 24"
+                        width="18px">
+                        <path d="M0 0h24v24H0V0z" fill="none" />
+                        <path
+                            d="M12 12c2.21 0 4-1.79 4-4S14.21 4 12 4s-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4zM4 18v2h3v-2H4zm13 0v2h3v-2h-3zm-8 0v2h3v-2h-3z" />
+                    </svg>
+                    Session
+                </a>
+            </li>
+        @endif
+        @if (Auth::user()->role === 'tutor')
             <li class="{{ request()->is('pub.profile') ? 'page-active' : '' }}">
                 <a href="{{ route('pub.profile', ['id' => Auth::user()->id]) }}">
-                   <svg class="me-2" xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 0 24 24"
+                    <svg class="me-2" xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 0 24 24"
                         width="18px">
                         <path d="M0 0h24v24H0V0z" fill="none" />
                         <path
@@ -541,8 +554,8 @@
                 </a>
             </li>
         @endif
-        <li class="{{ request()->is('dashboard-message') ? 'page-active' : '' }}">
-            <a href="{{ url('dashboard-message') }}">
+        <li class="{{ request()->routeIs('message.index') ? 'page-active' : '' }}">
+            <a href="{{ route('message.index') }}">
                 <svg class="me-2" xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 0 24 24"
                     width="18px">
                     <path d="M0 0h24v24H0V0z" fill="none" />
@@ -552,6 +565,7 @@
                 Messages <span class="badge text-bg-info p-1 ms-2">2</span>
             </a>
         </li>
+        @if (Auth::user()->role === 'admin')
         <li class="{{ request()->is('dashboard-reviews') ? 'page-active' : '' }}">
             <a href="{{ url('dashboard-reviews') }}">
                 <svg class="me-2" xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 0 24 24"
@@ -563,6 +577,7 @@
                 Feedbacks
             </a>
         </li>
+        @endif
         @auth
             @if (Auth::user()->role === 'admin')
                 <li class="{{ request()->is('dashboard-earnings') ? 'page-active' : '' }}">

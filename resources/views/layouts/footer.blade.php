@@ -20,15 +20,33 @@
             </div>
             <!-- end col-lg-3 -->
             <div class="col-lg-4 responsive-column-half">
-              <div class="footer-item">
-                <h3 class="fs-20 font-weight-semi-bold">Quick Links</h3>
-                <ul class="generic-list-item pt-4">
-                  <li><a href="{{route('about')}}">About us</a></li>
-                  <li><a href="{{route('contacts')}}">Contact us</a></li>
-                  <li><a href="{{route('user.register')}}">Become a Teacher</a></li>
-                  <li><a href="{{route('course')}}">Courses</a></li>
-                </ul>
-              </div>
+                <div class="footer-item">
+                  <h3 class="fs-20 font-weight-semi-bold">Quick Links</h3>
+                  <ul class="generic-list-item pt-4">
+                    @guest
+                      <li><a href="{{ route('about') }}">About us</a></li>
+                      <li><a href="{{ route('contacts') }}">Contact us</a></li>
+                      <li><a href="{{ route('user.register') }}">Become a Teacher</a></li>
+                      <li><a href="{{ route('course') }}">Courses</a></li>
+                    @endguest
+
+                    @auth
+                      @if(auth()->user()->role == 'tutee')
+                        <li><a href="{{ route('index') }}">Home</a></li>
+                        <li><a href="{{ route('tutee.dashboard') }}">Dashboard</a></li>
+                        <li><a href="{{ route('course') }}">Courses</a></li>
+                      @elseif(auth()->user()->role == 'tutor')
+                        <li><a href="{{ route('index') }}">Home</a></li>
+                        <li><a href="{{ route('tutor.dashboard') }}">Dashboard</a></li>
+                        <li><a href="{{ route('course') }}">Courses</a></li>
+                      @elseif(auth()->user()->role == 'admin')
+                        <li><a href="{{ route('index') }}">Home</a></li>
+                        <li><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
+                      @endif
+                    @endauth
+                  </ul>
+                </div>
+
               <!-- end footer-item -->
             </div>
             <!-- end col-lg-3 -->

@@ -14,13 +14,20 @@ class EnrollmentController extends Controller
     // In the appropriate controller (likely EnrollmentController or UserController)
     public function showEnrollee()
     {
-        // Fetch users with their enrollments (eager loading)
-        $users = User::with('enrollments')->paginate(6);
+        $authUser = auth()->user(); // Get the authenticated user
 
-        $payments = Payment::all(); // Or fetch specific payment data as needed
+        if ($authUser->role === 'tutor') {
+            // Fetch only the enrollments for courses uploaded by this tutor with pagination
+            $courses = $authUser->courses()->with('enrollments.user')->paginate(6); // Assuming 'courses' relationship exists
+        } else {
+            // Admin or other roles can see all enrollments with pagination
+            $courses = Course::with('enrollments.user')->paginate(6);
+        }
 
-        // Pass the users to the view
-        return view('dash.dashenrollee', compact('users', 'payments'));
+        // Fetch related payment data if needed (optional)
+        $payments = Payment::all();
+
+        return view('dash.dashenrollee', compact('courses', 'payments'));
     }
 
     public function user()

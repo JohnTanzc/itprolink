@@ -33,7 +33,7 @@
         <!-- Table with hoverable rows -->
         <div class="container mt-5">
             <div class="table-wrap">
-                <table class="table table-bordered align-middle">
+                <table class="table table-hover table-bordered">
                     <thead class="table-light">
                         <tr>
                             <th scope="col" style="width: 5%;">#</th>
@@ -47,12 +47,14 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($users as $user)
-                            @foreach ($user->enrollments as $enrollment)
+                        @php
+                            $startCount = ($courses->currentPage() - 1) * $courses->perPage() + 1; // Calculate the starting number
+                        @endphp
+                        @foreach ($courses as $course)
+                            @foreach ($course->enrollments as $enrollment)
                                 <tr>
-                                    <td>{{ $enrollment->id }}</td>
-                                    <!-- Combined iteration if you need both user and enrollment count -->
-                                    <td>{{ $enrollment->course->title }}</td>
+                                    <td>{{ $startCount++ }}</td> <!-- Replace enrollment ID with continuous count -->
+                                    <td>{{ $course->title }}</td>
                                     <td>{{ $enrollment->user->fname }} {{ $enrollment->user->lname }}</td>
                                     <td>
                                         <form action="{{ route('enrollment.updateStatus', $enrollment->id) }}"
@@ -62,19 +64,14 @@
                                             <select name="status" class="form-select form-select-sm"
                                                 onchange="updateEnrollmentStatus({{ $enrollment->id }}, this.value)">
                                                 <option value="pending"
-                                                    {{ $enrollment->status === 'pending' ? 'selected' : '' }}>
-                                                    Pending
+                                                    {{ $enrollment->status === 'pending' ? 'selected' : '' }}>Pending
                                                 </option>
                                                 <option value="approved"
                                                     {{ $enrollment->status === 'approved' ? 'selected' : '' }}
-                                                    @if ($enrollment->isPaid == 0 || $enrollment->isPaid == 2) disabled @endif>
-                                                    Approved
-                                                </option>
+                                                    @if ($enrollment->isPaid == 0 || $enrollment->isPaid == 2) disabled @endif>Approved</option>
                                                 <option value="rejected"
                                                     {{ $enrollment->status === 'rejected' ? 'selected' : '' }}
-                                                    @if ($enrollment->isPaid == 0 || $enrollment->isPaid == 1) disabled @endif>
-                                                    Rejected
-                                                </option>
+                                                    @if ($enrollment->isPaid == 0 || $enrollment->isPaid == 1) disabled @endif>Rejected</option>
                                             </select>
                                         </form>
                                     </td>
@@ -104,9 +101,7 @@
                                             </button>
                                         </td>
                                     @else
-                                        <td class="text-center">
-                                            Pending
-                                        </td>
+                                        <td class="text-center">Pending</td>
                                     @endif
                                 </tr>
                             @endforeach
@@ -117,7 +112,7 @@
             </div>
         </div>
         <div class="d-flex justify-content-center mt-3">
-            {{ $users->links() }} <!-- Pagination links -->
+            {{ $courses->links() }} <!-- Pagination links -->
         </div>
         <style>
             .pagination {
@@ -172,16 +167,16 @@
                 /* Ensure active page text color is white */
             }
         </style>
-        <div class="d-flex justify-content-center mt-3">
+        {{-- <div class="d-flex justify-content-center mt-3">
             {{ $users->links() }} <!-- Pagination links -->
-        </div>
+        </div> --}}
         @include('dash.dashfooter')
     </div>
 
-    <div class="d-flex justify-content-center mt-3">
+    {{-- <div class="d-flex justify-content-center mt-3">
         {{ $users->links() }} <!-- Pagination links -->
-    </div>
-    <style>
+    </div> --}}
+    {{-- <style>
         .pagination {
             display: flex;
             justify-content: center;
@@ -233,7 +228,7 @@
             color: white !important;
             /* Ensure active page text color is white */
         }
-    </style>
+    </style> --}}
     <!-- End of Card -->
 
 
@@ -275,7 +270,7 @@
                     Swal.fire({
                         icon: 'success',
                         title: 'Success!',
-                        text: 'Verification status updated successfully.',
+                        text: 'Enrollee updated successfully.',
                         showConfirmButton: false,
                         timer: 1500
                     });

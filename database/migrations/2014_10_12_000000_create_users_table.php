@@ -21,6 +21,7 @@ class CreateUsersTable extends Migration
             $table->date('birthday')->nullable(); // Optional birthday
             $table->integer('age')->nullable(); // Optional age
             $table->enum('gender', ['Male', 'Female', 'Others'])->nullable(); // Optional gender
+            $table->text('designation')->nullable(); // Add the 'designation' column
             $table->enum('role', ['tutor', 'tutee', 'admin']); // Required role
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();

@@ -7,20 +7,20 @@
         <div class="overlay z-index-n1"></div>
         <div class="container">
             <div class="breadcrumb-content">
-                <div class="section-heading">
-                    <h5 class="ribbon ribbon-lg ribbon-white mb-2">Welcome to ITProLink</h5>
-                    <h2 class="section__title fs-45 lh-60 text-white">
-                        Improve Your Lives <br />
-                        With Learning
+                <div class="section-heading" style="text-align: center;">
+                    <h5 class="ribbon ribbon-lg ribbon-white mb-2 fs-20">Welcome to ITProLink</h5>
+                    <h2 class="section__title fs-40 lh-50 text-white" style="text-align: center;">
+                        A Digital Classroom for Personalized Learning Experience in Information
+                        Technology
                     </h2>
                 </div>
-                <div class="breadcrumb-btn-box pt-40px ps-3">
+                {{-- <div class="breadcrumb-btn-box pt-40px ps-3">
                     <a href="#" class="btn-text text-white video-play-btn d-inline-flex align-items-center"
                         data-fancybox data-src="https://www.youtube.com/watch?v=cRXm1p-CNyk">
                         <span class="icon-element icon-element-md pulse-btn me-3"><i class="la la-play"></i></span>Watch the
                         Video
                     </a>
-                </div>
+                </div> --}}
             </div>
             <!-- end breadcrumb-content -->
         </div>
@@ -33,38 +33,28 @@
     <section class="about-area section--padding overflow-hidden">
         <div class="container">
             <div class="row">
-                <div class="col-lg-6">
+                <div class="col-lg-12">
                     <div class="about-content pb-5">
                         <div class="section-heading">
-                            <h2 class="section__title pb-3 lh-50">
-                                The leading global marketplace for learning and instruction
+                            <h2 class="section__title pb-3 lh-50" style="text-align: center;">
+                                ITProLink
                             </h2>
-                            <p class="section__desc">
-                                Your global hub for personalized IT learning. Experience flexible education, connect with
-                                expert tutors, and earn globally recognized certificates to advance your career in
-                                technology.
+                            <p class="section__desc" style="text-align: justify;">
+                                At ITProLink, we aim to create a space where both aspiring IT learners and knowledgeable
+                                individuals can connect and grow together. We understand that learning is a journey, and
+                                we’re here to support you at every step.<br><br>
+
+                                Whether you're a fresh graduate looking to share your knowledge, or someone eager to improve
+                                your IT skills, ITProLink offers a variety of resources and a community-driven environment.
+                                With dedicated tutors, and flexible learning options, we strive to help you progress in your IT journey at your own pace.
                             </p>
                         </div>
                         <!-- end section-heading -->
-                        {{-- <ul class="generic-list-item pt-3">
-                            <li>
-                                <i class="la la-check-circle me-2 text-success"></i>Online
-                                Courses with full discount systems.
-                            </li>
-                            <li>
-                                <i class="la la-check-circle me-2 text-success"></i>Online
-                                Certificates which can be used worldwide.
-                            </li>
-                            <li>
-                                <i class="la la-check-circle me-2 text-success"></i>An online
-                                leadership development program at ITProLink.
-                            </li>
-                        </ul> --}}
                     </div>
                     <!-- end about-content -->
                 </div>
                 <!-- end col-lg-6 -->
-                <div class="col-lg-6">
+                {{-- <div class="col-lg-6">
                     <div class="generic-img-box generic-img-box-layout-2">
                         <div class="img__item img__item-1">
                             <img class="lazy" src="{{ asset('template/images/img-loading.png') }}"
@@ -92,7 +82,7 @@
                         </div>
                     </div>
                     <!-- end generic-img-box -->
-                </div>
+                </div> --}}
                 <!-- end col-lg-6 -->
             </div>
             <!-- end row -->
@@ -218,19 +208,20 @@
                 <div class="col-lg-6">
                     <div class="about-content ps-4">
                         <div class="section-heading">
-                            <h2 class="section__title pb-3 lh-50">Our Mission</h2>
-                            <p class="section__desc pb-3">
-                                We’re not one of those companies. We are rethinking education
-                                from the bottom up. The web has rethought nearly everything -
-                                commerce, social networking, healthcare, and more. We are
-                                building the education the world needs - the first truly net
-                                native education. We take more cues from modern tech
-                                innovators in creating an engaging educational experience than
-                                we do from the classroom.
+                            <h2 class="section__title pb-2 lh-50">Our Mission</h2>
+                            <p class="section__desc pb-3" style="text-align: justify;">
+                                At ITProLink, we’re reimagining education for the digital age. The world has evolved, with
+                                the web transforming how we connect, shop, and even heal—yet education remains stagnant.
+                                We’re here to change that.<br>
+
+                                Our mission is to bridge the gap between aspiring IT learners and passionate IT enthusiasts,
+                                including fresh graduates eager to share their expertise. By fostering these connections, we
+                                aim to create a community where learning and teaching IT skills is accessible, engaging, and
+                                impactful.
                             </p>
-                            <p class="section__desc text-black">
-                                Education is broken. Come help us build the education the
-                                world deserves.
+                            <p class="section__desc text-black" style="text-align: justify;">
+                                Education needs a reboot. Join us in building the future of IT learning—one connection at a
+                                time.
                             </p>
                         </div>
                         <!-- end section-heading -->
@@ -349,20 +340,21 @@
                     <div class="about-content pb-5">
                         <div class="section-heading">
                             <h2 class="section__title pb-3 lh-50">A great place to grow</h2>
-                            <p class="section__desc pb-3">
+                            <p class="section__desc pb-3" style="text-align: justify">
                                 Join IT ProLink and expand your skills in a supportive, innovative environment.
                                 Collaborate with experts, grow your network, and achieve your career goals in IT.
                             </p>
-                            <p class="section__desc">
-                                Neque porro quisquam est, qui dolorem ipsum quia dolor sit
-                                amet, adipisci velit, sed quia non numquam eius modi tempora
+                            <p class="section__desc" style="text-align: justify">
+                                Our platform is designed to help you thrive in the ever-evolving world of technology. Learn
+                                at your own pace, gain valuable insights, and connect with like-minded individuals who are
+                                equally passionate about IT.
                             </p>
                         </div>
                         <!-- end section-heading -->
-                        <div class="btn-box pt-35px">
+                        {{-- <div class="btn-box pt-35px">
                             <a href="#" class="btn theme-btn">Join with our team <i
                                     class="la la-arrow-right icon ms-1"></i></a>
-                        </div>
+                        </div> --}}
                     </div>
                     <!-- end about-content -->
                 </div>
@@ -419,8 +411,7 @@
                                 Teach the world online
                             </h2>
                             <p class="fs-17">
-                                Create an online video course, reach students across the
-                                globe, and earn money
+                                Create an online course, reach and teach students, and inspire to learn new things.
                             </p>
                         </div>
                     </div>
@@ -429,7 +420,7 @@
                 <!-- end col-lg-9 -->
                 <div class="col-lg-3">
                     <div class="cta-btn-box text-end">
-                <a href="{{route('user.register')}}" class="btn theme-btn">Tech on ITProLink <i
+                        <a href="{{ route('user.register') }}" class="btn theme-btn">Teach on ITProLink <i
                                 class="la la-arrow-right icon ms-1"></i></a>
                     </div>
                 </div>

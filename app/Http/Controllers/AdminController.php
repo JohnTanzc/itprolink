@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Models\Course;
 use App\Models\Enrollment;
+use Illuminate\Support\Facades\Storage;
 use App\Notifications\VerificationRejectedNotification;
 
 
@@ -68,7 +70,10 @@ class AdminController extends Controller
         $user->save();
 
         // Return a success response
-        return response()->json(['success' => true]);
+        return response()->json([
+            'success' => true,
+            'message' => 'Verification status updated successfully.'
+        ]);
     }
 
 
@@ -80,9 +85,9 @@ class AdminController extends Controller
      */
     public function rejectVerification(Request $request, $userId)
     {
-        // Validate the rejection message from the form (optional, depending on your setup)
+        // Validate the rejection message from the form
         $request->validate([
-            'reason' => 'required|string|max:255',  // Adjust validation rules as necessary
+            'reason' => 'required|string|max:255',
         ]);
 
         // Find the user by ID
@@ -97,10 +102,12 @@ class AdminController extends Controller
         // Send the rejection notification with the custom reason
         $user->notify(new VerificationRejectedNotification($request->reason));
 
-        // Return a success message and redirect back
-        return response()->json(['success' => true]);
+        // Return a success response
+        return response()->json([
+            'success' => true,
+            'message' => 'Verification rejected successfully.'
+        ]);
     }
-
 
 
     public function dashCreate(Request $request)
@@ -130,5 +137,83 @@ class AdminController extends Controller
         return view('dash.dashcreate', compact('users'));
     }
 
+    public function updateUser(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'fname' => 'nullable|string|max:255',
+            'lname' => 'nullable|string|max:255',
+            'age' => 'nullable|integer',
+            'email' => 'nullable|email|unique:users,email,' . $id,
+            'birthday' => 'nullable|date',
+            'gender' => 'nullable|in:Male,Female',
+            'role' => 'nullable|in:tutee,tutor,admin',
+            'active' => 'nullable|in:0,1', // Validate status field
+        ]);
 
+        $user = User::findOrFail($id);
+        $user->update($validated);
+
+        return response()->json(['status' => true, 'message' => 'Profile updated successfully!']);
+    }
+
+    public function getUserProfile($id)
+    {
+        $user = User::findOrFail($id);
+
+        return response()->json([
+            'id' => $user->id,
+            'fname' => $user->fname,
+            'lname' => $user->lname,
+            'email' => $user->email,
+            'age' => $user->age,
+            'gender' => $user->gender,
+            'birthday' => $user->birthday ? $user->birthday->format('Y-m-d') : null,
+            'role' => $user->role,
+            'active' => $user->active,
+        ]);
+    }
+
+
+    public function getUserData($id)
+    {
+        $user = User::find($id); // Find the user by ID
+        return response()->json($user); // Return the user data as JSON
+    }
+
+    public function deleteUser($id)
+    {
+        try {
+            $user = User::findOrFail($id);
+
+            // Perform any additional checks if needed
+            // e.g., prevent deleting an admin, etc.
+
+            $user->delete();
+
+            return response()->json(['message' => 'User deleted successfully.'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Error deleting user: ' . $e->getMessage()], 500);
+        }
+    }
+
+    public function createUser(Request $request)
+    {
+        $request->validate([
+            'fname' => 'required|string|max:255',
+            'lname' => 'required|string|max:255',
+            'email' => 'required|email|unique:users',
+            'password' => 'required|min:8',
+            'role' => 'required|in:admin,tutor,tutee',
+        ]);
+
+        User::create([
+            'fname' => $request->input('fname'),
+            'lname' => $request->input('lname'),
+            'email' => $request->input('email'),
+            'password' => bcrypt($request->input('password')),
+            'role' => $request->input('role'),
+        ]);
+
+        return redirect()->route('admin.dashcreate')->with('success', 'User added successfully!');
+    }
 }

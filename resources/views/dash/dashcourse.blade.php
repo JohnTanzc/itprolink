@@ -45,7 +45,8 @@
                     <p class="pt-2 pb-1">
                         Created by
                         <a href="{{ route('pub.profile', ['id' => $course->user_id]) }}" class="text-color hover-underline">
-                            {{ $course->instructor_name }}
+                            {{ $course->instructor->fname }} {{ $course->instructor->lname }}
+                            <!-- Dynamically retrieves the instructor's name -->
                         </a>
                     </p>
                     <div class="d-flex flex-wrap align-items-center">
@@ -178,12 +179,26 @@
                                                                             <i class="la la-file me-1"></i>
                                                                             {{ $resource['resource_title'] }}
                                                                         </span>
-                                                                        <span>
-                                                                            <a href="{{ asset('storage/' . $resource['resource_file']) }}"
-                                                                                target="_blank">
-                                                                                Download
-                                                                            </a>
-                                                                        </span>
+                                                                        @if ($isEnrolled)
+                                                                            <!-- Display full resource content and allow download for enrolled users -->
+                                                                            <span>
+                                                                                <a href="{{ asset('storage/' . $resource['resource_file']) }}"
+                                                                                    target="_blank" class="btn-link">
+                                                                                    Download
+                                                                                </a>
+                                                                            </span>
+                                                                        @else
+                                                                            <!-- Display preview and watermark for non-enrolled users -->
+                                                                            {{-- <span class="watermark">
+                                                                                Enroll to this course to view full content
+                                                                            </span> --}}
+                                                                            <span>
+                                                                                <a href="javascript:void(0);"
+                                                                                    onclick="showAlert()" class="btn-link">
+                                                                                    Download
+                                                                                </a>
+                                                                            </span>
+                                                                        @endif
                                                                     </div>
                                                                 </li>
                                                             @endforeach
@@ -198,6 +213,18 @@
                                 </div>
                             </div>
                         </div>
+
+                        <script>
+                            // SweetAlert for non-enrolled users
+                            function showAlert() {
+                                Swal.fire({
+                                    title: 'Please Enroll!',
+                                    text: 'You must enroll in the course to download this resource.',
+                                    icon: 'warning',
+                                    confirmButtonText: 'Okay'
+                                });
+                            }
+                        </script>
 
                         {{-- About Instructor --}}
                         <div class="course-overview-card pt-5">
@@ -248,40 +275,37 @@
                                     </div>
                                     <!-- end instructor-img -->
                                     <div class="media-body">
-                                        <h5><a href="teacher-detail.html">{{ $course->instructor_name }}</a></h5>
-                                        <span class="d-block lh-18 pt-2 pb-3">Joined 4 years ago</span>
+                                        <h5><a href="{{ route('pub.profile', ['id' => $course->user_id]) }}">{{ $course->instructor->fname }}
+                                                {{ $course->instructor->lname }}</a></h5>
+                                        <span class="d-block lh-18 pt-2 pb-3">Joined
+                                            {{ $course->tutor->created_at->format('F j, Y') }}</span>
                                         <p class="text-black lh-18 pb-3">
-                                            Java Python Android and C# Expert Developer - 878K+
-                                            students
+                                            {{ $course->user->designation }}
                                         </p>
+                                        @php
+                                            // Split the about_me content into sentences by dots
+                                            $sentences = preg_split('/(?<=\.)\s/', $course->user->about_me); // Split by periods (.) followed by spaces
+
+                                            // First 5 sentences to be shown initially
+                                            $firstPart = array_slice($sentences, 0, 5);
+
+                                            // Remaining sentences will be hidden initially
+                                            $remainingPart = array_slice($sentences, 5);
+                                        @endphp
+
+                                        <!-- Display the first 5 sentences -->
                                         <p class="pb-3">
-                                            Lorem Ipsum is simply dummy text of the printing and
-                                            typesetting industry. Lorem Ipsum has been the
-                                            industry’s standard dummy text ever since the 1500s,
-                                            when an unknown printer took a galley of type and
-                                            scrambled it to make a type specimen book. It has
-                                            survived not only five centuries, but also the leap into
-                                            electronic typesetting, remaining essentially unchanged.
+                                            {!! nl2br(e(implode(' ', $firstPart))) !!}
                                         </p>
+
+                                        <!-- Hidden content (remaining sentences) -->
                                         <div class="collapse" id="collapseMoreTwo">
                                             <p class="pb-3">
-                                                After learning the hard way, Tim was determined to
-                                                become the best teacher he could, and to make his
-                                                training as painless as possible, so that you, or
-                                                anyone else with the desire to become a software
-                                                developer, could become one.
-                                            </p>
-                                            <p class="pb-3">
-                                                If you want to become a financial analyst, a finance
-                                                manager, an FP&A analyst, an investment banker, a
-                                                business executive, an entrepreneur, a business
-                                                intelligence analyst, a data analyst, or a data
-                                                scientist,
-                                                <strong class="text-black font-weight-semi-bold">Tim Buchalka's courses are
-                                                    the perfect course to
-                                                    start</strong>.
+                                                {!! nl2br(e(implode(' ', $remainingPart))) !!}
                                             </p>
                                         </div>
+
+                                        <!-- Toggle button for "Show more" -->
                                         <a class="collapse-btn collapse--btn fs-15" data-bs-toggle="collapse"
                                             href="#collapseMoreTwo" role="button" aria-expanded="false"
                                             aria-controls="collapseMoreTwo">
@@ -488,7 +512,7 @@
                                             @if ($course->user_id === Auth::id())
                                                 <button type="button" class="btn theme-btn w-100 mb-2"
                                                     onclick="showTutorAlert('own')">
-                                                    <i class="la la-book fs-18 me-1"></i> Edit Course
+                                                    <i class="la la-book fs-18 me-1"></i> Enroll Now
                                                 </button>
                                             @else
                                                 <button type="button" class="btn theme-btn w-100 mb-2"
@@ -554,7 +578,7 @@
                                                     // Update the button to reflect the saved state
                                                     saveButton.disabled = true;
                                                     saveButton.innerHTML =
-                                                    '<i class="la la-heart"></i> Saved'; // Change icon and text
+                                                        '<i class="la la-heart"></i> Saved'; // Change icon and text
                                                 } else {
                                                     Swal.fire({
                                                         icon: 'error',

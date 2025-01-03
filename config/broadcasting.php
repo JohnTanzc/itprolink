@@ -48,7 +48,16 @@ return [
 
         'redis' => [
             'driver' => 'redis',
-            'connection' => 'default',
+            'host' => env('REDIS_HOST', '127.0.0.1'),
+            'password' => env('REDIS_PASSWORD', null),
+            'port' => env('REDIS_PORT', 6379),
+            'database' => 0,
+        ],
+        'socket.io' => [
+            'driver' => 'socket.io',
+            'host' => env('SOCKET_IO_HOST', '127.0.0.1'), // Your WebSocket server host
+            'port' => env('SOCKET_IO_PORT', 6001), // The port for your WebSocket server
+            'scheme' => 'http', // Use 'https' for production if you're using SSL
         ],
 
         'log' => [

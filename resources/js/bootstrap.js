@@ -21,6 +21,35 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
  */
 
 // import Echo from 'laravel-echo';
+import Echo from 'laravel-echo';
+import socketioClient from 'socket.io-client';
+
+// Initialize Echo with Socket.IO
+window.Echo = new Echo({
+    broadcaster: 'socket.io',
+    host: window.location.hostname + ':6001',
+    client: socketioClient
+});
+
+// Listen for new messages on the conversation channel
+window.Echo.private('conversation.' + conversationId)
+    .listen('MessageSent', (event) => {
+        console.log('Message received:', event.message);
+
+        // Add the new message to the conversation box
+        appendMessageToConversation(event.message);
+    });
+
+// Function to add message to the conversation box
+function appendMessageToConversation(message) {
+    // Add message to the conversation UI
+    const messageContainer = document.querySelector('#conversation-box');
+    const newMessageElement = document.createElement('div');
+    newMessageElement.classList.add('message');
+    newMessageElement.innerHTML = `${message.user.name}: ${message.content}`;
+    messageContainer.appendChild(newMessageElement);
+}
+
 
 // window.Pusher = require('pusher-js');
 

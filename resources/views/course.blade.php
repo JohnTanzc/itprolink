@@ -29,7 +29,7 @@
             <div class="filter-bar mb-4">
                 <div class="filter-bar-inner d-flex flex-wrap align-items-center justify-content-between">
                     <p class="fs-14">
-                        We found <span class="text-black">56</span> courses available for
+                        We found <span class="text-black">{{ $courseCount }}</span> courses available for
                         you
                     </p>
                     <div class="d-flex flex-wrap align-items-center">

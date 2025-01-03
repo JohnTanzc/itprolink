@@ -2,9 +2,8 @@
 
 
 use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\MessageController;
 use App\Http\Controllers\CourseController;
-use App\Http\Controllers\CredentialController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\RecoverController;
@@ -32,21 +31,6 @@ use App\Http\Controllers\Auth\UserRegistrationController;
 Route::get('/', function () {
     return view('index');
 });
-
-// Unauthenticated (guest) users can also view these routes
-Route::get('/', [IndexController::class, 'index'])->name('index'); // Make this the landing page
-Route::get('/About', [IndexController::class, 'about'])->name('about');
-Route::get('/Course', [CourseController::class, 'course'])->name('course');
-Route::get('/Contacts', [IndexController::class, 'contacts'])->name('contacts');
-Route::get('/privacypolicy', [IndexController::class, 'privacy'])->name('privacy');
-Route::get('/terms&conditions', [IndexController::class, 'terms'])->name('terms');
-Route::get('/error', [IndexController::class, 'error'])->name('error');
-Route::get('/faqs', [IndexController::class, 'faqs'])->name('faqs');
-Route::get('/recoverpassword', [RecoverController::class, 'recover'])->name('recover.password');
-Route::post('/recover', [RecoverController::class, 'sendResetLink'])->name('recover.send');
-// Routes for password recovery
-Route::get('/reset-password/{token}', [RecoverController::class, 'showResetForm'])->name('password.reset');
-Route::post('/password/update', [RecoverController::class, 'resetPassword'])->name('password.update');
 
 
 
@@ -76,7 +60,7 @@ Route::middleware(['auth', 'checkuserrole:admin', 'verified'])->group(function (
     Route::get('/admin/profile/{id}', [DashboardController::class, 'dashprofile'])->name('admin.profile');
     Route::get('/admin/setting/{id}', [DashboardController::class, 'dashsetting'])->name('admin.setting');
     Route::put('/admin/setting/{id}', [DashboardController::class, 'editprofile'])->name('admin.update');
-    Route::put('/admin/password/update/{id}', [DashboardController::class, 'updateAccount'])->name('admin.password.update');
+    Route::put('/admin/password/update/{id}', [DashboardController::class, 'updatePassword'])->name('admin.password.update');
     Route::put('/admin/email/update/{id}', [DashboardController::class, 'updateEmail'])->name('admin.email.update');
     Route::post('/admin/verify-user/{id}', [AdminController::class, 'verifyUser'])->name('admin.verify.user');
     Route::get('/admin/users', [AdminController::class, 'viewUsers'])->middleware('auth')->name('admin.users');
@@ -88,10 +72,16 @@ Route::middleware(['auth', 'checkuserrole:admin', 'verified'])->group(function (
     Route::get('/admin/courses/view', [AdminController::class, 'allCourse'])->name('dashcourse');
     Route::post('/api/verification-status/{user}', [VerificationController::class, 'updateVerificationStatus']);
     Route::delete('/notifications/{id}', [NotificationController::class, 'destroy']);
-    Route::get('/admin/dashcreate', [AdminController::class, 'dashCreate'])->name('admin.dashcreate');
+    Route::get('/admin/all/users', [AdminController::class, 'dashCreate'])->name('admin.dashcreate');
     // Route::get('/course/detail/{course}', [CourseController::class, 'show'])->name('course.detail');
     Route::get('/payments', [EnrollmentController::class, 'payments'])->name('payment.view');
     Route::get('/payment-details/{enrollment_id}', [PaymentController::class, 'getPaymentDetails']);
+    Route::put('/admin/user/{id}', [AdminController::class, 'updateUser'])->name('admin.updateuser');
+    Route::get('/admin/user/{id}', [AdminController::class, 'getUserProfile']);
+    Route::get('/get-user-profile/{id}', [UserController::class, 'getProfileData']);
+    Route::delete('/users/{id}/delete', [AdminController::class, 'deleteUser'])->name('users.destroy');
+    Route::post('/admin/user-create', [AdminController::class, 'createUser'])->name('admin.createuser');
+
 
 });
 
@@ -110,7 +100,7 @@ Route::middleware(['auth', 'checkuserrole:tutor', 'verified'])->group(function (
     Route::post('/submit-course', [CourseController::class, 'store'])->name('courses.store');  // POST route for course submission
     // Route::get('/tutor/course/detail/{id}', [DashboardController::class, 'coursedetail'])->name('tutors.coursedetail');
     Route::post('/tutor/upload-verification', [VerificationController::class, 'uploadVerification'])->name('tutor.uploadverification');
-    Route::post('/tutor/verification/submit', [VerificationController::class, 'submit'])->name('verification.submit');
+    Route::post('/tutor/verification/submit', [VerificationController::class, 'submit'])->name('tutor.verificationsubmit');
     Route::get('/tutor/enrollees', [EnrollmentController::class, 'showEnrollee'])->middleware('auth')->name('tutor.enrollee');
     Route::get('/tutor/mycourses/{id}', [DashboardController::class, 'tutcourse'])->name('tut.course');
     Route::delete('/course/{id}/delete', [DashboardController::class, 'destroy'])->name('course.delete');
@@ -130,7 +120,7 @@ Route::middleware(['auth', 'checkuserrole:tutee', 'verified'])->group(function (
     Route::get('/verification', [VerificationController::class, 'showUploadForm'])->name('verification.upload')
         ->middleware('auth'); // Ensure only authenticated users can access
     Route::post('/tutee/upload-verification', [VerificationController::class, 'uploadVerification'])->name('tutee.uploadverification');
-    Route::post('/tutee/verification/submit', [VerificationController::class, 'submit'])->name('verification.submit');
+    Route::post('/tutee/verification/submit', [VerificationController::class, 'submit'])->name('tutee.verificationsubmit');
     Route::get('/tutee/mycourses', [DashboardController::class, 'myCourses'])->name('mycourses');
 
 });
@@ -149,23 +139,45 @@ Route::middleware('auth')->group(function () {
 
     // Authenticated verify
     Route::get('/enroll-now', [UserController::class, 'enrollNow'])->name('enrollNow');
-
-    // Route to show the edit form
-    Route::get('/User/Profile/Edit/{id}', [UpdateController::class, 'edit'])->name('user.edit');
-
-    // Route to handle the update submission
-    Route::put('/User/Profile/Update/{id}', [UpdateController::class, 'update'])->name('user.update');
     Route::get('/course/detail/{course}', [CourseController::class, 'show'])->name('course.detail');
     Route::get('/profile/detail/{id}', [DashboardController::class, 'pubprofile'])
-    ->name('pub.profile')
-    ->middleware('checkuserrole:tutee,admin,tutor');  // Make sure it's applied here
+        ->name('pub.profile')
+        ->middleware('checkuserrole:tutee,admin,tutor');  // Make sure it's applied here
     Route::post('/save-course', [CourseController::class, 'saveCourse'])->name('save.course');
     Route::get('/check-saved-course', [CourseController::class, 'checkSavedCourse']);
     Route::post('/remove-saved-course', [CourseController::class, 'removeSavedCourse'])->name('remove.saved.course');
+    Route::post('enroll', [EnrollmentController::class, 'store'])
+        ->middleware('verified') // Assuming you have a middleware for verification
+        ->name('enroll.store');
+    Route::get('/message', [MessageController::class, 'message'])->name('message.index');
+    Route::get('/message/{id}', [MessageController::class, 'fetchConversation'])->name('messages.fetch');
+    Route::post('/messages/send', [MessageController::class, 'sendMessage'])->name('messages.send');
+    Route::get('/course/{courseId}/preview/{resourceTitle}', [CourseController::class, 'previewResource'])->name('course.preview');
 
 });
 
+
+
 // Guest-only routes
+Route::get('/', [IndexController::class, 'index'])->name('index'); // Make this the landing page
+Route::get('/about', [IndexController::class, 'about'])->name('about');
+Route::get('/course', [CourseController::class, 'course'])->name('course');
+Route::get('/contacts', [IndexController::class, 'contacts'])->name('contacts');
+Route::get('/privacypolicy', [IndexController::class, 'privacy'])->name('privacy');
+Route::get('/terms&conditions', [IndexController::class, 'terms'])->name('terms');
+Route::get('/error', [IndexController::class, 'error'])->name('error');
+Route::get('/faqs', [IndexController::class, 'faqs'])->name('faqs');
+Route::get('/recoverpassword', [RecoverController::class, 'recover'])->name('recover.password');
+Route::post('/recover', [RecoverController::class, 'sendResetLink'])->name('recover.send');
+// Routes for password recovery
+Route::get('/reset-password/{token}', [RecoverController::class, 'showResetForm'])->name('password.reset');
+Route::post('/password/update', [RecoverController::class, 'resetPassword'])->name('password.update');
+// Routes blocked account
+Route::get('/account-blocked', function () {
+    return view('auth.account-blocked');
+})->name('account.blocked');
+
+
 Route::middleware('guest')->group(function () {
     Route::get('/Login', [UserRegistrationController::class, 'showLoginForm'])->name('user.login');
     // For handling the login form submission (POST request)
@@ -175,9 +187,9 @@ Route::middleware('guest')->group(function () {
 
 });
 
-Route::post('enroll', [EnrollmentController::class, 'store'])
-    ->middleware('verified') // Assuming you have a middleware for verification
-    ->name('enroll.store');
+// Route::post('enroll', [EnrollmentController::class, 'store'])
+//     ->middleware('verified') // Assuming you have a middleware for verification
+//     ->name('enroll.store');
 
 // Logout route for authenticated users
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');

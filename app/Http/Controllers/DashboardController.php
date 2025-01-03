@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use App\Models\User;
+use App\Models\Enrollment;
 
 class DashboardController extends Controller
 {
@@ -121,29 +122,31 @@ class DashboardController extends Controller
 
     /**View Public Profile */
     public function pubprofile($id)
-    {
-        $tutor = User::find($id); // Fetch the tutor by their ID
-        $user = User::findOrFail($id); // Fetch the user by their ID
-        $courses = Course::where('user_id', $id)->paginate(6); // Fetch courses for this tutor with pagination
+{
+    $tutor = User::find($id); // Fetch the tutor by their ID
+    $user = User::findOrFail($id); // Fetch the user by their ID
+    $courses = Course::where('user_id', $id)->paginate(6); // Fetch courses for this tutor with pagination
 
-        // Add the enrolled count to each course (approved enrollments only)
-        $courses->getCollection()->transform(function ($course) {
-            // Count only the approved enrollments
-            $course->enrolledCount = $course->enrollments()->where('status', 'approved')->count();
-            return $course;
-        });
+    // Get all enrollments for the tutor's courses with 'approved' status
+    $enrollments = Enrollment::whereIn('course_id', $courses->pluck('id')) // Get enrollments for the tutor's courses
+                              ->where('status', 'approved') // Filter by 'approved' status
+                              ->distinct('user_id') // Ensure we only count unique tutees
+                              ->count();
 
-        $role = $user->role; // Get the user's role
-        $totalCourses = $courses->total(); // Get the total number of courses
+    // Other user and tutor details
+    $role = $user->role; // Get the user's role
+    $totalCourses = $courses->total(); // Get the total number of courses
 
-        // Ensure the 'about_me' field is included for Blade use
-        $aboutMe = $user->about_me; // Retrieve the about_me attribute
-        $education = $tutor->edu;
-        $career = $tutor->career;
-        $experience = $tutor->exp;
+    // Retrieve the 'about_me', education, career, and experience attributes
+    $aboutMe = $user->about_me;
+    $education = $tutor->edu;
+    $career = $tutor->career;
+    $experience = $tutor->exp;
 
-        return view('dash.dashpub', compact('courses', 'user', 'role', 'tutor', 'totalCourses', 'aboutMe', 'education', 'career', 'experience')); // Passing 'aboutMe'
-    }
+    // Pass the total enrolled tutees to the view
+    return view('dash.dashpub', compact('courses', 'user', 'role', 'tutor', 'totalCourses', 'aboutMe', 'education', 'career', 'experience', 'enrollments'));
+}
+
 
 
     /**View Public Profile */
@@ -198,7 +201,7 @@ class DashboardController extends Controller
     /**
      * Edit user profile.
      */
-    public function editprofile(Request $request, $id)
+     public function editprofile(Request $request, $id)
     {
         // Find the user by ID
         $user = User::findOrFail($id);
@@ -208,6 +211,10 @@ class DashboardController extends Controller
             'fname' => 'required|string|max:255',
             'lname' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $id,
+            'age'   => 'nullable|integer|min:1|max:150',
+            'gender' => 'nullable|string|in:Male,Female',
+            'designation' => 'nullable|string', // Validate the designation field
+            'birthday' => 'nullable|date|before:today',
             'phone' => [
                 'nullable', // Allow null value if the phone number is optional
                 'regex:/^(?:\+63|0)(9\d{2})\s?\d{3}\s?\d{4}$/', // Regex for Philippine phone numbers
@@ -223,6 +230,10 @@ class DashboardController extends Controller
         $user->fname = $request->fname;
         $user->lname = $request->lname;
         $user->email = $request->email;
+        $user->age = $request->age;
+        $user->gender = $request->gender;
+        $user->designation = $request->designation;
+        $user->birthday = $request->birthday;
         $user->phone = $request->input('phone', $user->phone);
         $user->about_me = $request->input('about_me', $user->about_me);
         $user->edu = $request->input('edu', $user->edu);
@@ -271,7 +282,7 @@ class DashboardController extends Controller
     }
 
 
-    public function updatePassword(Request $request)
+    public function updatePassword(Request $request, $id)
     {
         // Validate the input
         $request->validate([
@@ -279,7 +290,8 @@ class DashboardController extends Controller
             'new_password' => 'required|min:8|confirmed',  // Validate new password
         ]);
 
-        $user = Auth::user();
+        // Retrieve the user by ID
+        $user = User::findOrFail($id);
 
         // Check if the old password matches
         if (!Hash::check($request->old_password, $user->password)) {
@@ -360,6 +372,9 @@ class DashboardController extends Controller
         // Find the course by ID
         $course = Course::findOrFail($id);
 
+        // Capture the current page from the request
+        $page = request()->get('page', 1); // Defaults to page 1 if not set
+
         // Optionally, delete the course's image if it exists
         if ($course->image && file_exists(public_path('storage/courses/' . $course->image))) {
             unlink(public_path('storage/courses/' . $course->image));
@@ -368,8 +383,9 @@ class DashboardController extends Controller
         // Delete the course
         $course->delete();
 
-        // Redirect back to the tutor's course list (including the tutor's ID) with a success message
-        return redirect()->route('tut.course', ['id' => Auth::user()->id])->with('success', 'Course deleted successfully');
+        // Redirect back to the tutor's course list (including the tutor's ID and current page) with a success message
+        return redirect()->route('tut.course', ['id' => Auth::user()->id, 'page' => $page])
+            ->with('success', 'Course deleted successfully');
     }
 
 
